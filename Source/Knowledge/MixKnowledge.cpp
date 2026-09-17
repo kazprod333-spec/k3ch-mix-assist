@@ -135,9 +135,9 @@ juce::String humanizeKey (juce::String key)
         { "note", "Note" },
         { "name", "Name" },
         { "workflow", "Workflow" },
-        { "recording", "Enregistrement" },
+        { "recording", utf8 ("Enregistrement") },
         { "gain_staging", "Gain staging" },
-        { "vocal_chain_order", "Ordre de chaîne voix" },
+        { "vocal_chain_order", utf8 ("Ordre de cha\xc3\xaene voix") },
         { "compression_guide", "Compression" },
         { "mastering", "Mastering" },
         { "presets", "Presets" },
@@ -251,9 +251,9 @@ juce::String formatEqBand (const juce::var& band)
         hint = "Q " + formatNumber (asNumber (q));
 
     if (hint.isNotEmpty() && value.isNotEmpty())
-        return t + "  ·  " + value + "  ·  " + hint;
+        return t + utf8 ("  \xc2\xb7  ") + value + utf8 ("  \xc2\xb7  ") + hint;
     if (value.isNotEmpty())
-        return t + "  ·  " + value;
+        return t + utf8 ("  \xc2\xb7  ") + value;
     return t;
 }
 
@@ -271,7 +271,7 @@ std::vector<RecipeStep> stepsFromObject (juce::DynamicObject& obj)
     for (const auto& p : obj.getProperties())
     {
         const auto key = p.name.toString();
-        if (isMetaKey (key) || key == "name")
+        if (isMetaKey (key) || key == "name" || key == "notes")
             continue;
 
         auto more = stepsFromVar (key, p.value);
@@ -382,7 +382,7 @@ std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& 
             juce::String value = child->getProperty ("note").toString();
             juce::String hint;
             if (child->getProperty ("filtered").isBool() && static_cast<bool> (child->getProperty ("filtered")))
-                hint = "Filtré";
+                hint = utf8 ("Filtr\xc3\xa9");
             steps.push_back (step (label, value, hint));
             return steps;
         }
@@ -403,7 +403,7 @@ std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& 
             for (auto& s : nested)
             {
                 if (! s.label.startsWith (label))
-                    s.label = label + " · " + s.label;
+                    s.label = label + utf8 (" \xc2\xb7 ") + s.label;
                 steps.push_back (std::move (s));
             }
         }
@@ -414,12 +414,12 @@ std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& 
     return steps;
 }
 
-int countComplexChildren (juce::DynamicObject& obj)
+bool shouldSplitIntoCards (juce::DynamicObject& obj)
 {
     int complex = 0, simple = 0;
     for (const auto& p : obj.getProperties())
     {
-        if (isMetaKey (p.name.toString()) || p.name.toString() == "name")
+        if (isMetaKey (p.name.toString()) || p.name.toString() == "name" || p.name.toString() == "notes")
             continue;
 
         const bool c = p.value.isObject()
@@ -430,8 +430,7 @@ int countComplexChildren (juce::DynamicObject& obj)
         else
             ++simple;
     }
-    juce::ignoreUnused (simple);
-    return complex;
+    return complex >= 1 && simple == 0;
 }
 
 juce::String cardTitleFrom (const juce::String& fallback, const juce::var& v)
@@ -589,7 +588,7 @@ KnowledgeSection MixKnowledge::buildSection (const juce::var& spec, const juce::
         RecipeCard empty;
         empty.id = section.id + ".empty";
         empty.title = section.title;
-        empty.notes = "Pas encore de contenu pour cette section. Ajoutez des champs dans mix-knowledge.json.";
+        empty.notes = utf8 ("Pas encore de contenu pour cette section. Ajoutez des champs dans mix-knowledge.json.");
         section.cards.push_back (std::move (empty));
     }
 
@@ -607,9 +606,9 @@ std::vector<RecipeCard> MixKnowledge::genericCards (const juce::String& title,
 
     if (auto* obj = value.getDynamicObject())
     {
-        const auto complex = countComplexChildren (*obj);
+        const auto split = shouldSplitIntoCards (*obj);
 
-        if (complex >= 1)
+        if (split)
         {
             RecipeCard leftovers;
             leftovers.id = id + ".overview";
@@ -618,7 +617,7 @@ std::vector<RecipeCard> MixKnowledge::genericCards (const juce::String& title,
             for (const auto& p : obj->getProperties())
             {
                 const auto key = p.name.toString();
-                if (isMetaKey (key) || key == "name")
+                if (isMetaKey (key) || key == "name" || key == "notes")
                     continue;
 
                 const bool childComplex = p.value.isObject()
@@ -637,7 +636,9 @@ std::vector<RecipeCard> MixKnowledge::genericCards (const juce::String& title,
                 }
             }
 
-            if (! leftovers.steps.empty())
+            leftovers.notes = obj->getProperty ("notes").toString();
+
+            if (! leftovers.steps.empty() || leftovers.notes.isNotEmpty())
                 out.insert (out.begin(), leftovers);
 
             return out;
@@ -647,6 +648,7 @@ std::vector<RecipeCard> MixKnowledge::genericCards (const juce::String& title,
         card.id = id;
         card.title = cardTitleFrom (title, value);
         card.steps = stepsFromObject (*obj);
+        card.notes = obj->getProperty ("notes").toString();
         out.push_back (std::move (card));
         return out;
     }
@@ -720,24 +722,25 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
         RecipeCard workflow;
         workflow.id = "session.workflow";
         workflow.title = "Workflow session";
-        workflow.subtitle = studioName + " — Alger";
+        workflow.subtitle = studioName + utf8 (" \xe2\x80\x94 Alger");
         if (auto* w = studio.getProperty ("workflow", {}).getDynamicObject())
         {
             workflow.steps = stepsFromObject (*w);
+            workflow.notes = w->getProperty ("notes").toString();
         }
         cards.push_back (std::move (workflow));
 
         RecipeCard rec;
         rec.id = "session.recording";
-        rec.title = "Enregistrement";
+        rec.title = utf8 ("Enregistrement");
         if (auto* r = studio.getProperty ("recording", {}).getDynamicObject())
             rec.steps = stepsFromObject (*r);
         cards.push_back (std::move (rec));
 
         RecipeCard chain;
         chain.id = "session.vocal_chain";
-        chain.title = "Ordre de chaîne voix";
-        chain.notes = "Ordre d'inserts — appliquer manuellement dans FL Studio / Studio One.";
+        chain.title = utf8 ("Ordre de cha\xc3\xaene voix");
+        chain.notes = utf8 ("Ordre d'inserts \xe2\x80\x94 appliquer manuellement dans FL Studio / Studio One.");
         chain.steps = stepsFromVar ("vocal_chain_order", root.getProperty ("vocal_chain_order", {}));
         cards.push_back (std::move (chain));
 
@@ -756,7 +759,7 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
         auto cards = allPresetsAsCards (false);
         RecipeCard chain;
         chain.id = "vocal.chain_order";
-        chain.title = "Ordre de chaîne";
+        chain.title = utf8 ("Ordre de cha\xc3\xaene");
         chain.steps = stepsFromVar ("vocal_chain_order", root.getProperty ("vocal_chain_order", {}));
         cards.insert (cards.begin(), std::move (chain));
         return cards;
@@ -779,7 +782,7 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
         std::vector<RecipeCard> cards;
         auto g = genericCards ("Gain staging", "gain_staging",
                                studio.getProperty ("gain_staging", {}));
-        auto r = genericCards ("Niveaux d'entrée", "recording",
+        auto r = genericCards (utf8 ("Niveaux d'entr\xc3\xa9" "e"), "recording",
                                studio.getProperty ("recording", {}));
         cards.insert (cards.end(), g.begin(), g.end());
         cards.insert (cards.end(), r.begin(), r.end());
@@ -882,7 +885,7 @@ juce::String MixKnowledge::formatClipboard (const juce::String& sectionId,
 
     t += juce::String::repeatedString ("-", 42) + "\n";
     t += "Recette a appliquer manuellement dans FL Studio / Studio One.\n";
-    t += "Points de depart — adapter a la source.\n";
+    t += utf8 ("Points de depart \xe2\x80\x94 adapter a la source.\n");
     return t;
 }
 
@@ -892,7 +895,7 @@ juce::String MixKnowledge::aboutText() const
     t += "K3CH Mix Assist " + juce::String (K3CH_VERSION) + "\n";
     t += studioName + juce::String::fromUTF8 (" \xe2\x80\x94 Alger\n\n");
     t += "Insert utilitaire : bypass / pass-through, recipes locales.\n";
-    t += "Aucune API reseau, aucun modele distant.\n\n";
+    t += utf8 ("Aucune API r\xc3\xa9seau, aucun mod\xc3\xa8le distant.\n\n");
     if (knowledgeVersion.isNotEmpty())
         t += "Knowledge pack : " + knowledgeVersion + "\n";
     if (source.isNotEmpty())

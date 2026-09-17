@@ -35,7 +35,7 @@ private:
     LevelMeter meter;
     juce::TextButton bypassButton { "BYPASS" };
     juce::TextButton copyButton { "Copier la recette" };
-    juce::TextButton aboutButton { "A propos" };
+    juce::TextButton aboutButton { "About" };
     juce::Label statusLabel;
     juce::String currentSectionId;
     juce::String statusUntilClear;

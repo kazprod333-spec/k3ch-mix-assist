@@ -6,6 +6,8 @@
 namespace k3ch
 {
 
+inline juce::String utf8 (const char* s) { return juce::String::fromUTF8 (s); }
+
 struct RecipeStep
 {
     juce::String label;

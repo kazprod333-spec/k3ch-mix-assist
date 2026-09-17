@@ -12,12 +12,12 @@ MixAssistEditor::MixAssistEditor (MixAssistProcessor& p)
     juce::LookAndFeel::setDefaultLookAndFeel (&lnf);
     setOpaque (true);
     setResizable (true, true);
-    setResizeLimits (860, 540, 1600, 1200);
-    setSize (1000, 660);
+    setResizeLimits (860, 560, 1600, 1200);
+    setSize (1020, 700);
 
     currentSectionId = processor.selectedSectionId;
 
-    search.setTextToShowWhenEmpty ("Rechercher (Hz, dB, GR, 808, LUFS...)", lnf.palette.muted);
+    search.setTextToShowWhenEmpty ("Rechercher Hz, dB, GR, 808...", lnf.palette.muted);
     search.setJustification (juce::Justification::centredLeft);
     search.setIndents (10, 0);
     search.setEscapeAndReturnKeysConsumed (true);
@@ -34,6 +34,7 @@ MixAssistEditor::MixAssistEditor (MixAssistProcessor& p)
         processor.apvts, "bypass", bypassButton);
     addAndMakeVisible (bypassButton);
 
+    aboutButton.setButtonText (juce::String::fromUTF8 ("\xc3\x80 propos"));
     copyButton.onClick = [this] { copyRecipe(); };
     aboutButton.onClick = [this] { showAbout(); };
     copyButton.setColour (juce::TextButton::buttonColourId, juce::Colour (0xff2a2416));
@@ -151,8 +152,8 @@ void MixAssistEditor::applyFilter()
     else if (! knowledge.isValid())
         statusLabel.setText (knowledge.getError(), juce::dontSendNotification);
     else
-        statusLabel.setText ("Pass-through insert  ·  Knowledge " + knowledge.getKnowledgeVersion()
-                                 + "  ·  local only",
+        statusLabel.setText ("Pass-through insert  |  Knowledge " + knowledge.getKnowledgeVersion()
+                                 + "  |  local only",
                              juce::dontSendNotification);
 }
 
