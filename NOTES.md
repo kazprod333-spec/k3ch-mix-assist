@@ -1,50 +1,58 @@
 # NOTES — later knowledge ingest
 
-v1 ships a **hand-authored JSON** pack (`Resources/mix-knowledge.json`) compiled into the binary. The editor never calls a network API.
+Runtime knowledge is **`Resources/mix-knowledge.json`**, compiled into the VST via JUCE BinaryData. The editor never calls a network API.
 
-## Schema the UI already understands
+## Current pack (2026-09-17 enrichi)
+
+Pulled from 12 PDFs + `BASE_DONNEES_MIX_K3CH_2026.xlsx` (see `EXTRACT_NOTES`). Counts:
+
+| Collection | Count |
+|------------|------:|
+| `presets[]` | 10 (ModernRap, Bodak, ALLTY5, Juice, BGV, Trap/Drill, Pop urbaine, Voix-off, PARA_AIR, PARA_BODY) |
+| `checklists[]` | 4 (25 steps) |
+| `eq_guide[]` | 20 |
+| `plugin_stacks[]` | 5 |
+| `parallel_buses[]` | 6 |
+
+`docs_pending_ingest` is empty after this ingest. Remaining gaps (artist PDF fiches, PARA/HARSH standalone PDFs) are listed in JSON `gaps`.
+
+## Schema the UI understands
 
 | Field | Role |
 |--------|------|
-| `ui_sections[]` | `{ id, title, priority }` — sidebar order. **Add a row here to add a screen.** |
-| `presets` | Map of named chains. New keys become cards (vocal + EQ views). |
-| `studio`, `drums`, `mastering`, `compression_guide`, `vocal_chain_order` | Bound to known section ids, also reachable generically |
-| `section_bindings` (optional) | `{ "section_id": ["path", "nested/path"] }` if `id` ≠ JSON key |
-| `docs_pending_ingest[]` | Filenames only; not shown as recipes yet |
-| `version`, `source` | Shown in footer / About |
+| `ui_sections[]` | `{ id, title, priority }` — sidebar. **Add a row to add a screen.** |
+| `presets[]` | Array of chain objects (`id`, `name`, `eq_bands`, `comp`, `chain_steps`, …). Also still accepts the old `{ "id": {…} }` map. |
+| `checklists[]` | `{ title, daw, steps: [{ order, title, detail }] }` |
+| `eq_guide[]` | `{ problem, freq_hz, action, notes }` |
+| `eq_recipes_by_style[]`, `hpf_defaults` | Style starting points |
+| `plugin_stacks[]`, `parallel_buses[]` | Insert order / para buses |
+| `studio`, `drums`, `eight_oh_eight`, `mastering`, `compression_guide`, `vocal_chain_order`, `pipeline_rules`, `autotune_guide`, `sends_guide` | Bound to section ids + generic walker |
+| `section_bindings` (optional) | `{ "section_id": ["path"] }` if `id` ≠ JSON key |
+| `version`, `source` | Footer / About |
 
-Generic walker rules (so JSON can grow without rewriting UI):
+Generic walker:
 
-- Keys ending `_hz` / `_khz` / `_db` / `_dbfs` / `_dbtp` / `_lufs` / `_s` / `_minutes` get units
-- Two-number arrays render as ranges (`-12–-6 dBFS`)
-- Objects with `freq_hz` + `gain_db` + `q` + `type` render as EQ bands
-- Objects with `model` + `gr_db` render as compressors
-- Nested objects split into extra cards when a node is mostly children
+- `_hz` / `_khz` / `_db` / `_dbfs` / `_dbtp` / `_lufs` / `_s` / `_ms` / `_pct` / `_minutes` → units
+- Two-number arrays → ranges (`-12–-6 dBFS`)
+- `eq_bands[]` / `{ freq_hz, gain_db, q, type }` → EQ rows (freq may be a range)
+- `{ plugin, gr_db \| setting, notes }` → insert steps
+- Checklist `{ order, title, detail }`
+- Arrays of objects → **one card each**
+- Split into extra cards only when a node is *only* nested groups (no leftover scalars)
 
-Known section ids with richer layout: `session_checklist`, `vocal_rap`, `eq_guide`, `drums_808`, `gain_staging`, `mastering`. Unknown ids use the walker.
+Known section ids: `session_checklist`, `vocal_rap`, `eq_guide`, `drums_808`, `gain_staging`, `mastering`, `fl_recording`, `parallel_buses`, `plugin_stacks`. Unknown ids still walk a matching top-level key.
 
-## PDF / spreadsheet ingest (v2+)
+## How to ingest more PDFs later
 
-Pending sources listed in the pack:
+1. Extract offline (`pdftotext -layout`, pandas/openpyxl).
+2. Append objects to `presets[]` / `checklists[]` / `eq_guide[]` using the same field names.
+3. Add a `ui_sections` row only for a **new** category whose `id` matches a top-level key (or `section_bindings`).
+4. Bump `version`. Rebuild so BinaryData updates.
+5. Do **not** embed raw PDFs in the VST.
 
-- `THE_kAz_MIX_METHOD_AND_WORKFLOW_V2.pdf`
-- `FX_Chains_Recording_FLStudio.pdf`
-- `FICHE_CHEATSHEET_MIX_SESSION_K3CH_2026.pdf`
-- `BASE_DONNEES_MIX_K3CH_2026.xlsx`
-- `Templates_Chaines_Rap_Pop_VoixOff.pdf`
-- `Vocal_Chains_Complet_2026.pdf`
-
-Suggested pipeline (keep it **offline**):
-
-1. Extract text (pdftotext / local OCR) or tables (xlsx → CSV).
-2. Map each recipe to a `presets.<id>` object using the same field names (`hpf_hz`, `eq[]`, `comp_fet.gr_db`, …).
-3. Append `ui_sections` only when you need a **new** category; otherwise dump into `presets` or a new top-level map whose key matches a section `id`.
-4. Bump `version` (ISO date). Rebuild so BinaryData updates.
-5. Do **not** embed raw PDFs in the VST; keep JSON as the runtime format.
-
-Optional later: load a sidecar `mix-knowledge.json` next to the `.vst3` for live edits without recompiling. v1 is embedded-only on purpose.
+Optional later: sidecar `mix-knowledge.json` next to the `.vst3`. v1 remains embedded-only.
 
 ## DSP backlog (not v1)
 
-- None required. Keep insert cheap.
-- If a “match this recipe” helper is added, drive **parameters of other plugins** via the host, not by cloning Waves/CLA inside this binary.
+- Keep the insert cheap (pass-through).
+- Do not clone Waves/CLA inside this binary; recipes are applied by hand in FL / Studio One.

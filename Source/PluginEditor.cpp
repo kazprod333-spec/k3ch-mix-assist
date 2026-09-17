@@ -231,9 +231,13 @@ void MixAssistEditor::resized()
 
     auto nav = sidebar.reduced (12, 12);
     search.setBounds (nav.removeFromTop (32));
-    nav.removeFromTop (12);
+    nav.removeFromTop (10);
 
-    const int btnH = 36;
+    const int n = navButtons.size();
+    int gap = 4;
+    int btnH = 32;
+    if (n > 0)
+        btnH = juce::jlimit (24, 34, (nav.getHeight() / n) - gap);
     for (auto* btn : navButtons)
     {
         btn->setBounds (nav.removeFromTop (btnH));

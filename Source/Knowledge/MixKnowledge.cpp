@@ -58,7 +58,18 @@ juce::String formatSignedDb (double n)
 bool isMetaKey (const juce::String& key)
 {
     return key == "id" || key == "priority" || key == "ui_sections"
-        || key == "docs_pending_ingest" || key == "source" || key == "version";
+        || key == "docs_pending_ingest" || key == "source" || key == "sources"
+        || key == "version" || key == "locale" || key == "gaps"
+        || key == "file" || key == "used_for" || key == "parent";
+}
+
+bool skipAsStep (const juce::String& key)
+{
+    return isMetaKey (key)
+        || key == "name" || key == "notes" || key == "label" || key == "title"
+        || key == "problem" || key == "style" || key == "genre"
+        || key == "track_type" || key == "daw" || key == "fiche"
+        || key == "interdit" || key == "family";
 }
 
 juce::String unitForKey (const juce::String& key)
@@ -85,7 +96,13 @@ juce::String unitForKey (const juce::String& key)
         return "samples";
     if (k.endsWith ("_s") && ! k.endsWith ("_samples") && ! k.endsWith ("notes"))
         return "s";
-    if (k.contains ("amount") || k.contains ("tune"))
+    if (k.endsWith ("_ms"))
+        return "ms";
+    if (k.endsWith ("_pct") || k.contains ("percent"))
+        return "%";
+    if (k.endsWith ("_oct") || k.contains ("slope"))
+        return "dB/oct";
+    if (k.contains ("amount"))
         return "%";
 
     return {};
@@ -95,7 +112,20 @@ juce::String humanizeKey (juce::String key)
 {
     static const std::map<juce::String, juce::String> known {
         { "hpf_hz", "HPF" },
-        { "eq", "EQ" },
+        { "eq_bands", "EQ" },
+        { "chain_steps", utf8 ("Cha\xc3\xaene") },
+        { "send_db", "Send" },
+        { "plugin_stacks", "Stacks plugins" },
+        { "parallel_buses", utf8 ("Bus parall\xc3\xa8les") },
+        { "checklists", "Checklists" },
+        { "eq_guide", "EQ voix" },
+        { "eq_recipes_by_style", "Recettes EQ par style" },
+        { "hpf_defaults", utf8 ("HPF d\xc3\xa9" "fauts") },
+        { "eight_oh_eight", "808" },
+        { "autotune_guide", "Auto-Tune" },
+        { "sends_guide", "Sends" },
+        { "pipeline_rules", "Pipeline" },
+        { "core_plugin_stack", utf8 ("Stack c\xc5\x93ur") },
         { "tune_amount", "Tune" },
         { "comp_fet", "Comp FET" },
         { "comp_leveler", "Comp leveler" },
@@ -234,21 +264,28 @@ juce::String formatEqBand (const juce::var& band)
     const auto freq = obj->getProperty ("freq_hz");
     const auto gain = obj->getProperty ("gain_db");
     const auto q    = obj->getProperty ("q");
+    const auto notes = obj->getProperty ("notes").toString();
 
     juce::String t = type.isNotEmpty()
-                         ? (type.substring (0, 1).toUpperCase() + type.substring (1))
+                         ? (type.substring (0, 1).toUpperCase() + type.substring (1).replaceCharacter ('_', ' '))
                          : "EQ";
 
-    if (isNumber (freq))
+    if (auto* range = freq.getArray())
+        t += " " + formatRange (range, "Hz");
+    else if (isNumber (freq))
         t += " " + formatNumber (asNumber (freq)) + " Hz";
 
     juce::String value;
     if (isNumber (gain))
         value = formatSignedDb (asNumber (gain));
+    else if (notes.isNotEmpty())
+        value = notes;
 
     juce::String hint;
     if (isNumber (q))
         hint = "Q " + formatNumber (asNumber (q));
+    if (notes.isNotEmpty() && isNumber (gain))
+        hint = hint.isEmpty() ? notes : hint + " " + notes;
 
     if (hint.isNotEmpty() && value.isNotEmpty())
         return t + utf8 ("  \xc2\xb7  ") + value + utf8 ("  \xc2\xb7  ") + hint;
@@ -271,7 +308,7 @@ std::vector<RecipeStep> stepsFromObject (juce::DynamicObject& obj)
     for (const auto& p : obj.getProperties())
     {
         const auto key = p.name.toString();
-        if (isMetaKey (key) || key == "name" || key == "notes")
+        if (skipAsStep (key))
             continue;
 
         auto more = stepsFromVar (key, p.value);
@@ -293,6 +330,71 @@ bool arrayOfObjects (const juce::Array<juce::var>* arr)
     return (*arr)[0].isObject();
 }
 
+RecipeStep stepFromRecord (const juce::var& item, int index, const juce::String& fallbackLabel)
+{
+    auto* o = item.getDynamicObject();
+    if (o == nullptr)
+        return step (fallbackLabel, item.toString());
+
+    const auto plugin  = o->getProperty ("plugin").toString();
+    const auto family  = o->getProperty ("family").toString();
+    const auto title   = o->getProperty ("title").toString();
+    const auto setting = o->getProperty ("setting").toString();
+    const auto detail  = o->getProperty ("detail").toString();
+    const auto notes   = o->getProperty ("notes").toString();
+    const auto role    = o->getProperty ("role").toString();
+    const auto ratio   = o->getProperty ("ratio").toString();
+    const auto action  = o->getProperty ("action").toString();
+    const auto rule    = o->getProperty ("rule").toString();
+    const auto daw     = o->getProperty ("daw").toString();
+    const auto where   = o->getProperty ("where").toString();
+    const auto gr      = o->getProperty ("gr_db");
+    const auto grStr   = o->getProperty ("gr").toString();
+    const auto chain   = o->getProperty ("chain").toString();
+    const auto sendSrc = o->getProperty ("source_send").toString();
+
+    juce::String label = family.isNotEmpty() ? family
+                         : (plugin.isNotEmpty() ? plugin
+                            : (title.isNotEmpty() ? title
+                               : (rule.isNotEmpty() ? rule : fallbackLabel)));
+
+    if (isNumber (o->getProperty ("order")))
+        label = juce::String (juce::roundToInt (asNumber (o->getProperty ("order")))) + ". "
+                + (title.isNotEmpty() ? title : label);
+
+    juce::ignoreUnused (index);
+
+    juce::StringArray valueBits;
+    if (setting.isNotEmpty())
+        valueBits.add (setting);
+    if (detail.isNotEmpty())
+        valueBits.add (detail);
+    if (action.isNotEmpty())
+        valueBits.add (action);
+    if (chain.isNotEmpty())
+        valueBits.add (chain);
+    if (sendSrc.isNotEmpty())
+        valueBits.add (sendSrc);
+    if (ratio.isNotEmpty())
+        valueBits.add (ratio);
+    if (auto* grArr = gr.getArray())
+        valueBits.add (formatRange (grArr, "dB GR"));
+    else if (isNumber (gr))
+        valueBits.add (withUnit (formatNumber (asNumber (gr)), "dB GR"));
+    if (grStr.isNotEmpty())
+        valueBits.add (grStr);
+
+    juce::String hint = notes;
+    if (role.isNotEmpty())
+        hint = hint.isEmpty() ? role : role + " / " + hint;
+    if (where.isNotEmpty())
+        hint = hint.isEmpty() ? where : hint + " / " + where;
+    if (daw.isNotEmpty() && daw != "any")
+        hint = hint.isEmpty() ? daw : hint + " / " + daw;
+
+    return step (label, valueBits.joinIntoString ("  |  "), hint);
+}
+
 std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& v)
 {
     std::vector<RecipeStep> steps;
@@ -309,31 +411,67 @@ std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& 
             return steps;
         }
 
-        if (arrayOfObjects (arr) && (lower (key) == "eq" || lower (key).contains ("band")))
+        if (arrayOfObjects (arr))
         {
-            int i = 1;
-            for (const auto& band : *arr)
+            auto* first = (*arr)[0].getDynamicObject();
+            const bool looksEq = lower (key) == "eq" || lower (key).contains ("band")
+                || (first != nullptr && first->hasProperty ("freq_hz")
+                    && (first->hasProperty ("type") || first->hasProperty ("gain_db")));
+            const bool looksRecipe = first != nullptr
+                && (first->hasProperty ("plugin") || first->hasProperty ("title")
+                    || first->hasProperty ("rule") || first->hasProperty ("setting")
+                    || first->hasProperty ("detail") || first->hasProperty ("action")
+                    || first->hasProperty ("chain"));
+
+            if (looksEq)
             {
-                auto* b = band.getDynamicObject();
-                juce::String type = b != nullptr ? b->getProperty ("type").toString() : "EQ";
-                if (type.isNotEmpty())
-                    type = type.substring (0, 1).toUpperCase() + type.substring (1);
+                int i = 1;
+                for (const auto& band : *arr)
+                {
+                    auto* b = band.getDynamicObject();
+                    juce::String type = b != nullptr ? b->getProperty ("type").toString() : "EQ";
+                    type = type.replaceCharacter ('_', ' ');
+                    if (type.isNotEmpty())
+                        type = type.substring (0, 1).toUpperCase() + type.substring (1);
 
-                juce::String freqLabel = type;
-                if (b != nullptr && isNumber (b->getProperty ("freq_hz")))
-                    freqLabel += " " + formatNumber (asNumber (b->getProperty ("freq_hz"))) + " Hz";
+                    juce::String freqLabel = type;
+                    if (b != nullptr)
+                    {
+                        const auto freq = b->getProperty ("freq_hz");
+                        if (auto* range = freq.getArray())
+                            freqLabel += " " + formatRange (range, "Hz");
+                        else if (isNumber (freq))
+                            freqLabel += " " + formatNumber (asNumber (freq)) + " Hz";
+                    }
 
-                juce::String value, hint;
-                if (b != nullptr && isNumber (b->getProperty ("gain_db")))
-                    value = formatSignedDb (asNumber (b->getProperty ("gain_db")));
-                if (b != nullptr && isNumber (b->getProperty ("q")))
-                    hint = "Q " + formatNumber (asNumber (b->getProperty ("q")));
+                    juce::String value, hint;
+                    if (b != nullptr && isNumber (b->getProperty ("gain_db")))
+                        value = formatSignedDb (asNumber (b->getProperty ("gain_db")));
+                    if (b != nullptr && isNumber (b->getProperty ("q")))
+                        hint = "Q " + formatNumber (asNumber (b->getProperty ("q")));
+                    const auto notes = b != nullptr ? b->getProperty ("notes").toString() : juce::String{};
+                    if (value.isEmpty() && notes.isNotEmpty())
+                        value = notes;
+                    else if (notes.isNotEmpty())
+                        hint = hint.isEmpty() ? notes : hint + " " + notes;
 
-                steps.push_back (step (freqLabel.isNotEmpty() ? freqLabel : ("EQ " + juce::String (i)),
-                                       value, hint));
-                ++i;
+                    steps.push_back (step (freqLabel.isNotEmpty() ? freqLabel : ("EQ " + juce::String (i)),
+                                           value, hint));
+                    ++i;
+                }
+                return steps;
             }
-            return steps;
+
+            if (looksRecipe)
+            {
+                int i = 1;
+                for (const auto& item : *arr)
+                {
+                    steps.push_back (stepFromRecord (item, i, label + " " + juce::String (i)));
+                    ++i;
+                }
+                return steps;
+            }
         }
 
         if (arr->size() > 0 && (*arr)[0].isString())
@@ -362,8 +500,9 @@ std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& 
     if (auto* child = v.getDynamicObject())
     {
         const auto model = child->getProperty ("model").toString();
+        const auto plugin = child->getProperty ("plugin").toString();
         const auto gr = child->getProperty ("gr_db");
-        if (model.isNotEmpty() || ! isNullish (gr))
+        if (model.isNotEmpty() || plugin.isNotEmpty() || ! isNullish (gr))
         {
             juce::String value;
             if (auto* grArr = gr.getArray())
@@ -371,9 +510,20 @@ std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& 
             else if (isNumber (gr))
                 value = withUnit (formatNumber (asNumber (gr)), "dB GR");
 
-            const auto hint = child->getProperty ("note").toString();
-            steps.push_back (step (label, value.isNotEmpty() ? value : model,
-                                   value.isNotEmpty() ? model : hint));
+            const auto setting = child->getProperty ("setting").toString();
+            if (value.isEmpty() && setting.isNotEmpty())
+                value = setting;
+
+            const auto hintPlugin = plugin.isNotEmpty() ? plugin : model;
+            auto hint = child->getProperty ("notes").toString();
+            if (hint.isEmpty())
+                hint = child->getProperty ("note").toString();
+            if (hint.isEmpty())
+                hint = child->getProperty ("role").toString();
+
+            const auto rowLabel = hintPlugin.isNotEmpty() ? hintPlugin : label;
+            steps.push_back (step (rowLabel, value.isNotEmpty() ? value : hintPlugin,
+                                   value.isNotEmpty() ? hint : hintPlugin));
             return steps;
         }
 
@@ -414,13 +564,27 @@ std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& 
     return steps;
 }
 
+bool isInlineRecipeKey (const juce::String& key)
+{
+    const auto k = lower (key);
+    return k == "steps" || k == "chain_steps" || k.contains ("band")
+        || k == "eq" || k == "comp" || k == "plugins" || k == "order"
+        || k == "chain" || k == "families" || k == "sends";
+}
+
 bool shouldSplitIntoCards (juce::DynamicObject& obj)
 {
     int complex = 0, simple = 0;
     for (const auto& p : obj.getProperties())
     {
-        if (isMetaKey (p.name.toString()) || p.name.toString() == "name" || p.name.toString() == "notes")
+        if (skipAsStep (p.name.toString()))
             continue;
+
+        if (isInlineRecipeKey (p.name.toString()))
+        {
+            ++simple;
+            continue;
+        }
 
         const bool c = p.value.isObject()
                        || (p.value.getArray() != nullptr && arrayOfObjects (p.value.getArray())
@@ -437,11 +601,37 @@ juce::String cardTitleFrom (const juce::String& fallback, const juce::var& v)
 {
     if (auto* obj = v.getDynamicObject())
     {
-        const auto n = obj->getProperty ("name").toString();
-        if (n.isNotEmpty())
-            return n;
+        for (const char* key : { "name", "label", "title", "problem", "style", "family", "id" })
+        {
+            const auto n = obj->getProperty (key).toString();
+            if (n.isNotEmpty())
+                return n;
+        }
     }
     return fallback;
+}
+
+juce::String subtitleFromRecord (juce::DynamicObject& obj)
+{
+    juce::StringArray bits;
+    for (const char* key : { "genre", "track_type", "daw", "family", "role", "fiche" })
+    {
+        const auto n = obj.getProperty (key).toString();
+        if (n.isNotEmpty())
+            bits.add (n);
+    }
+    return bits.joinIntoString (utf8 ("  \xc2\xb7  "));
+}
+
+juce::String idFromRecord (const juce::var& v, int index)
+{
+    if (auto* obj = v.getDynamicObject())
+    {
+        const auto id = obj->getProperty ("id").toString();
+        if (id.isNotEmpty())
+            return id;
+    }
+    return juce::String (index);
 }
 
 } // namespace
@@ -604,6 +794,30 @@ std::vector<RecipeCard> MixKnowledge::genericCards (const juce::String& title,
     if (isNullish (value))
         return out;
 
+    if (auto* arr = value.getArray())
+    {
+        if (arrayOfObjects (arr))
+        {
+            int i = 0;
+            for (const auto& item : *arr)
+            {
+                const auto childTitle = cardTitleFrom (title + " " + juce::String (i + 1), item);
+                const auto childId = id + "." + idFromRecord (item, i);
+                auto nested = genericCards (childTitle, childId, item);
+                out.insert (out.end(), nested.begin(), nested.end());
+                ++i;
+            }
+            return out;
+        }
+
+        RecipeCard card;
+        card.id = id;
+        card.title = title;
+        card.steps = stepsFromVar (title, value);
+        out.push_back (std::move (card));
+        return out;
+    }
+
     if (auto* obj = value.getDynamicObject())
     {
         const auto split = shouldSplitIntoCards (*obj);
@@ -617,8 +831,15 @@ std::vector<RecipeCard> MixKnowledge::genericCards (const juce::String& title,
             for (const auto& p : obj->getProperties())
             {
                 const auto key = p.name.toString();
-                if (isMetaKey (key) || key == "name" || key == "notes")
+                if (skipAsStep (key))
                     continue;
+
+                if (isInlineRecipeKey (key))
+                {
+                    auto st = stepsFromVar (key, p.value);
+                    leftovers.steps.insert (leftovers.steps.end(), st.begin(), st.end());
+                    continue;
+                }
 
                 const bool childComplex = p.value.isObject()
                     || (p.value.getArray() != nullptr && arrayOfObjects (p.value.getArray())
@@ -647,8 +868,11 @@ std::vector<RecipeCard> MixKnowledge::genericCards (const juce::String& title,
         RecipeCard card;
         card.id = id;
         card.title = cardTitleFrom (title, value);
+        card.subtitle = subtitleFromRecord (*obj);
         card.steps = stepsFromObject (*obj);
         card.notes = obj->getProperty ("notes").toString();
+        if (card.notes.isEmpty())
+            card.notes = obj->getProperty ("interdit").toString();
         out.push_back (std::move (card));
         return out;
     }
@@ -672,52 +896,44 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
     const auto presets = root.getProperty ("presets", {});
     const auto drums = root.getProperty ("drums", {});
 
-    auto allPresetsAsCards = [this, &presets] (bool eqOnly) -> std::vector<RecipeCard>
+    auto collectArrayOrMap = [this] (const juce::var& node, const juce::String& prefix) -> std::vector<RecipeCard>
     {
         std::vector<RecipeCard> out;
-        auto* obj = presets.getDynamicObject();
-        if (obj == nullptr)
-            return out;
-
-        for (const auto& p : obj->getProperties())
+        if (auto* arr = node.getArray())
         {
-            auto cards = genericCards (humanizeKey (p.name.toString()),
-                                       "presets." + p.name.toString(),
-                                       p.value);
-
-            if (eqOnly)
+            int i = 0;
+            for (const auto& item : *arr)
             {
-                for (auto& c : cards)
-                {
-                    std::vector<RecipeStep> eqSteps;
-                    for (const auto& s : c.steps)
-                    {
-                        const auto h = s.haystack();
-                        if (h.contains ("hz") || h.contains ("eq") || h.contains ("hpf")
-                            || h.contains ("bell") || h.contains ("shelf") || s.value.contains ("dB"))
-                        {
-                            if (h.contains ("gr") || h.contains ("comp") || h.contains ("reverb")
-                                || h.contains ("delay") || h.contains ("tune") || h.contains ("de-ess"))
-                                continue;
-                            eqSteps.push_back (s);
-                        }
-                    }
-                    c.steps.swap (eqSteps);
-                    if (! c.steps.empty())
-                        out.push_back (std::move (c));
-                }
+                auto more = genericCards (cardTitleFrom (prefix, item),
+                                          prefix + "." + idFromRecord (item, i),
+                                          item);
+                out.insert (out.end(), more.begin(), more.end());
+                ++i;
             }
-            else
+            return out;
+        }
+
+        if (auto* obj = node.getDynamicObject())
+        {
+            for (const auto& p : obj->getProperties())
             {
-                out.insert (out.end(), cards.begin(), cards.end());
+                auto more = genericCards (humanizeKey (p.name.toString()),
+                                          prefix + "." + p.name.toString(),
+                                          p.value);
+                out.insert (out.end(), more.begin(), more.end());
             }
         }
         return out;
     };
 
+    auto append = [] (std::vector<RecipeCard>& dest, std::vector<RecipeCard> more)
+    {
+        dest.insert (dest.end(), more.begin(), more.end());
+    };
+
     if (id == "session_checklist")
     {
-        std::vector<RecipeCard> cards;
+        auto cards = collectArrayOrMap (root.getProperty ("checklists", {}), "checklists");
 
         RecipeCard workflow;
         workflow.id = "session.workflow";
@@ -756,41 +972,87 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
 
     if (id == "vocal_rap")
     {
-        auto cards = allPresetsAsCards (false);
+        auto cards = collectArrayOrMap (presets, "presets");
+        auto tune = genericCards ("Auto-Tune", "autotune_guide", root.getProperty ("autotune_guide", {}));
+        auto sends = genericCards ("Sends", "sends_guide", root.getProperty ("sends_guide", {}));
         RecipeCard chain;
         chain.id = "vocal.chain_order";
         chain.title = utf8 ("Ordre de cha\xc3\xaene");
         chain.steps = stepsFromVar ("vocal_chain_order", root.getProperty ("vocal_chain_order", {}));
         cards.insert (cards.begin(), std::move (chain));
+        append (cards, std::move (tune));
+        append (cards, std::move (sends));
         return cards;
     }
 
     if (id == "eq_guide")
-        return allPresetsAsCards (true);
+    {
+        std::vector<RecipeCard> cards;
+        append (cards, genericCards (utf8 ("HPF d\xc3\xa9" "fauts"), "hpf_defaults",
+                                     root.getProperty ("hpf_defaults", {})));
+        append (cards, collectArrayOrMap (root.getProperty ("eq_recipes_by_style", {}), "eq_recipes"));
+        append (cards, collectArrayOrMap (root.getProperty ("eq_guide", {}), "eq_guide"));
+        return cards;
+    }
 
     if (id == "drums_808")
     {
         auto cards = genericCards ("Drums", "drums", drums);
-        auto extra = genericCards ("Compression", "compression_guide",
-                                   root.getProperty ("compression_guide", {}));
-        cards.insert (cards.end(), extra.begin(), extra.end());
+        append (cards, genericCards ("808", "eight_oh_eight", root.getProperty ("eight_oh_eight", {})));
+        append (cards, genericCards ("Compression", "compression_guide",
+                                     root.getProperty ("compression_guide", {})));
         return cards;
     }
 
     if (id == "gain_staging")
     {
         std::vector<RecipeCard> cards;
-        auto g = genericCards ("Gain staging", "gain_staging",
-                               studio.getProperty ("gain_staging", {}));
-        auto r = genericCards (utf8 ("Niveaux d'entr\xc3\xa9" "e"), "recording",
-                               studio.getProperty ("recording", {}));
-        cards.insert (cards.end(), g.begin(), g.end());
-        cards.insert (cards.end(), r.begin(), r.end());
+        append (cards, genericCards ("Gain staging", "gain_staging",
+                                     studio.getProperty ("gain_staging", {})));
+        append (cards, genericCards (utf8 ("Niveaux d'entr\xc3\xa9" "e"), "recording",
+                                     studio.getProperty ("recording", {})));
+        append (cards, collectArrayOrMap (root.getProperty ("pipeline_rules", {}), "pipeline"));
         return cards;
     }
 
     if (id == "mastering")
         return genericCards ("Mastering cible", "mastering", root.getProperty ("mastering", {}));
+
+    if (id == "fl_recording")
+    {
+        std::vector<RecipeCard> cards;
+        if (auto* arr = root.getProperty ("checklists", {}).getArray())
+        {
+            int i = 0;
+            for (const auto& item : *arr)
+            {
+                auto* o = item.getDynamicObject();
+                const auto daw = o != nullptr ? o->getProperty ("daw").toString() : juce::String{};
+                const auto cid = o != nullptr ? o->getProperty ("id").toString() : juce::String{};
+                const auto title = o != nullptr ? o->getProperty ("title").toString() : juce::String{};
+                const bool fl = daw.containsIgnoreCase ("FL") || cid.containsIgnoreCase ("fl")
+                                || title.containsIgnoreCase ("FL");
+                if (fl)
+                    append (cards, genericCards (cardTitleFrom ("FL", item),
+                                                 "fl_recording." + idFromRecord (item, i), item));
+                ++i;
+            }
+        }
+        append (cards, genericCards (utf8 ("Enregistrement"), "recording",
+                                     studio.getProperty ("recording", {})));
+        return cards;
+    }
+
+    if (id == "parallel_buses")
+        return collectArrayOrMap (root.getProperty ("parallel_buses", {}), "parallel_buses");
+
+    if (id == "plugin_stacks")
+    {
+        auto cards = collectArrayOrMap (root.getProperty ("plugin_stacks", {}), "plugin_stacks");
+        append (cards, genericCards (utf8 ("Stack c\xc5\x93ur"), "core_plugin_stack",
+                                     studio.getProperty ("core_plugin_stack", {})));
+        return cards;
+    }
 
     // Optional explicit bindings: { "section_bindings": { "id": ["path", "path"] } }
     if (auto* bindings = root.getProperty ("section_bindings", {}).getDynamicObject())
