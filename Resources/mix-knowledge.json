@@ -1,6 +1,6 @@
 {
-  "source": "Maison K3CH Production — mix knowledge enrichi (PDFs + XLSX 2026)",
-  "version": "2026-09-17",
+  "source": "Maison K3CH Production — mix knowledge enrichi batch2 (FICHEs + artist PDFs + FR + pense-bête)",
+  "version": "2026-09-17b",
   "locale": "fr-DZ",
   "studio": {
     "name": "Maison K3CH Production",
@@ -585,24 +585,47 @@
           "notes": "mud"
         },
         {
-          "freq_hz": 4000,
+          "freq_hz": [
+            3800,
+            4200
+          ],
           "gain_db": -3,
           "q": null,
           "type": "bell",
-          "notes": "harsh"
+          "notes": "harsh LaRay (pas boost présence)"
+        },
+        {
+          "freq_hz": 3200,
+          "gain_db": 1,
+          "q": null,
+          "type": "bell",
+          "notes": "présence +1 MAX si manque"
+        },
+        {
+          "freq_hz": 11000,
+          "gain_db": 1,
+          "q": null,
+          "type": "high_shelf",
+          "notes": "air discret MAX (+1 @11k) — pas +6"
         }
       ],
       "comp": [
         {
           "plugin": "CLA-76",
+          "ratio": "4:1",
+          "attack": 3,
+          "release": [
+            6,
+            7
+          ],
           "gr_db": [
             4,
-            6
+            7
           ],
-          "role": "punch"
+          "role": "insert pics (pas 10 dB)"
         },
         {
-          "plugin": "RVox",
+          "plugin": "RVox / CLA-2A",
           "gr_db": "léger",
           "role": "leveler"
         }
@@ -612,50 +635,87 @@
       ],
       "sat": {
         "plugin": "Decapitator",
-        "parallel": true,
-        "notes": "option PuigChild"
+        "drive": [
+          2,
+          3
+        ],
+        "parallel_pct": [
+          25,
+          30
+        ],
+        "notes": "grit LaRay/Bailey — pas fuzz"
       },
       "sends": {
         "delay": {
-          "notes": "Delay hook (Timeless / H-Delay) plus présent que plate"
+          "note": "Hook: Timeless/H-Delay 1/8 ou dotted, plus présent que couplet · ducking",
+          "hook_stronger": true
+        },
+        "reverb": {
+          "type": "plate",
+          "notes": "plate courte depuis Vox1"
         }
       },
       "chain_steps": [
         {
+          "step": 1,
           "plugin": "Tune",
           "setting": "20–30 ms",
-          "notes": null
+          "notes": "comme Moderne"
         },
         {
+          "step": 2,
           "plugin": "Pro-Q",
-          "setting": "HPF 100 · –3@300 et 4k · DS ~4.3k",
-          "notes": null
+          "setting": "HPF 100 · –3@280–300 · –3@3.8–4.2k · présence +1@3.2k max",
+          "notes": "pas HPF 85"
         },
         {
+          "step": 3,
           "plugin": "CLA-76",
-          "setting": "GR 4–6",
-          "notes": null
+          "setting": "4:1 · Att 3 · Rel 6–7 · GR 4–7",
+          "notes": "pics only"
         },
         {
-          "plugin": "RVox",
+          "step": 4,
+          "plugin": "Waves De-esser",
+          "setting": "~4.3 kHz",
+          "notes": "mid-harsh Cardi"
+        },
+        {
+          "step": 5,
+          "plugin": "RVox / 2A",
           "setting": "léger",
           "notes": null
         },
         {
-          "plugin": "Decap para",
-          "setting": null,
-          "notes": "pas d’air gratuit"
+          "step": 6,
+          "plugin": "Decap / PARA_SAT",
+          "setting": "Drive 2–3 ou parallel 25–30%",
+          "notes": "grit"
         },
         {
+          "step": 7,
+          "plugin": "Bus Vox1",
+          "setting": "Pro-DS + RComp + C4 opt + SSL 1–2",
+          "notes": "pas limiteur"
+        },
+        {
+          "step": 8,
           "plugin": "Delay hook",
-          "setting": null,
-          "notes": null
+          "setting": "1/8 ou dotted ducké",
+          "notes": "Hook ≠ Verse"
         }
       ],
       "sources": [
         "BASE_DONNEES_MIX_K3CH_2026.xlsx:02_CHAINES_ARTISTES",
-        "FICHE_CHEATSHEET_MIX_SESSION_K3CH_2026.pdf"
-      ]
+        "FICHE_CHEATSHEET_MIX_SESSION_K3CH_2026.pdf",
+        "Cardi_B_Bodak_Yellow_Vocal_Chain_K3CH_2026.pdf"
+      ],
+      "deess_detail": "1er étage ~4.2–4.5 kHz (LaRay ≈4270 Hz). 6.3 k seulement si esses survivent. 2e étage Pro-DS possible sur Bus Vox1.",
+      "parallel": {
+        "bus": "PARA / ELR sauce",
+        "notes": "PuigChild fort + PuigTec warmth+5k + Aphex AX Mix 6 OU chez toi: CLA-76+sat 25–30% dans Bus_VOX + SSL 1–2 dB"
+      },
+      "phrase": "La voix porte le disque. Rec avec du corps. 76 pour les pics. Coupe 300 et 4 k. Hook = plus de delay."
     },
     {
       "id": "MIX_Voix_Lead_TrippieALLTY5_v1",
@@ -671,37 +731,40 @@
         ],
         "notes": "plus collé"
       },
-      "hpf_hz": [
-        100,
-        120
-      ],
+      "hpf_hz": 110,
       "eq_bands": [
         {
           "freq_hz": [
             250,
             400
           ],
-          "gain_db": null,
+          "gain_db": [
+            -2,
+            -3
+          ],
           "type": "bell",
-          "notes": "mud"
+          "notes": "boxy"
         },
         {
-          "freq_hz": null,
+          "freq_hz": [
+            800,
+            1200
+          ],
           "gain_db": null,
           "type": "notch",
-          "notes": "nasal si besoin"
+          "notes": "nasal si corne"
         },
         {
-          "freq_hz": null,
+          "freq_hz": 3500,
           "gain_db": 1,
           "type": "bell",
-          "notes": "présence +1 max"
+          "notes": "présence +1 max, pas +2"
         },
         {
           "freq_hz": 5000,
           "gain_db": null,
-          "type": "cut_above",
-          "notes": "parallèle Blue : coupe >5k SANS air"
+          "type": "lpf_parallel",
+          "notes": "PARA Blue coupe >5–6k — PAS d’air"
         }
       ],
       "comp": [
@@ -745,39 +808,94 @@
       },
       "chain_steps": [
         {
+          "step": 1,
           "plugin": "Tune",
-          "setting": "12–20 ms",
+          "setting": "12–20 ms · Formant ON · Humanize 20–35%",
+          "notes": "mélodie ALLTY5"
+        },
+        {
+          "step": 2,
+          "plugin": "Pro-Q HPF",
+          "setting": "100–120 Hz (cible 110)",
+          "notes": "évite pompe 76"
+        },
+        {
+          "step": 3,
+          "plugin": "CLA-76 insert",
+          "setting": "3–6 dB · Rel 7",
+          "notes": "contrôle"
+        },
+        {
+          "step": 4,
+          "plugin": "Pro-MB",
+          "setting": "mud boxy + sizzle dyn",
+          "notes": "Heldens"
+        },
+        {
+          "step": 5,
+          "plugin": "Pro-Q",
+          "setting": "thud + notch nasal · présence +1 max",
           "notes": null
         },
         {
-          "plugin": "EQ",
-          "setting": "HPF 110 · mud · nasal · présence +1 max",
-          "notes": null
-        },
-        {
-          "plugin": "CLA-76",
-          "setting": "insert 3–6",
-          "notes": null
-        },
-        {
+          "step": 6,
           "plugin": "RVox",
-          "setting": "2–3.5 obligatoire",
-          "notes": null
+          "setting": "2–3.5 dB",
+          "notes": "obligatoire"
         },
         {
-          "plugin": "CLA-76 Blue parallèle",
-          "setting": "8–10 dB · coupe >5k",
-          "notes": "pas d’air"
+          "step": 7,
+          "plugin": "Harsh dyn",
+          "setting": "DS 5–7k + Pro-Q dyn",
+          "notes": "= C1"
         },
         {
+          "step": 8,
+          "plugin": "PARA 76 Blue",
+          "setting": "8–10 dB · mix 20–30% · coupe >5k",
+          "notes": "texture"
+        },
+        {
+          "step": 9,
           "plugin": "Sends",
-          "setting": "Plate 1.0–1.6 · 1/8+1/2",
-          "notes": null
+          "setting": "plate/hall 1.0–1.6 s · H-Delay 1/8 + 1/2",
+          "notes": "ducking"
+        },
+        {
+          "step": 10,
+          "plugin": "Bus_VOX",
+          "setting": "SSL 1–2 dB",
+          "notes": "pas limiteur"
         }
       ],
       "sources": [
-        "BASE_DONNEES_MIX_K3CH_2026.xlsx:02_CHAINES_ARTISTES"
-      ]
+        "BASE_DONNEES_MIX_K3CH_2026.xlsx:02_CHAINES_ARTISTES",
+        "Trippie_Redd_ALLTY5_Vocal_Chain_K3CH_2026.pdf"
+      ],
+      "deess_khz": [
+        5,
+        7
+      ],
+      "deess_detail": "DS 5–7k + bande dyn Pro-Q sizzle (= C1 Heldens). Après RVox.",
+      "sat": {
+        "plugin": "Knob / Decap",
+        "drive": [
+          1,
+          2
+        ],
+        "notes": "moins que Bodak — agressivité = parallèle"
+      },
+      "parallel": {
+        "bus": "PARA_BODY Blue Face",
+        "comp": "CLA-76 Blue · Att medium · Rel fast · GR 8–10 dB",
+        "eq": "Pultec +4/+5 @100 Hz · coupe high >5 kHz",
+        "mix_pct": [
+          20,
+          30
+        ],
+        "interdit": "air sur ce bus"
+      },
+      "phrase": "Contrôle sur la piste. Texture en parallèle. Harsh en dynamique. Beat reste vide."
     },
     {
       "id": "MIX_Voix_Lead_JuiceWRLD_v1",
@@ -796,10 +914,7 @@
           30
         ]
       },
-      "hpf_hz": [
-        80,
-        100
-      ],
+      "hpf_hz": 90,
       "eq_bands": [
         {
           "freq_hz": [
@@ -867,39 +982,84 @@
       },
       "chain_steps": [
         {
+          "step": 1,
           "plugin": "Tune",
-          "setting": "10–18 ms · Humanize 15–30",
+          "setting": "10–18 ms · Formant ON · Humanize 15–30",
+          "notes": "vibrato plugin OFF"
+        },
+        {
+          "step": 2,
+          "plugin": "Pro-Q",
+          "setting": "HPF 90 · –2@250–400 · +1.5@3–3.5k · air +1@11k",
           "notes": null
         },
         {
-          "plugin": "EQ",
-          "setting": "HPF 90 · –2@300 · +1.5 présence · air +1",
-          "notes": null
-        },
-        {
+          "step": 3,
           "plugin": "CLA-76",
-          "setting": "4–6",
+          "setting": "4–6 dB · Att ouverte · Rel 7",
           "notes": null
         },
         {
-          "plugin": "RVox",
-          "setting": "2–3",
+          "step": 4,
+          "plugin": "RVox / 2A",
+          "setting": "2–3 dB",
+          "notes": "= opto Max Lord"
+        },
+        {
+          "step": 5,
+          "plugin": "De-esser",
+          "setting": "6–7 k léger",
           "notes": null
         },
         {
-          "plugin": "Para 76/SSL",
-          "setting": "3–5 seulement",
+          "step": 6,
+          "plugin": "Sat",
+          "setting": "Drive 1",
+          "notes": "douce"
+        },
+        {
+          "step": 7,
+          "plugin": "PARA",
+          "setting": "3–5 dB · mix 15–25%",
           "notes": null
         },
         {
+          "step": 8,
           "plugin": "Sends",
-          "setting": "Plate 1.2–1.8 · 1/8+1/2",
-          "notes": null
+          "setting": "Plate 1.2–1.8 s · H-Delay 1/8+1/2 · chorus opt bas",
+          "notes": "adlibs plus wet"
+        },
+        {
+          "step": 9,
+          "plugin": "Bus_VOX",
+          "setting": "SSL 1–2 dB",
+          "notes": "pas limiteur"
         }
       ],
       "sources": [
-        "BASE_DONNEES_MIX_K3CH_2026.xlsx:02_CHAINES_ARTISTES"
-      ]
+        "BASE_DONNEES_MIX_K3CH_2026.xlsx:02_CHAINES_ARTISTES",
+        "Juice_WRLD_Vocal_Chain_K3CH_2026.pdf"
+      ],
+      "deess_khz": [
+        6,
+        7
+      ],
+      "deess_detail": "léger 6–7k — sizzle Juice ≠ Bodak",
+      "sat": {
+        "plugin": "Knob / Abbey Road",
+        "drive": 1,
+        "notes": "pas Decap Punch 4"
+      },
+      "parallel": {
+        "bus": "PARA_BODY",
+        "comp": "76 ou SSL 3–5 dB",
+        "mix_pct": [
+          15,
+          25
+        ],
+        "notes": "moins agressif que ALLTY5 Blue 10 dB"
+      },
+      "phrase": "Tune audible, pas robot. Comp léger. Plate + 1/8. La prise > le rack. Adlibs plus wet."
     },
     {
       "id": "MIX_Voix_BGV_v1",
@@ -914,6 +1074,12 @@
       ],
       "eq_bands": [
         {
+          "freq_hz": 280,
+          "gain_db": -3,
+          "type": "bell",
+          "notes": "boue si besoin"
+        },
+        {
           "freq_hz": [
             2500,
             5000
@@ -927,7 +1093,7 @@
             2.5
           ],
           "type": "bell",
-          "notes": "dip backs — jamais Q 8"
+          "notes": "DIP présence — Q max 2.5"
         }
       ],
       "comp": [
@@ -971,8 +1137,18 @@
       ],
       "sources": [
         "BASE_DONNEES_MIX_K3CH_2026.xlsx:03_PRESETS",
-        "xlsx:08_BUS_PARA"
-      ]
+        "xlsx:08_BUS_PARA",
+        "FICHE_BACKS_VOCAUX_K3CH_2026.pdf",
+        "FICHE_5_SIDECHAINS_VOIX_K3CH_2026.pdf"
+      ],
+      "by_lead": {
+        "Moderne": "fader –8 · dip 3.5k Q2",
+        "Bodak": "backs secs · dip ~4k",
+        "ALLTY5": "encore plus bas · pas Blue Face sur BGV",
+        "Juice": "un peu plus près, toujours sous lead"
+      },
+      "sidechain": "Comp Bus_BGV SC=lead · 2–4 dB (fiche 5 sidechains #3)",
+      "phrase": "Si tu chantes avec les backs, ils sont trop hauts."
     },
     {
       "id": "MIX_Voix_Lead_TrapDrill",
@@ -1323,35 +1499,58 @@
       "daw": "S1",
       "chain_steps": [
         {
-          "plugin": "HPF",
-          "setting": "6–8 kHz",
-          "notes": "HF only"
+          "step": 1,
+          "plugin": "FX Channel PARA_AIR",
+          "setting": "sortie → Bus_VOX",
+          "notes": "pas master"
         },
         {
+          "step": 2,
+          "plugin": "Pro-Q HPF",
+          "setting": "6–8 kHz 24 dB/oct",
+          "notes": "solo = souffle/S only"
+        },
+        {
+          "step": 3,
           "plugin": "De-esser",
           "setting": "6–8 kHz",
-          "notes": null
+          "notes": "OBLIGATOIRE"
         },
         {
+          "step": 4,
           "plugin": "CLA-76",
-          "setting": "GR 8–12 dB",
-          "notes": "smash air"
+          "setting": "att rapide · rel 7 · GR 8–12 dB",
+          "notes": "smash HF"
         },
         {
-          "plugin": "Sat opt",
-          "setting": "Drive 1",
+          "step": 5,
+          "plugin": "Sat / shelf opt",
+          "setting": "Abbey/Knob Drive 1 ou +2@12k après 76",
           "notes": null
         }
       ],
       "send_db": {
         "lead": -15,
-        "adlibs": -12
+        "adlibs": -12,
+        "start_range_db": [
+          -18,
+          -12
+        ]
       },
-      "interdit": "ALLTY5 parallèle Blue (pas d’air)",
+      "interdit": "ALLTY5 Blue · Bodak (rare) · HPF à 2k · pas de DS · shelf +6 insert",
       "sources": [
         "BASE_DONNEES_MIX_K3CH_2026.xlsx:03_PRESETS",
-        "xlsx:08_BUS_PARA"
-      ]
+        "xlsx:08_BUS_PARA",
+        "FICHE_AIR_PARALLELE_VOIX_K3CH_2026.pdf"
+      ],
+      "when": {
+        "Moderne": "OK si sombre téléphone · send –15 · ne monte PAS shelf insert",
+        "Bodak": "Rare — coupe 4k + DS 4.3 d’abord",
+        "ALLTY5": "NON sur parallèle Blue",
+        "Juice": "tout petit –18 — air vient de la plate",
+        "Adlibs": "souvent mieux que lead · HPF 8k"
+      },
+      "phrase": "L’air se colle, il ne se booste pas. HPF 6–8k · DS · 76 smash · send –15."
     },
     {
       "id": "FX_PARA_BODY_v1",
@@ -1361,19 +1560,1549 @@
       "daw": "S1",
       "chain_steps": [
         {
-          "plugin": "CLA-76 smash",
-          "setting": "GR 8–12 dB",
-          "notes": "corps"
+          "step": 1,
+          "plugin": "FX Channel PARA_BODY",
+          "setting": "→ Bus_VOX",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "CLA-76 Blue Face",
+          "setting": "att rapide · rel 7 · ratio 8 ou All · GR 8–12 solo",
+          "notes": "doit sonner trop"
+        },
+        {
+          "step": 3,
+          "plugin": "EQ opt Heldens",
+          "setting": "HPF 80 + boost 100 Hz Pultec + LPF ~5k",
+          "notes": "corps sans S"
+        },
+        {
+          "step": 4,
+          "plugin": "Send",
+          "setting": "départ –15 · monte puis recule 1–2",
+          "notes": null
         }
       ],
       "send_db": -15,
-      "interdit": [
-        "HPF 6k",
-        "limiter"
+      "interdit": "12 dB sur INSERT · fusion avec PARA_AIR · limiter Bus_VOX",
+      "sources": [
+        "BASE_DONNEES_MIX_K3CH_2026.xlsx:08_BUS_PARA",
+        "FICHE_PARA_BODY_VOIX_K3CH_2026.pdf"
+      ],
+      "doses": {
+        "Moderne_NY": "76 smash 8–10 · send –15 · spectre large",
+        "Juice": "3–5 dB ressentis",
+        "ALLTY5": "Blue 8–10 + Pultec 100 + coupe >5k · PAS air",
+        "Bodak": "PuigChild côté LaRay · chez toi 76 ou PARA_SAT"
+      },
+      "phrase": "Insert = 3–7 dB. Parallèle = 8–12 trop, recollé à –15. BODY ≠ AIR ≠ SAT."
+    },
+    {
+      "id": "weeknd",
+      "name": "The Weeknd — vocal chain (intention Bailey)",
+      "genre": "rnb / dark_atmospheric",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Voix sombre, atmosphérique, soyeuse, large — late-night. Compression douce, air haut, reverbs dark.",
+      "tune": {
+        "speed_ms": [
+          15,
+          25
+        ],
+        "notes": "Melodyne manuel + MetaTune/Waves Tune — feeling naturel"
+      },
+      "hpf_hz": [
+        80,
+        160
+      ],
+      "eq_bands": [
+        {
+          "freq_hz": [
+            400,
+            650,
+            900
+          ],
+          "gain_db": null,
+          "type": "dynamic_cut",
+          "notes": "dures / nasal"
+        },
+        {
+          "freq_hz": [
+            12000,
+            16000
+          ],
+          "gain_db": null,
+          "type": "pultec_air",
+          "notes": "boost air Pultec"
+        }
+      ],
+      "comp": [
+        {
+          "plugin": "Waves RVox",
+          "role": "légère"
+        },
+        {
+          "plugin": "SSL Channel",
+          "role": "secret sauce tonal + légère comp"
+        },
+        {
+          "plugin": "LA-2A",
+          "role": "glue vintage/smooth"
+        },
+        {
+          "plugin": "Waves C6",
+          "role": "multiband colle"
+        }
+      ],
+      "deess": "1–2 étages (Waves DeEsser + autre)",
+      "sends": {
+        "reverb_plate": {
+          "plugin": "Valhalla VintageVerb",
+          "preset": "SP Short Vocal Plate→Smooth Room",
+          "high_cut_hz": 970,
+          "low_cut_hz": 410,
+          "notes": "dark short"
+        },
+        "reverb_hall": {
+          "plugin": "Valhalla VintageVerb",
+          "mode": "Large Hall / 1984",
+          "high_cut_khz": 4.5,
+          "low_cut_hz": 760
+        },
+        "para_comp_sat": "MV2 + Abbey Road Saturator",
+        "chorus": "Valhalla Space Modulator Dune",
+        "delay": "Timeless / H-Delay Vocals Clean with Ducking / ping-pong"
+      },
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Pitch (Melodyne+Tune)",
+          "setting": "15–25 ms",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Pro-Q",
+          "setting": "HPF 80–160 · coupes dyn 400/650/900",
+          "notes": "preset Production Ready Vocals éventuel"
+        },
+        {
+          "step": 3,
+          "plugin": "RVox",
+          "setting": "compression douce",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "SSL Channel",
+          "setting": "shaping + légère comp",
+          "notes": "secret sauce"
+        },
+        {
+          "step": 5,
+          "plugin": "LA-2A",
+          "setting": "glue optique",
+          "notes": null
+        },
+        {
+          "step": 6,
+          "plugin": "Pultec",
+          "setting": "air 12–16 kHz + atten bas",
+          "notes": null
+        },
+        {
+          "step": 7,
+          "plugin": "De-esser(s)",
+          "setting": "1–2",
+          "notes": null
+        },
+        {
+          "step": 8,
+          "plugin": "C6 multiband",
+          "setting": "colle basses/mids/aigus",
+          "notes": null
+        },
+        {
+          "step": 9,
+          "plugin": "Pro-Q + Fresh Air",
+          "setting": "polish · Fresh Air Mid/High ≈2",
+          "notes": null
+        },
+        {
+          "step": 10,
+          "plugin": "Soothe / Silk",
+          "setting": "résonances restantes",
+          "notes": null
+        }
+      ],
+      "manuel_valeurs": {
+        "tune_ms": [
+          18,
+          22
+        ],
+        "la2a_gr_db": 3,
+        "pultec": "+3 @16k",
+        "plate_s": 1.0,
+        "hall_s": 2.0,
+        "fresh_air": 2
+      },
+      "approx": true,
+      "sources": [
+        "The_Weeknd_Vocal_Chain_Resume.pdf",
+        "MANUEL_PRESETS_ILLUSTRE_VALEURS_2026.pdf",
+        "Vocal_Chains_Complet_2026.pdf"
+      ]
+    },
+    {
+      "id": "bad_bunny",
+      "name": "Bad Bunny — vocal chain (grit)",
+      "genre": "latin_urban / dembow",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Clair, confiant, rythmique, grit. AT assumé. Sans grit la voix flotte.",
+      "tune": {
+        "speed_ms": [
+          20,
+          30
+        ],
+        "formant": true,
+        "humanize_pct": [
+          15,
+          30
+        ],
+        "notes": "effet stylistique, ne pas cacher"
+      },
+      "hpf_hz": [
+        80,
+        100
+      ],
+      "hpf_slope_db_oct": [
+        18,
+        24
+      ],
+      "eq_bands": [
+        {
+          "freq_hz": [
+            200,
+            350
+          ],
+          "gain_db": [
+            -2,
+            -4
+          ],
+          "q": "large",
+          "type": "bell",
+          "notes": "boxiness"
+        },
+        {
+          "freq_hz": [
+            3000,
+            5000
+          ],
+          "gain_db": [
+            1.5,
+            3
+          ],
+          "type": "bell",
+          "notes": "présence"
+        },
+        {
+          "freq_hz": [
+            10000,
+            12000
+          ],
+          "gain_db": [
+            1.5,
+            2.5
+          ],
+          "type": "high_shelf",
+          "notes": "air"
+        }
+      ],
+      "comp": [
+        {
+          "plugin": "1176 / CLA-76 / VCA",
+          "ratio": "4:1–6:1",
+          "attack_ms": [
+            10,
+            20
+          ],
+          "release_ms": [
+            80,
+            120
+          ],
+          "gr_db": [
+            6,
+            10
+          ],
+          "role": "punch dembow"
+        }
+      ],
+      "deess_khz": [
+        5,
+        8
+      ],
+      "deess_detail": "–3 à –5 dB max · après comp",
+      "sat": {
+        "plugin": "Decapitator / Saturn / Softube",
+        "amount_pct": [
+          20,
+          40
+        ],
+        "parallel_pct": [
+          20,
+          40
+        ],
+        "mode": "Mild/Tube",
+        "notes": "LE secret Bailey"
+      },
+      "sends": {
+        "delay": {
+          "note": "dotted 8th ou 1/8 · feedback faible-moyen · LPF · ducking"
+        },
+        "reverb": {
+          "type": "plate/room",
+          "decay_s": [
+            0.8,
+            1.5
+          ],
+          "predelay_ms": [
+            15,
+            30
+          ],
+          "mix_pct": [
+            10,
+            20
+          ]
+        },
+        "width": "MicroShift / Doubler / chorus subtil (hooks)"
+      },
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Auto-Tune",
+          "setting": "20–30 ms · Formant ON · Humanize 15–30%",
+          "notes": "AT assumé"
+        },
+        {
+          "step": 2,
+          "plugin": "EQ",
+          "setting": "HPF 80–100 · –2/−4@200–350 · +1.5/+3@3–5k · shelf +1.5/+2.5@10–12k",
+          "notes": "soustractive avant comp"
+        },
+        {
+          "step": 3,
+          "plugin": "CLA-76",
+          "setting": "4:1–6:1 · Att 10–20 ms · Rel 80–120 · GR 6–10",
+          "notes": "punch"
+        },
+        {
+          "step": 4,
+          "plugin": "De-esser",
+          "setting": "5–8 kHz · –3/−5 dB",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Saturation",
+          "setting": "20–40% · parallel 20–40%",
+          "notes": "grit"
+        },
+        {
+          "step": 6,
+          "plugin": "Air polish",
+          "setting": "+1/+2 shelf très haut",
+          "notes": null
+        },
+        {
+          "step": 7,
+          "plugin": "Sends",
+          "setting": "delay rythmique + plate 0.8–1.5s",
+          "notes": null
+        }
+      ],
+      "manuel_valeurs": {
+        "base": "ModernRap",
+        "cla76_gr_db": [
+          6,
+          10
+        ],
+        "decap_parallel_pct": 35,
+        "or_drive": [
+          3,
+          4
+        ],
+        "delay_dotted_mix_pct": 14
+      },
+      "approx": false,
+      "sources": [
+        "Bad_Bunny_Vocal_Chain_Detaille.pdf",
+        "MANUEL_PRESETS_ILLUSTRE_VALEURS_2026.pdf",
+        "Vocal_Chains_Complet_2026.pdf"
+      ]
+    },
+    {
+      "id": "kendrick",
+      "name": "Kendrick Lamar — vocal chain",
+      "genre": "narrative_rap / dynamic",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Clair, dynamique, narratif. Whisper→shout. Intelligibilité + espace minimal. Voix frontale.",
+      "tune": {
+        "speed_ms_verses": [
+          30,
+          50
+        ],
+        "speed_ms_hooks": 20,
+        "formant": true,
+        "humanize": true
+      },
+      "hpf_hz": [
+        70,
+        100
+      ],
+      "eq_bands": [
+        {
+          "freq_hz": [
+            250,
+            350
+          ],
+          "gain_db": [
+            -1,
+            -2
+          ],
+          "type": "bell",
+          "notes": "mud léger"
+        },
+        {
+          "freq_hz": 1000,
+          "gain_db": null,
+          "type": "notch",
+          "notes": "nasal éventuel"
+        },
+        {
+          "freq_hz": [
+            2500,
+            5000
+          ],
+          "gain_db": null,
+          "type": "bell",
+          "notes": "présence"
+        },
+        {
+          "freq_hz": [
+            10000,
+            14000
+          ],
+          "gain_db": [
+            1.5,
+            2.5
+          ],
+          "type": "high_shelf",
+          "notes": "air subtil"
+        }
+      ],
+      "comp": [
+        {
+          "plugin": "CLA-76",
+          "attack_ms": [
+            5,
+            15
+          ],
+          "ratio": "3:1–4:1",
+          "gr_db": [
+            3,
+            6
+          ],
+          "role": "laisse transitoires"
+        },
+        {
+          "plugin": "RVox / LA-2A / SSL",
+          "role": "glue final"
+        }
+      ],
+      "deess_khz": [
+        5,
+        9
+      ],
+      "deess_detail": "–2 à –4 dB max · 1–2 étages",
+      "sat": {
+        "notes": "légère optionnelle Decap/tube/tape sur parties agressives"
+      },
+      "sends": {
+        "reverb": {
+          "type": "room/plate",
+          "decay_s": [
+            0.5,
+            1.2
+          ],
+          "predelay_ms": [
+            20,
+            40
+          ],
+          "notes": "très discrète"
+        },
+        "slap_ms": [
+          80,
+          120
+        ],
+        "delay": "1/8 ou dotted ducké",
+        "para": "parallel compression punch"
+      },
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Pitch",
+          "setting": "30–50 ms verses / 20 ms hooks",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "EQ soustractive",
+          "setting": "HPF 70–100 · –1/−2@250–350 · notch ~1k",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "CLA-76",
+          "setting": "Att 5–15 ms · 3:1–4:1 · GR 3–6",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "EQ présence+air",
+          "setting": "2.5–5k · shelf +1.5/+2.5@10–14k",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "De-esser",
+          "setting": "5–9k · –2/−4 dB",
+          "notes": null
+        },
+        {
+          "step": 6,
+          "plugin": "Glue",
+          "setting": "RVox/LA-2A/SSL",
+          "notes": null
+        },
+        {
+          "step": 7,
+          "plugin": "Sat opt",
+          "setting": "légère",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Kendrick_Lamar_Vocal_Chain_Resume.pdf",
+        "Vocal_Chains_Complet_2026.pdf"
+      ]
+    },
+    {
+      "id": "xxxtentacion",
+      "name": "XXXTentacion — style Sad",
+      "genre": "emo / sad / intimate",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Intime, fragile, émotionnel. Contraste soft↔agressif/distordu. Proche, un peu brut, jamais trop polish.",
+      "tune": {
+        "speed": "naturel / moyen",
+        "notes": "garde glissements émotionnels — pas trop agressif verses"
+      },
+      "hpf_hz": [
+        80,
+        100
+      ],
+      "eq_bands": [
+        {
+          "freq_hz": [
+            250,
+            450
+          ],
+          "gain_db": null,
+          "type": "bell",
+          "notes": "coupe boue"
+        },
+        {
+          "freq_hz": [
+            2000,
+            5000
+          ],
+          "gain_db": null,
+          "type": "bell",
+          "notes": "présence légère"
+        }
+      ],
+      "comp": [
+        {
+          "plugin": "comp doux",
+          "ratio": "3:1–4:1",
+          "attack_ms": [
+            10,
+            20
+          ],
+          "notes": "garde dyn whisper→fort"
+        }
+      ],
+      "deess_khz": [
+        5,
+        8
+      ],
+      "sat": {
+        "notes": "tube/tape/Decap faible % grain intime"
+      },
+      "sends": {
+        "reverb": {
+          "type": "plate/hall sombre",
+          "decay_s": [
+            1.0,
+            1.8
+          ],
+          "predelay_ms": [
+            20,
+            40
+          ]
+        },
+        "delay": "discret"
+      },
+      "aggressive_parts": {
+        "distortion": "Decap / Saturn / amp plus fort",
+        "comp": "plus serrée",
+        "eq": "mid-high agressif",
+        "para_sat": true
+      },
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Auto-Tune",
+          "setting": "léger-moyen naturel",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "EQ",
+          "setting": "HPF 80–100 · boue 250–450 · présence 2–5k",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Comp",
+          "setting": "3:1–4:1 · Att 10–20 ms",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "De-esser",
+          "setting": "5–8 kHz après comp",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Sat légère",
+          "setting": "faible %",
+          "notes": null
+        },
+        {
+          "step": 6,
+          "plugin": "Sends",
+          "setting": "plate/hall 1.0–1.8s · delay discret",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "XXXTentacion_Vocal_Chain_Resume.pdf"
+      ]
+    },
+    {
+      "id": "cardi_bodak",
+      "name": "Cardi B Bodak Yellow — artist alias",
+      "genre": "rap_agressif / club",
+      "track_type": "lead_vocal",
+      "alias_of": "MIX_Voix_Lead_Bodak_v1",
+      "daw": "S1",
+      "notes": "Alias UI → utilise MIX_Voix_Lead_Bodak_v1 (valeurs LaRay/Ashby enrichies batch2).",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Tune",
+          "setting": "20–30 ms",
+          "notes": "comme Moderne"
+        },
+        {
+          "step": 2,
+          "plugin": "Pro-Q",
+          "setting": "HPF 100 · –3@280–300 · –3@3.8–4.2k · présence +1@3.2k max",
+          "notes": "pas HPF 85"
+        },
+        {
+          "step": 3,
+          "plugin": "CLA-76",
+          "setting": "4:1 · Att 3 · Rel 6–7 · GR 4–7",
+          "notes": "pics only"
+        },
+        {
+          "step": 4,
+          "plugin": "Waves De-esser",
+          "setting": "~4.3 kHz",
+          "notes": "mid-harsh Cardi"
+        },
+        {
+          "step": 5,
+          "plugin": "RVox / 2A",
+          "setting": "léger",
+          "notes": null
+        },
+        {
+          "step": 6,
+          "plugin": "Decap / PARA_SAT",
+          "setting": "Drive 2–3 ou parallel 25–30%",
+          "notes": "grit"
+        },
+        {
+          "step": 7,
+          "plugin": "Bus Vox1",
+          "setting": "Pro-DS + RComp + C4 opt + SSL 1–2",
+          "notes": "pas limiteur"
+        },
+        {
+          "step": 8,
+          "plugin": "Delay hook",
+          "setting": "1/8 ou dotted ducké",
+          "notes": "Hook ≠ Verse"
+        }
       ],
       "sources": [
-        "BASE_DONNEES_MIX_K3CH_2026.xlsx:08_BUS_PARA"
-      ]
+        "Cardi_B_Bodak_Yellow_Vocal_Chain_K3CH_2026.pdf"
+      ],
+      "hpf_hz": 100,
+      "eq_bands": [
+        {
+          "freq_hz": 300,
+          "gain_db": -3,
+          "q": null,
+          "type": "bell",
+          "notes": "mud"
+        },
+        {
+          "freq_hz": [
+            3800,
+            4200
+          ],
+          "gain_db": -3,
+          "q": null,
+          "type": "bell",
+          "notes": "harsh LaRay (pas boost présence)"
+        },
+        {
+          "freq_hz": 3200,
+          "gain_db": 1,
+          "q": null,
+          "type": "bell",
+          "notes": "présence +1 MAX si manque"
+        },
+        {
+          "freq_hz": 11000,
+          "gain_db": 1,
+          "q": null,
+          "type": "high_shelf",
+          "notes": "air discret MAX (+1 @11k) — pas +6"
+        }
+      ],
+      "comp": [
+        {
+          "plugin": "CLA-76",
+          "ratio": "4:1",
+          "attack": 3,
+          "release": [
+            6,
+            7
+          ],
+          "gr_db": [
+            4,
+            7
+          ],
+          "role": "insert pics (pas 10 dB)"
+        },
+        {
+          "plugin": "RVox / CLA-2A",
+          "gr_db": "léger",
+          "role": "leveler"
+        }
+      ],
+      "tune": {
+        "speed_ms": [
+          20,
+          30
+        ],
+        "notes": "identique Moderne"
+      },
+      "sends": {
+        "delay": {
+          "note": "Hook: Timeless/H-Delay 1/8 ou dotted, plus présent que couplet · ducking",
+          "hook_stronger": true
+        },
+        "reverb": {
+          "type": "plate",
+          "notes": "plate courte depuis Vox1"
+        }
+      },
+      "deess_khz": [
+        4.3
+      ],
+      "sat": {
+        "plugin": "Decapitator",
+        "drive": [
+          2,
+          3
+        ],
+        "parallel_pct": [
+          25,
+          30
+        ],
+        "notes": "grit LaRay/Bailey — pas fuzz"
+      },
+      "parallel": {
+        "bus": "PARA / ELR sauce",
+        "notes": "PuigChild fort + PuigTec warmth+5k + Aphex AX Mix 6 OU chez toi: CLA-76+sat 25–30% dans Bus_VOX + SSL 1–2 dB"
+      },
+      "phrase": "La voix porte le disque. Rec avec du corps. 76 pour les pics. Coupe 300 et 4 k. Hook = plus de delay."
+    },
+    {
+      "id": "trippie_allty5",
+      "name": "Trippie Redd ALLTY5 — artist alias",
+      "genre": "emo / ballade",
+      "track_type": "lead_vocal",
+      "alias_of": "MIX_Voix_Lead_TrippieALLTY5_v1",
+      "daw": "S1",
+      "notes": "Alias UI → MIX_Voix_Lead_TrippieALLTY5_v1 (Heldens/Mamet enrichi batch2).",
+      "sources": [
+        "Trippie_Redd_ALLTY5_Vocal_Chain_K3CH_2026.pdf"
+      ],
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Tune",
+          "setting": "12–20 ms · Formant ON · Humanize 20–35%",
+          "notes": "mélodie ALLTY5"
+        },
+        {
+          "step": 2,
+          "plugin": "Pro-Q HPF",
+          "setting": "100–120 Hz (cible 110)",
+          "notes": "évite pompe 76"
+        },
+        {
+          "step": 3,
+          "plugin": "CLA-76 insert",
+          "setting": "3–6 dB · Rel 7",
+          "notes": "contrôle"
+        },
+        {
+          "step": 4,
+          "plugin": "Pro-MB",
+          "setting": "mud boxy + sizzle dyn",
+          "notes": "Heldens"
+        },
+        {
+          "step": 5,
+          "plugin": "Pro-Q",
+          "setting": "thud + notch nasal · présence +1 max",
+          "notes": null
+        },
+        {
+          "step": 6,
+          "plugin": "RVox",
+          "setting": "2–3.5 dB",
+          "notes": "obligatoire"
+        },
+        {
+          "step": 7,
+          "plugin": "Harsh dyn",
+          "setting": "DS 5–7k + Pro-Q dyn",
+          "notes": "= C1"
+        },
+        {
+          "step": 8,
+          "plugin": "PARA 76 Blue",
+          "setting": "8–10 dB · mix 20–30% · coupe >5k",
+          "notes": "texture"
+        },
+        {
+          "step": 9,
+          "plugin": "Sends",
+          "setting": "plate/hall 1.0–1.6 s · H-Delay 1/8 + 1/2",
+          "notes": "ducking"
+        },
+        {
+          "step": 10,
+          "plugin": "Bus_VOX",
+          "setting": "SSL 1–2 dB",
+          "notes": "pas limiteur"
+        }
+      ],
+      "hpf_hz": 110,
+      "eq_bands": [
+        {
+          "freq_hz": [
+            250,
+            400
+          ],
+          "gain_db": [
+            -2,
+            -3
+          ],
+          "type": "bell",
+          "notes": "boxy"
+        },
+        {
+          "freq_hz": [
+            800,
+            1200
+          ],
+          "gain_db": null,
+          "type": "notch",
+          "notes": "nasal si corne"
+        },
+        {
+          "freq_hz": 3500,
+          "gain_db": 1,
+          "type": "bell",
+          "notes": "présence +1 max, pas +2"
+        },
+        {
+          "freq_hz": 5000,
+          "gain_db": null,
+          "type": "lpf_parallel",
+          "notes": "PARA Blue coupe >5–6k — PAS d’air"
+        }
+      ],
+      "comp": [
+        {
+          "plugin": "CLA-76",
+          "gr_db": [
+            3,
+            6
+          ],
+          "role": "insert punch"
+        },
+        {
+          "plugin": "RVox",
+          "gr_db": [
+            2,
+            3.5
+          ],
+          "role": "obligatoire"
+        },
+        {
+          "plugin": "CLA-76 Blue",
+          "gr_db": [
+            8,
+            10
+          ],
+          "role": "parallèle texture",
+          "notes": "PARALLÈLE only"
+        }
+      ],
+      "tune": {
+        "speed_ms": [
+          12,
+          20
+        ],
+        "notes": "plus collé"
+      },
+      "sends": {
+        "reverb": {
+          "type": "plate",
+          "decay_s": [
+            1.0,
+            1.6
+          ]
+        },
+        "delay": {
+          "note": "1/8 + 1/2"
+        }
+      },
+      "deess_khz": [
+        5,
+        7
+      ],
+      "sat": {
+        "plugin": "Knob / Decap",
+        "drive": [
+          1,
+          2
+        ],
+        "notes": "moins que Bodak — agressivité = parallèle"
+      },
+      "parallel": {
+        "bus": "PARA_BODY Blue Face",
+        "comp": "CLA-76 Blue · Att medium · Rel fast · GR 8–10 dB",
+        "eq": "Pultec +4/+5 @100 Hz · coupe high >5 kHz",
+        "mix_pct": [
+          20,
+          30
+        ],
+        "interdit": "air sur ce bus"
+      },
+      "phrase": "Contrôle sur la piste. Texture en parallèle. Harsh en dynamique. Beat reste vide."
+    },
+    {
+      "id": "juice_wrld",
+      "name": "Juice WRLD — artist alias",
+      "genre": "melo_999",
+      "track_type": "lead_vocal",
+      "alias_of": "MIX_Voix_Lead_JuiceWRLD_v1",
+      "daw": "S1",
+      "notes": "Alias UI → MIX_Voix_Lead_JuiceWRLD_v1 (Max Lord enrichi batch2).",
+      "sources": [
+        "Juice_WRLD_Vocal_Chain_K3CH_2026.pdf"
+      ],
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Tune",
+          "setting": "10–18 ms · Formant ON · Humanize 15–30",
+          "notes": "vibrato plugin OFF"
+        },
+        {
+          "step": 2,
+          "plugin": "Pro-Q",
+          "setting": "HPF 90 · –2@250–400 · +1.5@3–3.5k · air +1@11k",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "CLA-76",
+          "setting": "4–6 dB · Att ouverte · Rel 7",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "RVox / 2A",
+          "setting": "2–3 dB",
+          "notes": "= opto Max Lord"
+        },
+        {
+          "step": 5,
+          "plugin": "De-esser",
+          "setting": "6–7 k léger",
+          "notes": null
+        },
+        {
+          "step": 6,
+          "plugin": "Sat",
+          "setting": "Drive 1",
+          "notes": "douce"
+        },
+        {
+          "step": 7,
+          "plugin": "PARA",
+          "setting": "3–5 dB · mix 15–25%",
+          "notes": null
+        },
+        {
+          "step": 8,
+          "plugin": "Sends",
+          "setting": "Plate 1.2–1.8 s · H-Delay 1/8+1/2 · chorus opt bas",
+          "notes": "adlibs plus wet"
+        },
+        {
+          "step": 9,
+          "plugin": "Bus_VOX",
+          "setting": "SSL 1–2 dB",
+          "notes": "pas limiteur"
+        }
+      ],
+      "hpf_hz": 90,
+      "eq_bands": [
+        {
+          "freq_hz": [
+            250,
+            400
+          ],
+          "gain_db": -2,
+          "type": "bell",
+          "notes": "mud"
+        },
+        {
+          "freq_hz": [
+            3000,
+            3500
+          ],
+          "gain_db": 1.5,
+          "type": "bell",
+          "notes": "présence"
+        },
+        {
+          "freq_hz": null,
+          "gain_db": 1,
+          "type": "high_shelf",
+          "notes": "air +1"
+        }
+      ],
+      "comp": [
+        {
+          "plugin": "CLA-76",
+          "gr_db": [
+            4,
+            6
+          ],
+          "role": "punch"
+        },
+        {
+          "plugin": "RVox",
+          "gr_db": [
+            2,
+            3
+          ],
+          "role": "leveler"
+        },
+        {
+          "plugin": "76 ou SSL parallèle",
+          "gr_db": [
+            3,
+            5
+          ],
+          "role": "para only"
+        }
+      ],
+      "tune": {
+        "speed_ms": [
+          10,
+          18
+        ],
+        "humanize_pct": [
+          15,
+          30
+        ]
+      },
+      "sends": {
+        "reverb": {
+          "type": "plate",
+          "decay_s": [
+            1.2,
+            1.8
+          ]
+        },
+        "delay": {
+          "note": "1/8 + 1/2"
+        },
+        "notes": "adlibs plus wet"
+      },
+      "deess_khz": [
+        6,
+        7
+      ],
+      "sat": {
+        "plugin": "Knob / Abbey Road",
+        "drive": 1,
+        "notes": "pas Decap Punch 4"
+      },
+      "parallel": {
+        "bus": "PARA_BODY",
+        "comp": "76 ou SSL 3–5 dB",
+        "mix_pct": [
+          15,
+          25
+        ],
+        "notes": "moins agressif que ALLTY5 Blue 10 dB"
+      },
+      "phrase": "Tune audible, pas robot. Comp léger. Plate + 1/8. La prise > le rack. Adlibs plus wet."
+    },
+    {
+      "id": "ninho",
+      "name": "Ninho — mélodique mainstream FR",
+      "genre": "rap_fr_melodique",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Voix claire, devant, intelligente, sans agressivité.",
+      "hpf_hz": [
+        100,
+        120
+      ],
+      "eq_bands": [
+        {
+          "freq_hz": [
+            200,
+            400
+          ],
+          "gain_db": null,
+          "type": "bell",
+          "notes": "coupe boue"
+        },
+        {
+          "freq_hz": [
+            2000,
+            5000
+          ],
+          "gain_db": null,
+          "type": "bell",
+          "notes": "présence"
+        },
+        {
+          "freq_hz": null,
+          "gain_db": null,
+          "type": "high_shelf",
+          "notes": "air"
+        }
+      ],
+      "manuel_valeurs": {
+        "tune_ms": 22,
+        "presence": "+2.5 @3.2k",
+        "ds": "2 étages",
+        "sat_drive": 1.5,
+        "reverb_s": 0.7
+      },
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Diag / Soothe-style",
+          "setting": "résonances",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp série",
+          "setting": "légère puis serrée (RVox/2A + autre)",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "EQ",
+          "setting": "HPF 100–120 · coupe 200–400 · présence 2–5k + air",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "De-esser",
+          "setting": "2 étages",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Sends",
+          "setting": "plate courte + delay rythmique",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf",
+        "MANUEL_PRESETS_ILLUSTRE_VALEURS_2026.pdf"
+      ],
+      "scene": "francaise"
+    },
+    {
+      "id": "gazo_plk",
+      "name": "Gazo / PLK — drill-mélo mainstream",
+      "genre": "drill_melo_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "AT musical, présence forte, grit léger, FX side-chainés.",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Auto-Tune",
+          "setting": "présent mais musical",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "EQ",
+          "setting": "très clean + présence forte",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Comp",
+          "setting": "contrôlée pour coller au beat",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "DS + sat légère",
+          "setting": "grit",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Reverb/Delay",
+          "setting": "filtrés + side-chain",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ],
+      "scene": "francaise"
+    },
+    {
+      "id": "hamza",
+      "name": "Hamza — crystal clear mélodique",
+      "genre": "rnb_fr / crystal",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Clarté + air prioritaires. Peu de sat, beaucoup de polish. Reverb aérienne.",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "EQ transparent",
+          "setting": "boost HF contrôlé",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp douce",
+          "setting": "garde dyn émotionnelle",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Sends",
+          "setting": "reverb aérienne + delay subtil",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ],
+      "scene": "francaise"
+    },
+    {
+      "id": "tiakola",
+      "name": "Tiakola — rap mélo moderne",
+      "genre": "rap_melo_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "tune": {
+        "speed": "medium-fast"
+      },
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Auto-Tune",
+          "setting": "medium-fast",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "EQ clean-up",
+          "setting": "HPF + coupe boxy agressive",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Présence + air",
+          "setting": "boost",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "Comp + sat légère",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Reverb + delay",
+          "setting": "côté hit",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ],
+      "scene": "francaise"
+    },
+    {
+      "id": "freeze_corleone",
+      "name": "Freeze Corleone — drill sombre",
+      "genre": "drill_sombre",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Très frontale et sombre. Moins d’air agressif, body contrôlé. Sat caractère froid. Reverb sombre courte.",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "EQ dark",
+          "setting": "body contrôlé · peu d’air agressif",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp + sat",
+          "setting": "caractère froid",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Reverb",
+          "setting": "sombre courte",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ],
+      "scene": "francaise"
+    },
+    {
+      "id": "sdm_damso",
+      "name": "SDM / Damso — rap FR contemporain",
+      "genre": "rap_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "AT + EQ clean",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp série",
+          "setting": "FET + optical",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Présence mid",
+          "setting": "forte",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "DS + width",
+          "setting": "contrôlée",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Reverb/Delay",
+          "setting": "discrets",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ],
+      "scene": "francaise"
+    },
+    {
+      "id": "so_la_lune",
+      "name": "So La Lune — aérien émotionnel",
+      "genre": "emo_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Plus aérien/émotionnel. EQ doux, comp légère, reverb/FX plus présents.",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "EQ doux",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp légère",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Reverb + FX",
+          "setting": "plus présents",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ],
+      "scene": "francaise"
+    },
+    {
+      "id": "rap_fr_generique",
+      "name": "Rap FR moderne générique (Ninho/Gazo/PLK/Tiakola)",
+      "genre": "rap_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Noise Gate / Suppressor",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Auto-Tune",
+          "setting": "key + speed adapté",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "EQ soustractive",
+          "setting": "HPF 80–120 · coupe 200–400",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "Comp 1 punch",
+          "setting": "rapide",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "EQ additive",
+          "setting": "présence 2–5k · air 10–16k",
+          "notes": null
+        },
+        {
+          "step": 6,
+          "plugin": "De-esser",
+          "setting": "1 ou 2",
+          "notes": null
+        },
+        {
+          "step": 7,
+          "plugin": "Comp 2 glue",
+          "setting": "optical",
+          "notes": null
+        },
+        {
+          "step": 8,
+          "plugin": "Sat légère",
+          "setting": "optionnel",
+          "notes": null
+        },
+        {
+          "step": 9,
+          "plugin": "Sends",
+          "setting": "plate courte + delay filtered + doubler opt",
+          "notes": "100% wet"
+        }
+      ],
+      "tips_fr": [
+        "Baisser instru 10–15 dB pour juger la voix",
+        "2 comps en série > 1 trop agressif",
+        "Sends 100% wet + side-chain éventuel",
+        "Backs plus larges et moins secs que lead"
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ],
+      "scene": "francaise"
     }
   ],
   "eq_guide": [
@@ -1906,7 +3635,13 @@
         "where": "Bus_BGV"
       }
     ],
-    "source": "BASE_DONNEES_MIX_K3CH_2026.xlsx:05_COMPS"
+    "source": "BASE_DONNEES_MIX_K3CH_2026.xlsx:05_COMPS",
+    "circuits_fiche": "FICHE_7_CIRCUITS_COMPRESSEUR_K3CH_2026.pdf",
+    "trois_outils": [
+      "CLA-76 punch",
+      "CLA-2A/RVox leveler",
+      "SSL G glue"
+    ]
   },
   "plugin_stacks": [
     {
@@ -1946,7 +3681,7 @@
     },
     {
       "id": "weeknd_intention",
-      "label": "The Weeknd (intention catalogue)",
+      "label": "The Weeknd (détail batch2)",
       "order": [
         "Melodyne/MetaTune 15–25 ms",
         "Pro-Q HPF+coupes",
@@ -1959,12 +3694,25 @@
         "Fresh Air/Soothe",
         "Sends plate+hall"
       ],
-      "notes": "Ne pas cloner rack Bailey · intention",
-      "source": "Vocal_Chains_Complet_2026.pdf"
+      "notes": "Intention Bailey — ne pas cloner preset payant",
+      "source": "The_Weeknd_Vocal_Chain_Resume.pdf",
+      "plugins": [
+        "Melodyne+Tune 15–25ms",
+        "Pro-Q HPF+dyn",
+        "RVox",
+        "SSL",
+        "LA-2A",
+        "Pultec 12–16k",
+        "DS×2",
+        "C6",
+        "Fresh Air",
+        "Soothe"
+      ],
+      "sends": "plate dark HC~970 LC~410 · hall HC~4.5k · MV2+Abbey · chorus · delay ducké"
     },
     {
       "id": "kendrick_detail",
-      "label": "Kendrick Lamar (détail)",
+      "label": "Kendrick Lamar (détail batch2)",
       "order": [
         "Pitch 30–50 ms verses / 20 ms hooks",
         "EQ HPF 70–100 · mud 250–350 · notch ~1k",
@@ -1975,11 +3723,20 @@
         "sat opt"
       ],
       "sends": "reverb 0.5–1.2 s · slap 80–120 ms · delay ducké",
-      "source": "Vocal_Chains_Complet_2026.pdf"
+      "source": "Kendrick_Lamar_Vocal_Chain_Resume.pdf",
+      "plugins": [
+        "Pitch 30–50/20",
+        "Pro-Q",
+        "CLA-76 3–6",
+        "présence+air",
+        "DS",
+        "glue",
+        "sat opt"
+      ]
     },
     {
       "id": "bad_bunny_detail",
-      "label": "Bad Bunny (détail grit)",
+      "label": "Bad Bunny (détail grit batch2)",
       "tune_ms": [
         20,
         30
@@ -1992,67 +3749,107 @@
         20,
         40
       ],
-      "notes": "Sans grit la voix flotte",
-      "source": "Vocal_Chains_Complet_2026.pdf"
+      "notes": "Sans grit la voix flotte — AT assumé",
+      "source": "Bad_Bunny_Vocal_Chain_Detaille.pdf",
+      "plugins": [
+        "AT 20–30",
+        "EQ",
+        "CLA-76 6–10",
+        "DS 5–8k",
+        "sat 20–40%",
+        "air"
+      ]
+    },
+    {
+      "id": "xxxtentacion_sad",
+      "label": "XXXTentacion Sad",
+      "plugins": [
+        "AT naturel",
+        "EQ HPF+boue",
+        "comp 3:1–4:1",
+        "DS",
+        "sat légère",
+        "plate 1–1.8s"
+      ],
+      "notes": "Intimité · contraste soft/hard · grain > polish",
+      "source": "XXXTentacion_Vocal_Chain_Resume.pdf"
     }
   ],
   "parallel_buses": [
     {
       "id": "PARA_BODY",
       "source_send": "Lead (corps)",
-      "chain": "76 smash 8–12 dB",
+      "chain": "CLA-76 Blue Face smash 8–12 dB · opt HPF80 + Pultec 100 + LPF~5k",
       "send_db": -15,
-      "interdit": "HPF 6k / limiter",
-      "fiche": "FICHE_PARA_BODY"
+      "insert_vs_para": "Insert 3–7 dB · parallèle 8–12 trop puis recollé",
+      "doses": {
+        "Moderne": "8–10 dB",
+        "Juice": "3–5",
+        "ALLTY5": "Blue 8–10 + coupe >5k",
+        "Bodak": "76 ou PARA_SAT"
+      },
+      "interdit": "HPF 6k · limiter · fusion PARA_AIR · 12 dB sur insert",
+      "fiche": "FICHE_PARA_BODY_VOIX_K3CH_2026.pdf"
     },
     {
       "id": "PARA_AIR",
       "source_send": "Lead / adlibs HF",
-      "chain": "HPF 6–8k + DS + 76 8–12",
+      "chain": "HPF 6–8k 24dB/oct + DS 6–8k + CLA-76 8–12 + sat/shelf opt",
       "send_db": {
         "lead": -15,
-        "adlibs": -12
+        "adlibs": -12,
+        "range": [
+          -18,
+          -12
+        ]
       },
-      "interdit": "ALLTY5 Blue",
-      "fiche": "FICHE_AIR_PARALLELE"
+      "sortie": "Bus_VOX",
+      "interdit": "ALLTY5 Blue · Bodak rare · HPF 2k · pas de DS · shelf +6 insert",
+      "fiche": "FICHE_AIR_PARALLELE_VOIX_K3CH_2026.pdf"
     },
     {
       "id": "PARA_SAT",
       "source_send": "Lead grit",
-      "chain": "Decap ~25 %",
-      "send_db": "léger",
-      "interdit": "3 sats empilées",
-      "fiche": "Bodak + SAT_HG2"
+      "chain": "Decap / Abbey · Drive 2–3 · mix ~25–30% (Bodak) · opt gate SC lead (#5 sidechains)",
+      "send_db": "léger / 25–30%",
+      "interdit": "3 sats empilées · sat sans coupe mud",
+      "fiche": "FICHE_SAT_HG2_EQUIVALENTS_K3CH_2026.pdf"
     },
     {
       "id": "PARA_DRUMS",
-      "source_send": "Kick click, clap, hats",
-      "chain": "HPF 80 + SSL/76 6–10",
+      "source_send": "Kick click, clap, hats — PAS 808 sub",
+      "chain": "HPF 80–100 + SSL/CLA-76 att 3–10 ms · rel 50–100 · GR 6–10",
       "send_db": [
         -12,
         -18
       ],
-      "interdit": "808 sub",
-      "fiche": "FICHE_PARA_DRUMS_808"
+      "interdit": "808 sub · un seul parallèle voix+drums · limiter bus drums",
+      "fiche": "FICHE_PARA_DRUMS_808_K3CH_2026.pdf"
     },
     {
       "id": "PARA_808",
-      "source_send": "option corps 80–200",
-      "chain": "sat mix 15 % pas FET sub",
+      "source_send": "option corps 80–200 Hz",
+      "chain": "sat Knob/Abbey Drive1 mix 15% · opto 2–4 dB · si para: HPF80 + smash mid 80–200 only",
       "send_db": "faible",
-      "interdit": "30 Hz smash",
-      "fiche": "PARA_DRUMS + SAT_HG2"
+      "before": "sidechain 808←kick att 1–5 ms · coupe 250 si boue",
+      "interdit": "76 att 0.1 ms sur 30 Hz · FET smash sub",
+      "fiche": "FICHE_PARA_DRUMS_808_K3CH_2026.pdf"
     },
     {
       "id": "Bus_BGV",
-      "source_send": "doubles / harmo",
-      "chain": "HPF 150 + dip 2.5–5k Q≤2.5 + more GR",
+      "source_send": "doubles / harmo → Bus_BGV → Bus_VOX",
+      "chain": "Tune/piste · HPF 120–150 · –3@280 · dip –2/−4 @2.5–5k Q≤2.5 · 76/RVox 5–8 dB att rapide",
       "fader_vs_lead_db": [
         -6,
         -12
       ],
-      "interdit": "même chaîne que lead",
-      "fiche": "FICHE_BACKS_VOCAUX"
+      "pan_doubles_pct": [
+        70,
+        85
+      ],
+      "sidechain": "SC=lead 2–4 dB",
+      "interdit": "même chaîne lead · Q8 · Blue Face · limiter · PARA_AIR",
+      "fiche": "FICHE_BACKS_VOCAUX_K3CH_2026.pdf"
     }
   ],
   "mastering": {
@@ -2189,28 +3986,28 @@
       "priority": 2
     },
     {
+      "id": "artist_chains",
+      "title": "Chaînes artistes",
+      "priority": 3
+    },
+    {
       "id": "eq_guide",
       "title": "EQ voix",
-      "priority": 3
+      "priority": 4
     },
     {
       "id": "drums_808",
       "title": "Kick / 808",
-      "priority": 4
-    },
-    {
-      "id": "gain_staging",
-      "title": "Gain staging",
       "priority": 5
     },
     {
-      "id": "mastering",
-      "title": "Mastering cible",
+      "id": "sidechains",
+      "title": "5 sidechains",
       "priority": 6
     },
     {
-      "id": "fl_recording",
-      "title": "Chaînes rec FL",
+      "id": "compressors",
+      "title": "7 circuits comp",
       "priority": 7
     },
     {
@@ -2219,9 +4016,39 @@
       "priority": 8
     },
     {
+      "id": "harsh",
+      "title": "Harsh multi-étages",
+      "priority": 9
+    },
+    {
+      "id": "gain_staging",
+      "title": "Gain staging",
+      "priority": 10
+    },
+    {
+      "id": "mastering",
+      "title": "Mastering cible",
+      "priority": 11
+    },
+    {
+      "id": "fl_recording",
+      "title": "Chaînes rec FL",
+      "priority": 12
+    },
+    {
       "id": "plugin_stacks",
       "title": "Stacks plugins",
-      "priority": 9
+      "priority": 13
+    },
+    {
+      "id": "pense_bete",
+      "title": "Pense-bête",
+      "priority": 14
+    },
+    {
+      "id": "french_scene",
+      "title": "Scène FR",
+      "priority": 15
     }
   ],
   "sources": [
@@ -2332,14 +4159,959 @@
         "comp/DS/sat/tune/sends valeurs",
         "808 recipe"
       ]
+    },
+    {
+      "file": "FICHE_AIR_PARALLELE_VOIX_K3CH_2026.pdf",
+      "used_for": [
+        "PARA_AIR détail",
+        "doses par preset",
+        "erreurs shelf"
+      ]
+    },
+    {
+      "file": "FICHE_HARSH_VOIX_MULTI_ETAGES_K3CH_2026.pdf",
+      "used_for": [
+        "harsh_guide 5 étages",
+        "protocole 90s"
+      ]
+    },
+    {
+      "file": "FICHE_PARA_BODY_VOIX_K3CH_2026.pdf",
+      "used_for": [
+        "PARA_BODY doses",
+        "insert vs para"
+      ]
+    },
+    {
+      "file": "FICHE_PARA_DRUMS_808_K3CH_2026.pdf",
+      "used_for": [
+        "PARA_DRUMS",
+        "PARA_808",
+        "séparation voix/drums"
+      ]
+    },
+    {
+      "file": "FICHE_5_SIDECHAINS_VOIX_K3CH_2026.pdf",
+      "used_for": [
+        "5 sidechains S1",
+        "ordre install"
+      ]
+    },
+    {
+      "file": "FICHE_BASSE_JOUEE_VS_808_K3CH_2026.pdf",
+      "used_for": [
+        "bass_vs_808",
+        "dyn 80–250"
+      ]
+    },
+    {
+      "file": "FICHE_7_CIRCUITS_COMPRESSEUR_K3CH_2026.pdf",
+      "used_for": [
+        "7 circuits",
+        "arbre décision",
+        "équivalences Logic→Waves"
+      ]
+    },
+    {
+      "file": "FICHE_BACKS_VOCAUX_K3CH_2026.pdf",
+      "used_for": [
+        "backs dip/reduce",
+        "Bus_BGV"
+      ]
+    },
+    {
+      "file": "FICHE_SAT_HG2_EQUIVALENTS_K3CH_2026.pdf",
+      "used_for": [
+        "sat_equivalents HG-2→Decap/Abbey/Knob"
+      ]
+    },
+    {
+      "file": "The_Weeknd_Vocal_Chain_Resume.pdf",
+      "used_for": [
+        "preset weeknd",
+        "10 steps + sends"
+      ]
+    },
+    {
+      "file": "Bad_Bunny_Vocal_Chain_Detaille.pdf",
+      "used_for": [
+        "preset bad_bunny",
+        "grit valeurs"
+      ]
+    },
+    {
+      "file": "Kendrick_Lamar_Vocal_Chain_Resume.pdf",
+      "used_for": [
+        "preset kendrick"
+      ]
+    },
+    {
+      "file": "XXXTentacion_Vocal_Chain_Resume.pdf",
+      "used_for": [
+        "preset xxxtentacion sad"
+      ]
+    },
+    {
+      "file": "Cardi_B_Bodak_Yellow_Vocal_Chain_K3CH_2026.pdf",
+      "used_for": [
+        "enrich MIX_Bodak + cardi_bodak"
+      ]
+    },
+    {
+      "file": "Trippie_Redd_ALLTY5_Vocal_Chain_K3CH_2026.pdf",
+      "used_for": [
+        "enrich ALLTY5 + trippie_allty5"
+      ]
+    },
+    {
+      "file": "Juice_WRLD_Vocal_Chain_K3CH_2026.pdf",
+      "used_for": [
+        "enrich Juice + juice_wrld"
+      ]
+    },
+    {
+      "file": "Presets_Vocaux_Scene_Francaise_2026.pdf",
+      "used_for": [
+        "french_scene 8 presets"
+      ]
+    },
+    {
+      "file": "INGE_SON_POUR_LES_NULS_PenseBete_2026.pdf",
+      "used_for": [
+        "pense_bete tips"
+      ]
+    },
+    {
+      "file": "GUIDE_CREATION_PRESETS_Studio_Maison_2026.pdf",
+      "used_for": [
+        "preset_creation_guide P0–P4"
+      ]
+    },
+    {
+      "file": "MANUEL_PRESETS_ILLUSTRE_VALEURS_2026.pdf",
+      "used_for": [
+        "valeurs ModernRap/Bunny/Weeknd/Ninho"
+      ]
     }
   ],
   "docs_pending_ingest": [],
   "gaps": [
-    "Fiches artistes PDF individuelles (Cardi/Trippie/Juice) citées dans xlsx mais absentes du dossier Downloads — valeurs prises depuis xlsx.",
-    "Fiches PARA_* / HARSH / SAT_HG2 / BACKS citées dans base mais non fournies comme PDF séparés — résumé via onglets xlsx.",
-    "Vocal_Chains_Complet = intentions publiques (Bailey etc.) ; presets K3CH nommés (Moderne/Bodak/ALLTY5/Juice) priment en cas de conflit.",
-    "THE_kAz V2 cite parfois ≈ –14 LUFS streaming historique ; pipeline K3CH 2026 fige –12/−10 pour stream officiel.",
-    "Illustrations / graphiques des PDF guides EQ/plugins non capturés (texte seulement)."
-  ]
+    "Presets_Vocaux_Artistes_Internationaux_2026.pdf — absent Downloads",
+    "CARTE_PLATFORM_MIX_STUDIO_2026.pdf — absent",
+    "CHECKLISTS_STUDIO_MAISON.pdf — absent",
+    "CHECKLISTS_EXPRESS_SEPAREES.pdf — absent",
+    "Weeknd/XXX/FR scène = intentions publiques (approx) — MIX_* K3CH priment si conflit",
+    "Illustrations MANUEL_PRESETS non capturées (valeurs texte OK)"
+  ],
+  "french_scene": [
+    {
+      "id": "ninho",
+      "name": "Ninho — mélodique mainstream FR",
+      "genre": "rap_fr_melodique",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Voix claire, devant, intelligente, sans agressivité.",
+      "hpf_hz": [
+        100,
+        120
+      ],
+      "eq_bands": [
+        {
+          "freq_hz": [
+            200,
+            400
+          ],
+          "gain_db": null,
+          "type": "bell",
+          "notes": "coupe boue"
+        },
+        {
+          "freq_hz": [
+            2000,
+            5000
+          ],
+          "gain_db": null,
+          "type": "bell",
+          "notes": "présence"
+        },
+        {
+          "freq_hz": null,
+          "gain_db": null,
+          "type": "high_shelf",
+          "notes": "air"
+        }
+      ],
+      "manuel_valeurs": {
+        "tune_ms": 22,
+        "presence": "+2.5 @3.2k",
+        "ds": "2 étages",
+        "sat_drive": 1.5,
+        "reverb_s": 0.7
+      },
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Diag / Soothe-style",
+          "setting": "résonances",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp série",
+          "setting": "légère puis serrée (RVox/2A + autre)",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "EQ",
+          "setting": "HPF 100–120 · coupe 200–400 · présence 2–5k + air",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "De-esser",
+          "setting": "2 étages",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Sends",
+          "setting": "plate courte + delay rythmique",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf",
+        "MANUEL_PRESETS_ILLUSTRE_VALEURS_2026.pdf"
+      ]
+    },
+    {
+      "id": "gazo_plk",
+      "name": "Gazo / PLK — drill-mélo mainstream",
+      "genre": "drill_melo_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "AT musical, présence forte, grit léger, FX side-chainés.",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Auto-Tune",
+          "setting": "présent mais musical",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "EQ",
+          "setting": "très clean + présence forte",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Comp",
+          "setting": "contrôlée pour coller au beat",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "DS + sat légère",
+          "setting": "grit",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Reverb/Delay",
+          "setting": "filtrés + side-chain",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ]
+    },
+    {
+      "id": "hamza",
+      "name": "Hamza — crystal clear mélodique",
+      "genre": "rnb_fr / crystal",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Clarté + air prioritaires. Peu de sat, beaucoup de polish. Reverb aérienne.",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "EQ transparent",
+          "setting": "boost HF contrôlé",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp douce",
+          "setting": "garde dyn émotionnelle",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Sends",
+          "setting": "reverb aérienne + delay subtil",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ]
+    },
+    {
+      "id": "tiakola",
+      "name": "Tiakola — rap mélo moderne",
+      "genre": "rap_melo_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "tune": {
+        "speed": "medium-fast"
+      },
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Auto-Tune",
+          "setting": "medium-fast",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "EQ clean-up",
+          "setting": "HPF + coupe boxy agressive",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Présence + air",
+          "setting": "boost",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "Comp + sat légère",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Reverb + delay",
+          "setting": "côté hit",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ]
+    },
+    {
+      "id": "freeze_corleone",
+      "name": "Freeze Corleone — drill sombre",
+      "genre": "drill_sombre",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Très frontale et sombre. Moins d’air agressif, body contrôlé. Sat caractère froid. Reverb sombre courte.",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "EQ dark",
+          "setting": "body contrôlé · peu d’air agressif",
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp + sat",
+          "setting": "caractère froid",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Reverb",
+          "setting": "sombre courte",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ]
+    },
+    {
+      "id": "sdm_damso",
+      "name": "SDM / Damso — rap FR contemporain",
+      "genre": "rap_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "AT + EQ clean",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp série",
+          "setting": "FET + optical",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Présence mid",
+          "setting": "forte",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "DS + width",
+          "setting": "contrôlée",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "Reverb/Delay",
+          "setting": "discrets",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ]
+    },
+    {
+      "id": "so_la_lune",
+      "name": "So La Lune — aérien émotionnel",
+      "genre": "emo_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "intention": "Plus aérien/émotionnel. EQ doux, comp légère, reverb/FX plus présents.",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "EQ doux",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Comp légère",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "Reverb + FX",
+          "setting": "plus présents",
+          "notes": null
+        }
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ]
+    },
+    {
+      "id": "rap_fr_generique",
+      "name": "Rap FR moderne générique (Ninho/Gazo/PLK/Tiakola)",
+      "genre": "rap_fr",
+      "track_type": "lead_vocal",
+      "daw": "S1",
+      "chain_steps": [
+        {
+          "step": 1,
+          "plugin": "Noise Gate / Suppressor",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "step": 2,
+          "plugin": "Auto-Tune",
+          "setting": "key + speed adapté",
+          "notes": null
+        },
+        {
+          "step": 3,
+          "plugin": "EQ soustractive",
+          "setting": "HPF 80–120 · coupe 200–400",
+          "notes": null
+        },
+        {
+          "step": 4,
+          "plugin": "Comp 1 punch",
+          "setting": "rapide",
+          "notes": null
+        },
+        {
+          "step": 5,
+          "plugin": "EQ additive",
+          "setting": "présence 2–5k · air 10–16k",
+          "notes": null
+        },
+        {
+          "step": 6,
+          "plugin": "De-esser",
+          "setting": "1 ou 2",
+          "notes": null
+        },
+        {
+          "step": 7,
+          "plugin": "Comp 2 glue",
+          "setting": "optical",
+          "notes": null
+        },
+        {
+          "step": 8,
+          "plugin": "Sat légère",
+          "setting": "optionnel",
+          "notes": null
+        },
+        {
+          "step": 9,
+          "plugin": "Sends",
+          "setting": "plate courte + delay filtered + doubler opt",
+          "notes": "100% wet"
+        }
+      ],
+      "tips_fr": [
+        "Baisser instru 10–15 dB pour juger la voix",
+        "2 comps en série > 1 trop agressif",
+        "Sends 100% wet + side-chain éventuel",
+        "Backs plus larges et moins secs que lead"
+      ],
+      "approx": true,
+      "sources": [
+        "Presets_Vocaux_Scene_Francaise_2026.pdf"
+      ]
+    }
+  ],
+  "sidechains": {
+    "source": "FICHE_5_SIDECHAINS_VOIX_K3CH_2026.pdf",
+    "install_order": [
+      "Jour1: #3 BGV + #4 duck reverb",
+      "Jour2: #2 duck S sur reverb si S lavent plate",
+      "Jour3: #1 mix bus 1–2 dB A/B",
+      "Option: #5 gate PARA_SAT"
+    ],
+    "studio_one": "Comp S1 ou SSL → Sidechain input = bus source. HPF 5k = filtre détecteur. Mix bus = session MIX (pas master).",
+    "items": [
+      {
+        "id": 1,
+        "name": "Mix bus ← voix",
+        "target": "Bus MIX",
+        "sidechain": "Bus_VOX",
+        "gr_db": [
+          1,
+          2
+        ],
+        "notes": "voix avance sans monter fader"
+      },
+      {
+        "id": 2,
+        "name": "Reverb ← S",
+        "target": "FX_VALHALLA",
+        "sidechain": "lead",
+        "detect_hpf_khz": 5,
+        "notes": "S baissent la verb — mieux qu’un DS sur send"
+      },
+      {
+        "id": 3,
+        "name": "BGV ← lead",
+        "target": "Bus_BGV",
+        "sidechain": "lead",
+        "gr_db": [
+          2,
+          4
+        ],
+        "notes": "backs montent dans respirations"
+      },
+      {
+        "id": 4,
+        "name": "Reverb ← lead",
+        "target": "même return",
+        "sidechain": "lead full-band",
+        "notes": "Att rapide · Rel medium · paroles sèches · bloom trous"
+      },
+      {
+        "id": 5,
+        "name": "PARA_SAT gate",
+        "target": "Decap FX",
+        "sidechain": "lead fort",
+        "notes": "gate ouvert seulement phrases fortes · pas obligatoire si Decap 25%"
+      }
+    ],
+    "erreurs": [
+      "commenter template Streaky",
+      "5 dB sur mix bus",
+      "duck reverb + limiter voix",
+      "gate sat toujours ouvert"
+    ]
+  },
+  "harsh_guide": {
+    "source": "FICHE_HARSH_VOIX_MULTI_ETAGES_K3CH_2026.pdf",
+    "principe": "Un harsh = un étage. Pas une coupe EQ large @7k en premier.",
+    "diagnostic": [
+      {
+        "symptom": "Ssss isolés",
+        "fix": "de-esser (pas cloche –6@7k)"
+      },
+      {
+        "symptom": "Aigu pique sur notes hautes",
+        "fix": "EQ dynamique Pro-Q"
+      },
+      {
+        "symptom": "Toute la voix crisse même parlé",
+        "fix": "rec (angle/distance/pre) ou sat trop tôt"
+      },
+      {
+        "symptom": "Un mot qui crame",
+        "fix": "clip gain / automation — pas 3e comp"
+      },
+      {
+        "symptom": "Harsh après PARA_AIR",
+        "fix": "DS manquant sur bus HF"
+      }
+    ],
+    "etages": [
+      {
+        "n": 0,
+        "name": "Rec",
+        "detail": "Angle off-axis · pics –12/−6 · pre propre · Tune RT casque only"
+      },
+      {
+        "n": 1,
+        "name": "DS",
+        "detail": "5–7k Moderne/Juice · ~4.3k Bodak · après le 76"
+      },
+      {
+        "n": 2,
+        "name": "Pro-Q dyn",
+        "detail": "Bande 4–8k · range –2/−4 · threshold pics only (= C1 Heldens)"
+      },
+      {
+        "n": 3,
+        "name": "Soft clip",
+        "detail": "Decap/Abbey Drive 1 ou clipper léger"
+      },
+      {
+        "n": 4,
+        "name": "Ride",
+        "detail": "Clip gain + automation fader sur le mot"
+      }
+    ],
+    "by_preset": {
+      "Moderne": "DS 5–7k d’abord · dyn –2@6k si reste · pas PARA_AIR tant que ça pique",
+      "Bodak": "DS ~4.3k = harsh principal · ne pas empiler",
+      "ALLTY5": "C1/dyn APRÈS RVox · ne démonte pas 76+RVox",
+      "Juice": "DS léger 6–7k · ride > Soothe fantôme"
+    },
+    "protocole_90s": [
+      "Solo 4 mesures qui piquent — S ? note ? mot ?",
+      "S→DS · note→dyn 4–8k –2 · mot→ride",
+      "A/B level-match 5s — STOP si bon",
+      "Réécoute beat + téléphone"
+    ],
+    "phrase": "S → DS. Note → dyn. Mot → ride. Coupe large @7k = dernier recours."
+  },
+  "compressor_circuits": {
+    "source": "FICHE_7_CIRCUITS_COMPRESSEUR_K3CH_2026.pdf",
+    "regle_k3ch": "3 outils suffisent: PUNCH CLA-76 · LEVELER CLA-2A/RVox · GLUE SSL G",
+    "circuits": [
+      {
+        "logic_model": "Platinum Digital",
+        "family": "Digital",
+        "hardware": "Emagic/Apple",
+        "caractere": "Transparent 0 couleur",
+        "chez_toi": "S1 Comp / Pro-C Clean"
+      },
+      {
+        "logic_model": "Studio VCA",
+        "family": "VCA",
+        "hardware": "Focusrite Red 3",
+        "caractere": "Serré moderne bus",
+        "chez_toi": "S1 Comp glue léger"
+      },
+      {
+        "logic_model": "Studio FET",
+        "family": "FET",
+        "hardware": "UREI 1176 Blackface",
+        "caractere": "Rapide punch mid",
+        "chez_toi": "CLA-76 (cœur lead)"
+      },
+      {
+        "logic_model": "Classic VCA",
+        "family": "VCA",
+        "hardware": "dbx 160/165A",
+        "caractere": "Snap drums auto",
+        "chez_toi": "CLA-76 peak + sat"
+      },
+      {
+        "logic_model": "Vintage VCA",
+        "family": "VCA",
+        "hardware": "SSL G Bus",
+        "caractere": "Glue mix punch bas",
+        "chez_toi": "Waves SSL Comp"
+      },
+      {
+        "logic_model": "Vintage FET",
+        "family": "FET",
+        "hardware": "1176 Silver/Blue",
+        "caractere": "Plus sale grit",
+        "chez_toi": "CLA-76 + Decapitator"
+      },
+      {
+        "logic_model": "Vintage Opto",
+        "family": "Opto",
+        "hardware": "LA-2A",
+        "caractere": "Lent musical leveler",
+        "chez_toi": "CLA-2A / RVox"
+      }
+    ],
+    "recettes": {
+      "voix_modern_rap": "Studio FET→CLA-76 4:1 Att3 Rel6–7 GR4–7 · puis 2A 2–3.5 (Opto)",
+      "voix_bad_bunny": "Vintage FET→76 GR6–10 + sat para 35% ou Drive 3–4",
+      "adlibs": "FET +2 dB GR vs lead · HPF 120–180 · moins air · plus delay",
+      "808": "Vintage Opto→2A · Att equiv 15–25 ms · GR 3–5 · jamais FET first sur sub",
+      "kick_snare": "Studio FET ou Classic VCA · Att ouverte · GR 3–6",
+      "bus_drums": "SSL G 2–4 dB att moy-lente",
+      "bus_vox": "SSL 1–2 dB att lente · para 76+sat 25–30%",
+      "mix_bus": "SSL 1–3 + Platinum clean opt · puis Pro-L 2",
+      "voix_off": "Opto seul GR 3–5",
+      "synth_melo": "Platinum 2:1 · 2–4 dB"
+    },
+    "decision_tree": [
+      {
+        "si": "contrôler niveau sans timbre",
+        "alors": "Platinum / S1 Comp · ou 2A très léger"
+      },
+      {
+        "si": "pics + devant + mid",
+        "alors": "CLA-76 4–7 dB"
+      },
+      {
+        "si": "déjà punchy mais flotte",
+        "alors": "CLA-2A derrière 76"
+      },
+      {
+        "si": "groupe tient ensemble",
+        "alors": "SSL G 1–3 dB"
+      },
+      {
+        "si": "sale trap caractère",
+        "alors": "76 + Decap/Abbey"
+      },
+      {
+        "si": "808 respire trop",
+        "alors": "2A · jamais FET first"
+      },
+      {
+        "si": "snare sans snap",
+        "alors": "76 att ouverte · pas Opto"
+      },
+      {
+        "si": "voix off",
+        "alors": "2A ou RVox seul"
+      },
+      {
+        "si": "ne sais pas",
+        "alors": "76 5 dB + 2A 2.5 dB — stop"
+      }
+    ],
+    "phrase": "FET=pics. Opto=niveau. VCA bus=colle. Digital=chirurgie. 3 familles = 95% des mixes."
+  },
+  "sat_equivalents": {
+    "source": "FICHE_SAT_HG2_EQUIVALENTS_K3CH_2026.pdf",
+    "plugin_ref": "Black Box HG-2 (Plugin Alliance) — PAS dans stack P0 · Palier C",
+    "job": "Sat tube/air/808 speaker · chez toi Decap, Abbey, Knob",
+    "translations": [
+      {
+        "hg2": "High sat / Air",
+        "k3ch": "PARA_AIR ou shelf +1@11k + Decap Punish OFF Drive 2–4"
+      },
+      {
+        "hg2": "Low sat / 808 8–20%",
+        "k3ch": "Knob Drive1 ou Abbey sur 808 · mix 15%"
+      },
+      {
+        "hg2": "Flat mix bus",
+        "k3ch": "SSL bus 1–3 dB + sat légère · master session"
+      },
+      {
+        "hg2": "Voix bus",
+        "k3ch": "PARA_SAT Decap 25% (Bodak)"
+      },
+      {
+        "hg2": "M/S",
+        "k3ch": "Pro-Q Mid/Side pour EQ · sat M/S plus tard"
+      }
+    ],
+    "recettes_60s": [
+      "808 téléphone: Knob/Abbey Drive1 mix 15% · coupe 250 d’abord",
+      "Voix Bodak/Moderne: PARA_SAT Decap 25% · si hiss→DS puis baisse Drive",
+      "Bus mix master: SSL 1–2 + Abbey très léger · level-match · stop"
+    ],
+    "mud_warning": "Sat Low/pentode gonfle 200–400 Hz — coupe mud AVANT. 808 sans HPF 25 Hz = énergie fantôme.",
+    "achat": "Pas d’achat HG-2 avant roadmap S12. Un sat à la fois. Level-match.",
+    "phrase": "HG-2 = bus de sat, pas religion. Decap/Abbey/Knob font le job. Mix 15%. Mud d’abord."
+  },
+  "bass_vs_808": {
+    "source": "FICHE_BASSE_JOUEE_VS_808_K3CH_2026.pdf",
+    "808_sample": {
+      "hpf_hz": [
+        20,
+        25
+      ],
+      "coupe_boue_hz": 250,
+      "sat": "Knob/Abbey Drive1 mix 15%",
+      "comp": "Opto RVox/2A 2–4 dB — PAS 76 att 0.1ms sur 30Hz",
+      "sidechain": "808 ← kick",
+      "distressor_equiv": "Decap para ou 76 sur CORPS 80–200 only"
+    },
+    "basse_jouee": {
+      "eq_dyn": "Pro-Q dyn bande 80–250 · GR 2–4 dB quand ça gonfle",
+      "comp": "RVox/2A 2–4 dB après dyn",
+      "sat": "après EQ dyn, pas avant",
+      "hpf": "selon note la plus basse — pas 120 par habitude voix",
+      "bus": "Bus BASSE à part — pas PARA_DRUMS"
+    },
+    "entendre_mud_80_250": [
+      "Solo basse+kick — si 808 avale click = trop 80–250",
+      "A/B bande dyn — si rien, boue ailleurs (250–400)",
+      "Téléphone: sub disparaît, mud 150 Hz reste → c’est lui qu’on tasse"
+    ],
+    "phrase": "808 = sat + opto + SC. Basse jouée = dyn 80–250 puis opto. Pas le même stack."
+  },
+  "backs_guide": {
+    "source": "FICHE_BACKS_VOCAUX_K3CH_2026.pdf",
+    "reduce_db": [
+      -6,
+      -12
+    ],
+    "dip": {
+      "freq_khz": [
+        2.5,
+        5
+      ],
+      "gain_db": [
+        -2,
+        -4
+      ],
+      "q_max": 2.5
+    },
+    "bus": "Pistes → Bus_BGV → Bus_VOX",
+    "hpf_hz": [
+      120,
+      150
+    ],
+    "comp_gr_db": [
+      5,
+      8
+    ],
+    "phrase": "Si tu chantes avec les backs, ils sont trop hauts.",
+    "preset_ref": "MIX_Voix_BGV_v1"
+  },
+  "pense_bete": {
+    "source": "INGE_SON_POUR_LES_NULS_PenseBete_2026.pdf",
+    "tips": [
+      {
+        "id": "niveaux",
+        "tip": "Record pics –12/−6 dBFS. Mix headroom –6/−3 dBTP. Master TP ≤ –1 dBTP."
+      },
+      {
+        "id": "lufs",
+        "tip": "LUFS = loudness perçue. Streaming K3CH cible –12/−10 (pas seulement –14 historique)."
+      },
+      {
+        "id": "hpf",
+        "tip": "HPF coupe rumble. LPF utile sur returns reverb/delay."
+      },
+      {
+        "id": "q",
+        "tip": "Q large = musical. Q étroit = notch chirurgical."
+      },
+      {
+        "id": "zones",
+        "tip": "Boueux 200–400 Hz · Présence 2.5–5 kHz · Air 10–16 kHz."
+      },
+      {
+        "id": "comp_mots",
+        "tip": "Attack rapide = pics. Attack ouvert = punch. GR voix souvent 3–7 dB."
+      },
+      {
+        "id": "families",
+        "tip": "FET=punch · Opto=glue douce · VCA=bus précis · Parallel NY=body."
+      },
+      {
+        "id": "send",
+        "tip": "Send 100% wet. Pre-delay 20–40 ms garde voix devant. Plate = voix moderne."
+      },
+      {
+        "id": "slap",
+        "tip": "Slap 80–120 ms mono = urgence sans écho chanté."
+      },
+      {
+        "id": "ordre",
+        "tip": "Nettoie avant de compresser · compresse avant air/FX."
+      },
+      {
+        "id": "gestes",
+        "tip": "Instru –10/−15 dB pour juger voix · A/B · mono · bas volume + téléphone · ref pro."
+      },
+      {
+        "id": "2comps",
+        "tip": "2 comps moyens > 1 comp à fond."
+      },
+      {
+        "id": "panique_sale",
+        "tip": "Son sale → HPF + coupe 200–400 Hz."
+      },
+      {
+        "id": "panique_flotte",
+        "tip": "Voix flotte/trop clean → sat légère (grit)."
+      },
+      {
+        "id": "panique_agressive",
+        "tip": "S durs → de-esser après comp."
+      },
+      {
+        "id": "panique_disparait",
+        "tip": "Disparaît dans beat → présence 3–5 kHz + glue."
+      },
+      {
+        "id": "panique_fx",
+        "tip": "Trop d’effet → baisse sends · ↑ pre-delay · filtre returns."
+      },
+      {
+        "id": "panique_clip",
+        "tip": "Clippe → baisse gains amont (gain staging), pas seulement master."
+      },
+      {
+        "id": "panique_perdu",
+        "tip": "Perdu → bypass tout · balance faders 10 min · un plugin à la fois."
+      }
+    ]
+  },
+  "preset_creation_guide": {
+    "source": "GUIDE_CREATION_PRESETS_Studio_Maison_2026.pdf",
+    "priorites": [
+      "P0 dossiers+nommage",
+      "P1 REC FL ZL",
+      "P2 MIX S1 bases",
+      "P3 ARTIST_*",
+      "P4 polish"
+    ],
+    "nommage": "Type_Style_Usage_Version (ex MIX_Voix_Lead_ModernRap_v1 · ARTIST_Weeknd_Lead_v1)",
+    "checklist": [
+      "Partir chaîne base propre",
+      "Ordre: Pitch→EQ sous→Comp→EQ add→DS→Glue→Sat→Sends",
+      "A/B ref pro",
+      "Tester 2 voix",
+      "Nommer + commentaire date",
+      "Backup 04_BACKUP_PRESETS"
+    ]
+  }
 }

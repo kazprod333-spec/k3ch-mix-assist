@@ -107,8 +107,8 @@ VST3 bundle: `build/K3CHMixAssist_artefacts/Release/VST3/K3CH Mix Assist.vst3` �
 Edit `Resources/mix-knowledge.json` and rebuild. The file is compiled into the plugin via JUCE BinaryData.
 
 - `ui_sections` drives the left-hand navigation (id, title, priority)
-- **10 vocal/FX presets** (ModernRap, Bodak, ALLTY5, Juice, BGV, Trap/Drill, Pop urbaine, Voix-off, PARA_AIR, PARA_BODY) plus checklists, EQ guide, plugin stacks, parallel buses
-- New **top-level arrays/objects** can be exposed by adding a `ui_sections` entry with a matching `id`
+- **25 presets** (studio MIX/FX, artist chains, scène FR) plus checklists, EQ, sidechains, 7 circuits, harsh, pense-bête
+- New **top-level arrays/objects** can be exposed by adding a `ui_sections` entry with a matching `id` (aliases: `compressors` → `compressor_circuits`, `harsh` → `harsh_guide`)
 - Optional `section_bindings` map (see `NOTES.md`) if the id does not match a JSON key
 - Unit suffixes (`_hz`, `_db`, `gr_db`, `_lufs`, `_ms`, `_pct`, …) are formatted for display without UI changes
 

@@ -69,7 +69,8 @@ bool skipAsStep (const juce::String& key)
         || key == "name" || key == "notes" || key == "label" || key == "title"
         || key == "problem" || key == "style" || key == "genre"
         || key == "track_type" || key == "daw" || key == "fiche"
-        || key == "interdit" || key == "family";
+        || key == "interdit" || key == "family" || key == "approx"
+        || key == "intention" || key == "phrase";
 }
 
 juce::String unitForKey (const juce::String& key)
@@ -352,29 +353,73 @@ RecipeStep stepFromRecord (const juce::var& item, int index, const juce::String&
     const auto grStr   = o->getProperty ("gr").toString();
     const auto chain   = o->getProperty ("chain").toString();
     const auto sendSrc = o->getProperty ("source_send").toString();
+    const auto tip     = o->getProperty ("tip").toString();
+    const auto symptom = o->getProperty ("symptom").toString();
+    const auto fix     = o->getProperty ("fix").toString();
+    const auto si      = o->getProperty ("si").toString();
+    const auto alors   = o->getProperty ("alors").toString();
+    const auto hg2     = o->getProperty ("hg2").toString();
+    const auto k3chEq  = o->getProperty ("k3ch").toString();
+    const auto logic   = o->getProperty ("logic_model").toString();
+    const auto chezToi = o->getProperty ("chez_toi").toString();
+    const auto caract  = o->getProperty ("caractere").toString();
+    const auto target  = o->getProperty ("target").toString();
+    const auto sc      = o->getProperty ("sidechain").toString();
+    const auto recName = o->getProperty ("name").toString();
 
     juce::String label = family.isNotEmpty() ? family
                          : (plugin.isNotEmpty() ? plugin
                             : (title.isNotEmpty() ? title
-                               : (rule.isNotEmpty() ? rule : fallbackLabel)));
+                               : (logic.isNotEmpty() ? logic
+                                  : (recName.isNotEmpty() ? recName
+                                     : (symptom.isNotEmpty() ? symptom
+                                        : (si.isNotEmpty() ? si
+                                           : (hg2.isNotEmpty() ? hg2
+                                              : (rule.isNotEmpty() ? rule : fallbackLabel))))))));
 
     if (isNumber (o->getProperty ("order")))
         label = juce::String (juce::roundToInt (asNumber (o->getProperty ("order")))) + ". "
                 + (title.isNotEmpty() ? title : label);
+    else if (isNumber (o->getProperty ("step")))
+        label = juce::String (juce::roundToInt (asNumber (o->getProperty ("step")))) + ". "
+                + (plugin.isNotEmpty() ? plugin : label);
+    else if (isNumber (o->getProperty ("n")) && recName.isNotEmpty())
+        label = juce::String (juce::roundToInt (asNumber (o->getProperty ("n")))) + ". " + recName;
+
+    if (tip.isNotEmpty() && plugin.isEmpty() && title.isEmpty() && logic.isEmpty())
+    {
+        label = recName.isNotEmpty() ? recName : (o->getProperty ("id").toString().isNotEmpty()
+                                                      ? o->getProperty ("id").toString()
+                                                      : fallbackLabel);
+    }
 
     juce::ignoreUnused (index);
 
     juce::StringArray valueBits;
+    if (tip.isNotEmpty())
+        valueBits.add (tip);
     if (setting.isNotEmpty())
         valueBits.add (setting);
     if (detail.isNotEmpty())
         valueBits.add (detail);
     if (action.isNotEmpty())
         valueBits.add (action);
+    if (fix.isNotEmpty())
+        valueBits.add (fix);
+    if (alors.isNotEmpty())
+        valueBits.add (alors);
+    if (k3chEq.isNotEmpty())
+        valueBits.add (k3chEq);
+    if (chezToi.isNotEmpty())
+        valueBits.add (chezToi);
     if (chain.isNotEmpty())
         valueBits.add (chain);
     if (sendSrc.isNotEmpty())
         valueBits.add (sendSrc);
+    if (target.isNotEmpty())
+        valueBits.add (utf8 ("cible: ") + target);
+    if (sc.isNotEmpty())
+        valueBits.add ("SC " + sc);
     if (ratio.isNotEmpty())
         valueBits.add (ratio);
     if (auto* grArr = gr.getArray())
@@ -391,6 +436,8 @@ RecipeStep stepFromRecord (const juce::var& item, int index, const juce::String&
         hint = hint.isEmpty() ? where : hint + " / " + where;
     if (daw.isNotEmpty() && daw != "any")
         hint = hint.isEmpty() ? daw : hint + " / " + daw;
+    if (caract.isNotEmpty())
+        hint = hint.isEmpty() ? caract : hint + " / " + caract;
 
     return step (label, valueBits.joinIntoString ("  |  "), hint);
 }
@@ -421,7 +468,10 @@ std::vector<RecipeStep> stepsFromVar (const juce::String& key, const juce::var& 
                 && (first->hasProperty ("plugin") || first->hasProperty ("title")
                     || first->hasProperty ("rule") || first->hasProperty ("setting")
                     || first->hasProperty ("detail") || first->hasProperty ("action")
-                    || first->hasProperty ("chain"));
+                    || first->hasProperty ("chain") || first->hasProperty ("tip")
+                    || first->hasProperty ("symptom") || first->hasProperty ("si")
+                    || first->hasProperty ("hg2") || first->hasProperty ("logic_model")
+                    || first->hasProperty ("target") || first->hasProperty ("sidechain"));
 
             if (looksEq)
             {
@@ -569,7 +619,11 @@ bool isInlineRecipeKey (const juce::String& key)
     const auto k = lower (key);
     return k == "steps" || k == "chain_steps" || k.contains ("band")
         || k == "eq" || k == "comp" || k == "plugins" || k == "order"
-        || k == "chain" || k == "families" || k == "sends";
+        || k == "chain" || k == "families" || k == "sends"
+        || k == "tips" || k == "items" || k == "etages" || k == "circuits"
+        || k == "diagnostic" || k == "decision_tree" || k == "translations"
+        || k == "erreurs" || k == "install_order" || k == "priorites"
+        || k == "checklist" || k == "protocole_90s" || k == "recettes";
 }
 
 bool shouldSplitIntoCards (juce::DynamicObject& obj)
@@ -620,6 +674,8 @@ juce::String subtitleFromRecord (juce::DynamicObject& obj)
         if (n.isNotEmpty())
             bits.add (n);
     }
+    if (obj.getProperty ("approx").isBool() && static_cast<bool> (obj.getProperty ("approx")))
+        bits.add ("approx");
     return bits.joinIntoString (utf8 ("  \xc2\xb7  "));
 }
 
@@ -873,6 +929,10 @@ std::vector<RecipeCard> MixKnowledge::genericCards (const juce::String& title,
         card.notes = obj->getProperty ("notes").toString();
         if (card.notes.isEmpty())
             card.notes = obj->getProperty ("interdit").toString();
+        if (card.notes.isEmpty())
+            card.notes = obj->getProperty ("intention").toString();
+        if (card.notes.isEmpty())
+            card.notes = obj->getProperty ("phrase").toString();
         out.push_back (std::move (card));
         return out;
     }
@@ -972,18 +1032,61 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
 
     if (id == "vocal_rap")
     {
-        auto cards = collectArrayOrMap (presets, "presets");
-        auto tune = genericCards ("Auto-Tune", "autotune_guide", root.getProperty ("autotune_guide", {}));
-        auto sends = genericCards ("Sends", "sends_guide", root.getProperty ("sends_guide", {}));
+        std::vector<RecipeCard> cards;
+        if (auto* arr = presets.getArray())
+        {
+            int i = 0;
+            for (const auto& item : *arr)
+            {
+                const auto pid = idFromRecord (item, i);
+                if (pid.startsWith ("MIX_") || pid.startsWith ("FX_"))
+                    append (cards, genericCards (cardTitleFrom (pid, item),
+                                                 "presets." + pid, item));
+                ++i;
+            }
+        }
+        else
+        {
+            append (cards, collectArrayOrMap (presets, "presets"));
+        }
+
         RecipeCard chain;
         chain.id = "vocal.chain_order";
         chain.title = utf8 ("Ordre de cha\xc3\xaene");
         chain.steps = stepsFromVar ("vocal_chain_order", root.getProperty ("vocal_chain_order", {}));
         cards.insert (cards.begin(), std::move (chain));
-        append (cards, std::move (tune));
-        append (cards, std::move (sends));
+        append (cards, genericCards ("Auto-Tune", "autotune_guide", root.getProperty ("autotune_guide", {})));
+        append (cards, genericCards ("Sends", "sends_guide", root.getProperty ("sends_guide", {})));
+        append (cards, genericCards ("Backs / BGV", "backs_guide", root.getProperty ("backs_guide", {})));
         return cards;
     }
+
+    if (id == "artist_chains")
+    {
+        juce::StringArray frenchIds;
+        if (auto* fr = root.getProperty ("french_scene", {}).getArray())
+            for (const auto& item : *fr)
+                frenchIds.add (idFromRecord (item, 0));
+
+        std::vector<RecipeCard> cards;
+        if (auto* arr = presets.getArray())
+        {
+            int i = 0;
+            for (const auto& item : *arr)
+            {
+                const auto pid = idFromRecord (item, i);
+                const bool isStudioPreset = pid.startsWith ("MIX_") || pid.startsWith ("FX_");
+                if (! isStudioPreset && ! frenchIds.contains (pid))
+                    append (cards, genericCards (cardTitleFrom (pid, item),
+                                                 "artists." + pid, item));
+                ++i;
+            }
+        }
+        return cards;
+    }
+
+    if (id == "french_scene")
+        return collectArrayOrMap (root.getProperty ("french_scene", {}), "french_scene");
 
     if (id == "eq_guide")
     {
@@ -999,6 +1102,8 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
     {
         auto cards = genericCards ("Drums", "drums", drums);
         append (cards, genericCards ("808", "eight_oh_eight", root.getProperty ("eight_oh_eight", {})));
+        append (cards, genericCards (utf8 ("Basse jou\xc3\xa9" "e vs 808"), "bass_vs_808",
+                                     root.getProperty ("bass_vs_808", {})));
         append (cards, genericCards ("Compression", "compression_guide",
                                      root.getProperty ("compression_guide", {})));
         return cards;
@@ -1054,6 +1159,30 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
         return cards;
     }
 
+    if (id == "sidechains")
+        return genericCards ("5 sidechains", "sidechains", root.getProperty ("sidechains", {}));
+
+    if (id == "compressors")
+    {
+        auto cards = genericCards (utf8 ("7 circuits comp"), "compressor_circuits",
+                                   root.getProperty ("compressor_circuits", {}));
+        append (cards, genericCards (utf8 ("Sat HG-2 \xc3\xa9quivalents"), "sat_equivalents",
+                                     root.getProperty ("sat_equivalents", {})));
+        return cards;
+    }
+
+    if (id == "harsh")
+        return genericCards (utf8 ("Harsh multi-\xc3\xa9tages"), "harsh_guide", root.getProperty ("harsh_guide", {}));
+
+    if (id == "pense_bete")
+    {
+        auto cards = genericCards (utf8 ("Pense-b\xc3\xaate"), "pense_bete",
+                                   root.getProperty ("pense_bete", {}));
+        append (cards, genericCards (utf8 ("Cr\xc3\xa9" "ation presets"), "preset_creation_guide",
+                                     root.getProperty ("preset_creation_guide", {})));
+        return cards;
+    }
+
     // Optional explicit bindings: { "section_bindings": { "id": ["path", "path"] } }
     if (auto* bindings = root.getProperty ("section_bindings", {}).getDynamicObject())
     {
@@ -1085,8 +1214,14 @@ std::vector<RecipeCard> MixKnowledge::cardsForSectionId (const juce::String& id,
     // Generic: top-level key matching the section id
     if (auto* rootObj = root.getDynamicObject())
     {
-        if (rootObj->hasProperty (juce::Identifier (id)))
-            return genericCards (humanizeKey (id), id, rootObj->getProperty (id));
+        juce::String lookup = id;
+        if (id == "compressors")
+            lookup = "compressor_circuits";
+        else if (id == "harsh")
+            lookup = "harsh_guide";
+
+        if (rootObj->hasProperty (juce::Identifier (lookup)))
+            return genericCards (humanizeKey (id), lookup, rootObj->getProperty (lookup));
 
         // Nested "studio/<id>" etc.
         for (const auto& p : rootObj->getProperties())

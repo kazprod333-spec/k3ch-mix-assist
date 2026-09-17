@@ -2,57 +2,52 @@
 
 Runtime knowledge is **`Resources/mix-knowledge.json`**, compiled into the VST via JUCE BinaryData. The editor never calls a network API.
 
-## Current pack (2026-09-17 enrichi)
+## Current pack (2026-09-17b · batch2)
 
-Pulled from 12 PDFs + `BASE_DONNEES_MIX_K3CH_2026.xlsx` (see `EXTRACT_NOTES`). Counts:
+Merge of batch1 PDFs/xlsx + MIX fiches + artist PDFs + scène FR (see EXTRACT_NOTES).
 
 | Collection | Count |
 |------------|------:|
-| `presets[]` | 10 (ModernRap, Bodak, ALLTY5, Juice, BGV, Trap/Drill, Pop urbaine, Voix-off, PARA_AIR, PARA_BODY) |
-| `checklists[]` | 4 (25 steps) |
+| `presets[]` | **25** (10 MIX/FX + 7 artist/alias + 8 scène FR also listed in `french_scene`) |
+| `checklists[]` | 4 |
 | `eq_guide[]` | 20 |
-| `plugin_stacks[]` | 5 |
+| `plugin_stacks[]` | 6 |
 | `parallel_buses[]` | 6 |
+| `french_scene[]` | 8 |
+| `ui_sections[]` | **15** |
 
-`docs_pending_ingest` is empty after this ingest. Remaining gaps (artist PDF fiches, PARA/HARSH standalone PDFs) are listed in JSON `gaps`.
+New top-level guides: `sidechains`, `harsh_guide`, `compressor_circuits`, `sat_equivalents`, `bass_vs_808`, `backs_guide`, `pense_bete`, `preset_creation_guide`.
+
+`docs_pending_ingest` is empty. Remaining gaps are in JSON `gaps`.
 
 ## Schema the UI understands
 
 | Field | Role |
 |--------|------|
 | `ui_sections[]` | `{ id, title, priority }` — sidebar. **Add a row to add a screen.** |
-| `presets[]` | Array of chain objects (`id`, `name`, `eq_bands`, `comp`, `chain_steps`, …). Also still accepts the old `{ "id": {…} }` map. |
-| `checklists[]` | `{ title, daw, steps: [{ order, title, detail }] }` |
-| `eq_guide[]` | `{ problem, freq_hz, action, notes }` |
-| `eq_recipes_by_style[]`, `hpf_defaults` | Style starting points |
-| `plugin_stacks[]`, `parallel_buses[]` | Insert order / para buses |
-| `studio`, `drums`, `eight_oh_eight`, `mastering`, `compression_guide`, `vocal_chain_order`, `pipeline_rules`, `autotune_guide`, `sends_guide` | Bound to section ids + generic walker |
-| `section_bindings` (optional) | `{ "section_id": ["path"] }` if `id` ≠ JSON key |
-| `version`, `source` | Footer / About |
+| `presets[]` | Chain objects. Studio `MIX_*`/`FX_*` → **Chaîne voix rap**; other ids (except scène FR) → **Chaînes artistes** |
+| `french_scene[]` | Scène FR recipes (`ninho` … `rap_fr_generique`) |
+| `checklists[]` | `{ title, daw, steps[] }` |
+| `eq_guide[]`, `eq_recipes_by_style[]`, `hpf_defaults` | EQ |
+| `plugin_stacks[]`, `parallel_buses[]`, `sidechains` | Buses / SC |
+| `compressor_circuits` | UI id **`compressors`** |
+| `harsh_guide` | UI id **`harsh`** |
+| `pense_bete`, `preset_creation_guide` | UI id **`pense_bete`** |
+| `studio`, `drums`, `eight_oh_eight`, `bass_vs_808`, `mastering`, … | Bound + generic walker |
+| `section_bindings` (optional) | `{ "section_id": ["path"] }` |
 
-Generic walker:
+Ids that do not match a JSON key: `compressors` → `compressor_circuits`, `harsh` → `harsh_guide`. Unknown ids still walk a matching top-level key.
 
-- `_hz` / `_khz` / `_db` / `_dbfs` / `_dbtp` / `_lufs` / `_s` / `_ms` / `_pct` / `_minutes` → units
-- Two-number arrays → ranges (`-12–-6 dBFS`)
-- `eq_bands[]` / `{ freq_hz, gain_db, q, type }` → EQ rows (freq may be a range)
-- `{ plugin, gr_db \| setting, notes }` → insert steps
-- Checklist `{ order, title, detail }`
-- Arrays of objects → **one card each**
-- Split into extra cards only when a node is *only* nested groups (no leftover scalars)
-
-Known section ids: `session_checklist`, `vocal_rap`, `eq_guide`, `drums_808`, `gain_staging`, `mastering`, `fl_recording`, `parallel_buses`, `plugin_stacks`. Unknown ids still walk a matching top-level key.
+Generic walker: unit suffixes, ranges, `eq_bands`, `{ plugin, setting/gr_db }`, checklist steps, `{ tip }`, `{ symptom, fix }`, `{ si, alors }`, `{ hg2, k3ch }`, `{ logic_model, chez_toi }`, arrays of objects → cards.
 
 ## How to ingest more PDFs later
 
 1. Extract offline (`pdftotext -layout`, pandas/openpyxl).
-2. Append objects to `presets[]` / `checklists[]` / `eq_guide[]` using the same field names.
-3. Add a `ui_sections` row only for a **new** category whose `id` matches a top-level key (or `section_bindings`).
+2. Append to `presets[]` / `french_scene[]` / guide objects using the same field names.
+3. Add a `ui_sections` row only for a **new** category (`id` = JSON key, or alias in MixKnowledge).
 4. Bump `version`. Rebuild so BinaryData updates.
-5. Do **not** embed raw PDFs in the VST.
-
-Optional later: sidecar `mix-knowledge.json` next to the `.vst3`. v1 remains embedded-only.
 
 ## DSP backlog (not v1)
 
 - Keep the insert cheap (pass-through).
-- Do not clone Waves/CLA inside this binary; recipes are applied by hand in FL / Studio One.
+- Recipes are applied by hand in FL / Studio One.

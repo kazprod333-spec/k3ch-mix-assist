@@ -12,8 +12,8 @@ MixAssistEditor::MixAssistEditor (MixAssistProcessor& p)
     juce::LookAndFeel::setDefaultLookAndFeel (&lnf);
     setOpaque (true);
     setResizable (true, true);
-    setResizeLimits (860, 560, 1600, 1200);
-    setSize (1020, 700);
+    setResizeLimits (860, 560, 1600, 1400);
+    setSize (1040, 720);
 
     currentSectionId = processor.selectedSectionId;
 
@@ -23,6 +23,10 @@ MixAssistEditor::MixAssistEditor (MixAssistProcessor& p)
     search.setEscapeAndReturnKeysConsumed (true);
     search.onTextChange = [this] { applyFilter(); };
     addAndMakeVisible (search);
+
+    navViewport.setViewedComponent (&navColumn, false);
+    navViewport.setScrollBarsShown (true, false);
+    addAndMakeVisible (navViewport);
 
     viewport.setViewedComponent (&recipeView, false);
     viewport.setScrollBarsShown (true, false);
@@ -85,7 +89,7 @@ void MixAssistEditor::rebuildNav()
         btn->setConnectedEdges (juce::Button::ConnectedOnTop | juce::Button::ConnectedOnBottom);
         const auto id = section.id;
         btn->onClick = [this, id] { showSection (id); };
-        addAndMakeVisible (btn);
+        navColumn.addAndMakeVisible (btn);
     }
 }
 
@@ -204,7 +208,7 @@ void MixAssistEditor::paint (juce::Graphics& g)
     g.setColour (pal.border);
     g.fillRect (footer.getX(), footer.getY(), footer.getWidth(), 1);
 
-    auto sidebar = juce::Rectangle<int> (0, 80, 228, getHeight() - 80 - 50);
+    auto sidebar = juce::Rectangle<int> (0, 80, 236, getHeight() - 80 - 50);
     g.setColour (pal.bgSidebar);
     g.fillRect (sidebar);
     g.setColour (pal.border);
@@ -216,7 +220,7 @@ void MixAssistEditor::resized()
     auto bounds = getLocalBounds();
     auto header = bounds.removeFromTop (80);
     auto footer = bounds.removeFromBottom (50);
-    auto sidebar = bounds.removeFromLeft (228);
+    auto sidebar = bounds.removeFromLeft (236);
 
     auto headerRight = header.removeFromRight (360).reduced (16, 16);
     bypassButton.setBounds (headerRight.removeFromRight (90).reduced (4, 8));
@@ -231,18 +235,20 @@ void MixAssistEditor::resized()
 
     auto nav = sidebar.reduced (12, 12);
     search.setBounds (nav.removeFromTop (32));
-    nav.removeFromTop (10);
+    nav.removeFromTop (8);
+    navViewport.setBounds (nav);
 
     const int n = navButtons.size();
-    int gap = 4;
-    int btnH = 32;
-    if (n > 0)
-        btnH = juce::jlimit (24, 34, (nav.getHeight() / n) - gap);
+    const int gap = 3;
+    const int btnH = n > 12 ? 26 : 30;
+    const int innerW = juce::jmax (80, navViewport.getMaximumVisibleWidth() - 2);
+    int y = 0;
     for (auto* btn : navButtons)
     {
-        btn->setBounds (nav.removeFromTop (btnH));
-        nav.removeFromTop (6);
+        btn->setBounds (0, y, innerW, btnH);
+        y += btnH + gap;
     }
+    navColumn.setSize (innerW, y);
 
     viewport.setBounds (bounds.reduced (16, 16));
     recipeView.setSize (juce::jmax (200, viewport.getMaximumVisibleWidth() - 4),

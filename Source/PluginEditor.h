@@ -30,6 +30,8 @@ private:
 
     juce::TextEditor search;
     juce::OwnedArray<juce::TextButton> navButtons;
+    juce::Viewport navViewport;
+    juce::Component navColumn;
     juce::Viewport viewport;
     RecipeView recipeView;
     LevelMeter meter;
