@@ -1,0 +1,92 @@
+{
+  "source": "Grok project MIX (Maison K3CH Production)",
+  "version": "2026-09-17",
+  "studio": {
+    "name": "Maison K3CH Production",
+    "workflow": {
+      "recording_daw": "FL Studio",
+      "mixing_daw": "Studio One",
+      "notes": "Record/arrange in FL Studio, export clean 24-bit WAV stems, mix in Studio One. Do not return to FL after transfer for the mix session."
+    },
+    "recording": {
+      "sample_rate_hz": 48000,
+      "bit_depth": 24,
+      "input_peaks_dbfs": [-12, -6],
+      "buffer_samples": [64, 128],
+      "direct_monitoring": true
+    },
+    "gain_staging": {
+      "target_rms_dbfs": [-18, -12],
+      "static_balance_minutes": 15,
+      "static_balance_rule": "Faders and pan only for first 15 minutes, no plugins",
+      "check_mono_and_references_every_minutes": [10, 15]
+    }
+  },
+  "vocal_chain_order": [
+    "Tune",
+    "Corrective EQ",
+    "Compression",
+    "De-essing",
+    "Saturation",
+    "Creative EQ / width",
+    "Reverb / delay sends"
+  ],
+  "presets": {
+    "modern_rap_vocal_start": {
+      "name": "Rap vocal moderne — point de départ",
+      "hpf_hz": 85,
+      "eq": [
+        {"freq_hz": 280, "gain_db": -3, "q": 1.2, "type": "bell"},
+        {"freq_hz": 3500, "gain_db": 2, "q": null, "type": "bell"},
+        {"freq_hz": 11000, "gain_db": 1.8, "q": null, "type": "bell"}
+      ],
+      "tune_amount": [20, 30],
+      "comp_fet": {"model": "CLA-76 / FET", "gr_db": [4, 7]},
+      "comp_leveler": {"model": "RVox", "gr_db": [2, 3]},
+      "deess_khz": [5, 7],
+      "reverb_decay_s": [0.8, 1.4],
+      "delay": {"note": "1/4 or 1/8", "filtered": true}
+    }
+  },
+  "drums": {
+    "kick": {
+      "thump_hz": [50, 80],
+      "click_khz": [2, 4],
+      "cut_cardboard_hz": [250, 400]
+    },
+    "eight_oh_eight": {
+      "hpf_hz": [20, 30],
+      "mono_below_hz": [80, 120],
+      "kick_sidechain_db": [1, 2],
+      "saturation_before_bass_bus": true
+    }
+  },
+  "compression_guide": {
+    "vocal_fet_insert_gr_db": [3, 7],
+    "vocal_opto_rvox_gr_db": [2, 4],
+    "bus_ssl_vca_glue_gr_db": [1, 2]
+  },
+  "mastering": {
+    "separate_session": true,
+    "limiter": "Pro-L 2",
+    "true_peak_max_dbtp": -1,
+    "target_lufs": [-12, -10],
+    "export": "WAV 24-bit"
+  },
+  "ui_sections": [
+    {"id": "session_checklist", "title": "Checklist session", "priority": 1},
+    {"id": "vocal_rap", "title": "Chaîne voix rap", "priority": 2},
+    {"id": "eq_guide", "title": "EQ voix", "priority": 3},
+    {"id": "drums_808", "title": "Kick / 808", "priority": 4},
+    {"id": "gain_staging", "title": "Gain staging", "priority": 5},
+    {"id": "mastering", "title": "Mastering cible", "priority": 6}
+  ],
+  "docs_pending_ingest": [
+    "THE_kAz_MIX_METHOD_AND_WORKFLOW_V2.pdf",
+    "FX_Chains_Recording_FLStudio.pdf",
+    "FICHE_CHEATSHEET_MIX_SESSION_K3CH_2026.pdf",
+    "BASE_DONNEES_MIX_K3CH_2026.xlsx",
+    "Templates_Chaines_Rap_Pop_VoixOff.pdf",
+    "Vocal_Chains_Complet_2026.pdf"
+  ]
+}

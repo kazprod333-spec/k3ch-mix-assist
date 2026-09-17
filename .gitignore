@@ -1,0 +1,37 @@
+# Build trees
+/build/
+/build-*/
+/cmake-build-*/
+/out/
+/_deps/
+
+# Local JUCE checkout (optional)
+/JUCE/
+
+# IDEs
+/.vs/
+/.idea/
+/*.user
+/*.suo
+/*.VC.db
+/CMakeUserPresets.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Compiler / debug
+*.o
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.dll
+*.so
+*.dylib
+*.app
+*.dSYM/
+
+# Generated artefacts if built in-tree
+*_artefacts/
