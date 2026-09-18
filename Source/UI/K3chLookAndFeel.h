@@ -48,6 +48,10 @@ public:
     juce::Font getComboBoxFont (juce::ComboBox&) override;
     void drawPopupMenuBackground (juce::Graphics&, int width, int height) override;
 
+    void drawTabButton (juce::TabBarButton& button, juce::Graphics& g,
+                        bool isMouseOver, bool isMouseDown) override;
+    int getTabButtonBestWidth (juce::TabBarButton&, int tabDepth) override;
+
     Palette palette;
 };
 

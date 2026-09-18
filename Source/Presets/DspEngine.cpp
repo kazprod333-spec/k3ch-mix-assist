@@ -263,6 +263,7 @@ void DspEngine::Compressor::process (float& L, float& R, const VocalSettings& v,
     const float gr = dbToLin (-grDb) * dbToLin (v.compMakeupDb);
     L *= gr;
     R *= gr;
+    lastGrDb += 0.18f * (grDb - lastGrDb);
 }
 
 void DspEngine::Compressor::processSmash (float& L, float& R, float amount, double sampleRate)
@@ -372,15 +373,19 @@ void DspEngine::updateSendCoeffs (SendSlot& slot)
 
 void DspEngine::processVocalSample (float& L, float& R)
 {
-    hpf.process (L, R);
-    hpf2.process (L, R);
+    if (vocal.hpfOn)
+    {
+        hpf.process (L, R);
+        if (vocal.hpfSlope24)
+            hpf2.process (L, R);
+    }
     eqLow.process (L, R);
     eqMid.process (L, R);
     eqAir.process (L, R);
     comp.process (L, R, vocal, sr);
     deess.process (L, R, vocal.deessHz, vocal.deessAmount, sr);
 
-    if (vocal.satMix > 0.001f)
+    if (vocal.satOn && vocal.satMix > 0.001f)
     {
         const float wetL = saturate (L, vocal.satDrive);
         const float wetR = saturate (R, vocal.satDrive);
@@ -480,14 +485,37 @@ void DspEngine::process (float* const* io, int numChannels, int numSamples)
         procR.resize ((size_t) n, 0.0f);
     }
 
+    const float smooth = 1.0f - expCoeff (20.0f, sr);
+    if (! primed)
+    {
+        smDryWet = mix.dryWet;
+        smRet = mix.returnMix;
+        smIn = mix.inputGain;
+        smOut = mix.outputGain;
+        smSendA = mix.sendGainA;
+        smSendB = mix.sendGainB;
+        primed = true;
+    }
+    else
+    {
+        smDryWet += smooth * (mix.dryWet - smDryWet);
+        smRet += smooth * (mix.returnMix - smRet);
+        smIn += smooth * (mix.inputGain - smIn);
+        smOut += smooth * (mix.outputGain - smOut);
+        smSendA += smooth * (mix.sendGainA - smSendA);
+        smSendB += smooth * (mix.sendGainB - smSendB);
+    }
+
     const float* inL = io[0];
     const float* inR = numChannels > 1 ? io[1] : io[0];
     for (int i = 0; i < n; ++i)
     {
-        dryL[(size_t) i] = inL[i];
-        dryR[(size_t) i] = inR[i];
-        procL[(size_t) i] = inL[i];
-        procR[(size_t) i] = inR[i];
+        const float xL = inL[i] * smIn;
+        const float xR = inR[i] * smIn;
+        dryL[(size_t) i] = xL;
+        dryR[(size_t) i] = xR;
+        procL[(size_t) i] = xL;
+        procR[(size_t) i] = xR;
     }
 
     if (vocalDirty)
@@ -510,25 +538,6 @@ void DspEngine::process (float* const* io, int numChannels, int numSamples)
         a.tmpR[(size_t) i] = procR[(size_t) i];
         b.tmpL[(size_t) i] = procL[(size_t) i];
         b.tmpR[(size_t) i] = procR[(size_t) i];
-    }
-
-    const float smooth = 1.0f - expCoeff (20.0f, sr);
-    if (! primed)
-    {
-        smDryWet = mix.dryWet;
-        smRet = mix.returnMix;
-        smOut = mix.outputGain;
-        smSendA = mix.sendGainA;
-        smSendB = mix.sendGainB;
-        primed = true;
-    }
-    else
-    {
-        smDryWet += smooth * (mix.dryWet - smDryWet);
-        smRet += smooth * (mix.returnMix - smRet);
-        smOut += smooth * (mix.outputGain - smOut);
-        smSendA += smooth * (mix.sendGainA - smSendA);
-        smSendB += smooth * (mix.sendGainB - smSendB);
     }
 
     processSend (a, a.tmpL.data(), a.tmpR.data(), n, smSendA);

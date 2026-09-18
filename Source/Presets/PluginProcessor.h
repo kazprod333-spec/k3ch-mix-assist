@@ -44,6 +44,7 @@ public:
 
     bool isBypassed() const;
     void getMeterLevels (float& peakL, float& peakR, float& rmsL, float& rmsR) const;
+    float getCompGrDb() const;
 
     k3ch_presets::Command applyCommand (const juce::String& text);
     void loadVocalIndex (int index, bool notifyHost = true);
@@ -58,6 +59,8 @@ private:
     void setFloatParam (const juce::String& id, float value, bool notifyHost);
     void setChoiceParam (const juce::String& id, int index, bool notifyHost);
     void setBoolParam (const juce::String& id, bool value, bool notifyHost);
+    void writeSendParams (int sendSlot, const k3ch_presets::SendSettings& s, bool notifyHost);
+    juce::String sendParamId (int sendSlot, const char* suffix) const;
 
     k3ch_presets::DspEngine engine;
     k3ch_presets::CommandParser parser;

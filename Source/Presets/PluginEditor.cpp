@@ -1,5 +1,27 @@
 #include "PluginEditor.h"
 
+namespace
+{
+void colourLabel (juce::Label& l, juce::Colour c)
+{
+    l.setColour (juce::Label::textColourId, c);
+}
+
+void sectionTitle (juce::Label& l, const juce::String& text, juce::Colour gold)
+{
+    l.setText (text, juce::dontSendNotification);
+    l.setColour (juce::Label::textColourId, gold);
+    l.setFont (juce::Font (juce::FontOptions (13.0f).withStyle ("Bold")));
+}
+
+int stackRows (juce::Rectangle<int>& r, juce::Component& c, int h = 26, int gap = 4)
+{
+    c.setBounds (r.removeFromTop (h));
+    r.removeFromTop (gap);
+    return h + gap;
+}
+} // namespace
+
 PresetsEditor::PresetsEditor (PresetsProcessor& p)
     : AudioProcessorEditor (&p),
       processor (p),
@@ -9,8 +31,8 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     juce::LookAndFeel::setDefaultLookAndFeel (&lnf);
     setOpaque (true);
     setResizable (true, true);
-    setResizeLimits (1100, 760, 1800, 1400);
-    setSize (1260, 920);
+    setResizeLimits (1120, 780, 1800, 1400);
+    setSize (1320, 900);
 
     applyChainButton.setButtonText (juce::String::fromUTF8 ("Appliquer la cha\xc3\xae" "ne"));
     copyPlanButton.setButtonText (juce::String::fromUTF8 ("Copier"));
@@ -34,11 +56,11 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
             "Un VST3 ne peut pas ins\xc3\xa9rer ni contr\xc3\xb4ler d\xe2\x80\x99" "autres plugins tiers "
             "sur les inserts du mixer FL."),
         juce::dontSendNotification);
-    constraintNote.setColour (juce::Label::textColourId, lnf.palette.gold);
+    colourLabel (constraintNote, lnf.palette.gold);
     constraintNote.setJustificationType (juce::Justification::centredLeft);
     addAndMakeVisible (constraintNote);
 
-    statusLabel.setColour (juce::Label::textColourId, lnf.palette.muted);
+    colourLabel (statusLabel, lnf.palette.muted);
     statusLabel.setJustificationType (juce::Justification::centredLeft);
     addAndMakeVisible (statusLabel);
 
@@ -53,7 +75,7 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     addAndMakeVisible (aboutButton);
 
     chainLabel.setText (juce::String::fromUTF8 ("Cha\xc3\xae" "ne (insert FL)"), juce::dontSendNotification);
-    chainLabel.setColour (juce::Label::textColourId, lnf.palette.gold);
+    colourLabel (chainLabel, lnf.palette.gold);
     addAndMakeVisible (chainLabel);
 
     vocalBox.setTextWhenNothingSelected (juce::String::fromUTF8 ("Cha\xc3\xae" "ne"));
@@ -73,56 +95,23 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     applyChainButton.onClick = [this] { applySelectedChain(); };
     addAndMakeVisible (applyChainButton);
 
-    chainHint.setText (juce::String::fromUTF8 (
-                           "Pose CE plug-in sur l\xe2\x80\x99insert FL choisi. "
-                           "La cha\xc3\xae" "ne s\xe2\x80\x99" "applique ici, dans l\xe2\x80\x99ordre, avec les r\xc3\xa9" "glages."),
-                       juce::dontSendNotification);
-    chainHint.setColour (juce::Label::textColourId, lnf.palette.muted);
-    chainHint.setJustificationType (juce::Justification::topLeft);
-    addAndMakeVisible (chainHint);
-
-    styleReadOnly (chainView);
-    addAndMakeVisible (chainView);
-
-    planHint.setText (juce::String::fromUTF8 (
-                          "Checklist manuelle si tu veux recr\xc3\xa9" "er CLA-76, RVox, etc. sur le mixer FL."),
-                      juce::dontSendNotification);
-    planHint.setColour (juce::Label::textColourId, lnf.palette.muted);
-    planHint.setJustificationType (juce::Justification::centredLeft);
-    addAndMakeVisible (planHint);
-
-    copyPlanButton.setColour (juce::TextButton::buttonColourId, juce::Colour (0xff2a2416));
-    copyPlanButton.setColour (juce::TextButton::textColourOffId, lnf.palette.gold);
-    copyPlanButton.onClick = [this] { copyFlInsertPlan(); };
-    addAndMakeVisible (copyPlanButton);
-
-    styleReadOnly (planView);
-    addAndMakeVisible (planView);
-
-    sendTargetLabel.setText (juce::String::fromUTF8 ("1. Placer sur"), juce::dontSendNotification);
-    sendTargetLabel.setColour (juce::Label::textColourId, lnf.palette.gold);
+    sendTargetLabel.setText (juce::String::fromUTF8 ("Placer sur"), juce::dontSendNotification);
+    colourLabel (sendTargetLabel, lnf.palette.gold);
     addAndMakeVisible (sendTargetLabel);
-
     sendTargetBox.addItem ("Send A", 1);
     sendTargetBox.addItem ("Send B", 2);
     sendTargetBox.setSelectedId (1, juce::dontSendNotification);
     addAndMakeVisible (sendTargetBox);
 
-    fxPresetLabel.setText ("2. Preset FX", juce::dontSendNotification);
-    fxPresetLabel.setColour (juce::Label::textColourId, lnf.palette.gold);
+    fxPresetLabel.setText ("Preset FX", juce::dontSendNotification);
+    colourLabel (fxPresetLabel, lnf.palette.gold);
     addAndMakeVisible (fxPresetLabel);
-
     fxPresetBox.setTextWhenNothingSelected ("Preset FX");
     int fxId = 1;
     for (const auto& name : processor.library.fxNames())
         fxPresetBox.addItem (name, fxId++);
     const int air = processor.library.findFxIndex ("air");
     fxPresetBox.setSelectedItemIndex (air >= 0 ? air : 0, juce::dontSendNotification);
-    fxPresetBox.onChange = [this]
-    {
-        if (const auto* fx = processor.library.fxAt (fxPresetBox.getSelectedItemIndex()))
-            fxChoiceReadout.setText (fx->notes, juce::dontSendNotification);
-    };
     addAndMakeVisible (fxPresetBox);
 
     placeButton.setColour (juce::TextButton::buttonColourId, juce::Colour (0xff2a2416));
@@ -130,104 +119,219 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     placeButton.onClick = [this] { placeFxOnSelectedSend(); };
     addAndMakeVisible (placeButton);
 
-    placeHint.setText (juce::String::fromUTF8 (
-                           "Je choisis le send, je choisis le preset, j'applique. "
-                           "Sends internes \xc3\xa0 CE plug-in \xe2\x80\x94 pas le mixer FL."),
+    tabs.setOutline (0);
+    tabs.setTabBarDepth (34);
+    tabs.setColour (juce::TabbedComponent::backgroundColourId, lnf.palette.bg);
+    tabs.setColour (juce::TabbedComponent::outlineColourId, lnf.palette.border);
+    addAndMakeVisible (tabs);
+
+    auto addTab = [this] (const juce::String& name, LayoutPage& page)
+    {
+        tabs.addTab (name, lnf.palette.bgCard, &page, false);
+    };
+    addTab (juce::String::fromUTF8 ("Cha\xc3\xae" "ne vocale"), pageChain);
+    addTab ("EQ", pageEq);
+    addTab ("Dynamique", pageDyn);
+    addTab ("Sat", pageSat);
+    addTab ("Send A", pageSendA);
+    addTab ("Send B", pageSendB);
+    addTab ("Plan FL", pagePlan);
+
+    pageChain.lay = [this] { layoutChainPage(); };
+    pageEq.lay = [this] { layoutEqPage(); };
+    pageDyn.lay = [this] { layoutDynPage(); };
+    pageSat.lay = [this] { layoutSatPage(); };
+    pageSendA.lay = [this]
+    {
+        auto r = pageSendA.getLocalBounds().reduced (16, 12);
+        sendATitle.setBounds (r.removeFromTop (22));
+        r.removeFromTop (6);
+        sendABox.setBounds (r.removeFromTop (30));
+        r.removeFromTop (6);
+        sendALevel.setBounds (r.removeFromTop (26));
+        r.removeFromTop (6);
+        sendANotes.setBounds (r.removeFromTop (36));
+        r.removeFromTop (8);
+        ControlRow* list[] = {
+            &saHpf, &saLpf, &saSmash, &saDsHz, &saDs, &saSatDrv, &saSatMix,
+            &saRevMix, &saRevDec, &saRevDamp, &saDlyMix, &saDlyMs, &saDlyFb,
+            &saHarshHz, &saHarshCut
+        };
+        const int cols = 2;
+        const int rowH = 26;
+        const int gap = 5;
+        const int colW = (r.getWidth() - 16) / cols;
+        for (int n = 0; n < 15; ++n)
+        {
+            const int col = n % cols;
+            const int row = n / cols;
+            list[n]->setBounds (r.getX() + col * (colW + 16),
+                                r.getY() + row * (rowH + gap),
+                                colW, rowH);
+        }
+    };
+    pageSendB.lay = [this]
+    {
+        auto r = pageSendB.getLocalBounds().reduced (16, 12);
+        sendBTitle.setBounds (r.removeFromTop (22));
+        r.removeFromTop (6);
+        sendBBox.setBounds (r.removeFromTop (30));
+        r.removeFromTop (6);
+        sendBLevel.setBounds (r.removeFromTop (26));
+        r.removeFromTop (6);
+        sendBNotes.setBounds (r.removeFromTop (36));
+        r.removeFromTop (8);
+        ControlRow* list[] = {
+            &sbHpf, &sbLpf, &sbSmash, &sbDsHz, &sbDs, &sbSatDrv, &sbSatMix,
+            &sbRevMix, &sbRevDec, &sbRevDamp, &sbDlyMix, &sbDlyMs, &sbDlyFb,
+            &sbHarshHz, &sbHarshCut
+        };
+        const int cols = 2;
+        const int rowH = 26;
+        const int gap = 5;
+        const int colW = (r.getWidth() - 16) / cols;
+        for (int n = 0; n < 15; ++n)
+        {
+            const int col = n % cols;
+            const int row = n / cols;
+            list[n]->setBounds (r.getX() + col * (colW + 16),
+                                r.getY() + row * (rowH + gap),
+                                colW, rowH);
+        }
+    };
+    pagePlan.lay = [this] { layoutPlanPage(); };
+
+    chainHint.setText (juce::String::fromUTF8 (
+                           "Pose CE plug-in sur l\xe2\x80\x99insert FL choisi. "
+                           "Appliquer remplit tous les r\xc3\xa9" "glages \xe2\x80\x94 tu peux tout retoucher ensuite."),
                        juce::dontSendNotification);
-    placeHint.setColour (juce::Label::textColourId, lnf.palette.muted);
-    placeHint.setJustificationType (juce::Justification::topLeft);
-    addAndMakeVisible (placeHint);
+    colourLabel (chainHint, lnf.palette.muted);
+    chainHint.setJustificationType (juce::Justification::topLeft);
+    addTo (pageChain, chainHint);
+    styleReadOnly (chainView);
+    addTo (pageChain, chainView);
 
-    fxChoiceReadout.setColour (juce::Label::textColourId, lnf.palette.muted);
-    fxChoiceReadout.setJustificationType (juce::Justification::topLeft);
-    addAndMakeVisible (fxChoiceReadout);
+    hpfOn.setup (processor.apvts, "hpf_on", "HPF actif");
+    hpfSlope.setup (processor.apvts, "hpf_slope", "Pente");
+    hpfHz.setup (processor.apvts, "hpf_hz", juce::String::fromUTF8 ("Fr\xc3\xa9quence"), " Hz");
+    inputDb.setup (processor.apvts, "input_db", juce::String::fromUTF8 ("Entr\xc3\xa9" "e"), " dB");
+    dryWet.setupPercent (processor.apvts, "dry_wet", "Dry/Wet");
+    returnMix.setupPercent (processor.apvts, "return_mix", "Return mix");
+    outputDb.setup (processor.apvts, "output_db", "Sortie", " dB");
+    addTo (pageChain, hpfOn);
+    addTo (pageChain, hpfSlope);
+    addTo (pageChain, hpfHz);
+    addTo (pageChain, inputDb);
+    addTo (pageChain, dryWet);
+    addTo (pageChain, returnMix);
+    addTo (pageChain, outputDb);
 
-    auto setupName = [this] (juce::Label& l)
+    sectionTitle (eqMudTitle, juce::String::fromUTF8 ("Mud  \xc2\xb7  cloche"), lnf.palette.gold);
+    sectionTitle (eqMidTitle, juce::String::fromUTF8 ("Pr\xc3\xa9sence  \xc2\xb7  cloche"), lnf.palette.gold);
+    sectionTitle (eqAirTitle, "Air  ·  shelf", lnf.palette.gold);
+    eqLowHz.setup (processor.apvts, "eq_low_hz", juce::String::fromUTF8 ("Fr\xc3\xa9quence"), " Hz");
+    eqLowG.setup (processor.apvts, "eq_low_gain", "Gain", " dB");
+    eqLowQ.setup (processor.apvts, "eq_low_q", "Facteur Q", {});
+    eqMidHz.setup (processor.apvts, "eq_mid_hz", juce::String::fromUTF8 ("Fr\xc3\xa9quence"), " Hz");
+    eqMidG.setup (processor.apvts, "eq_mid_gain", "Gain", " dB");
+    eqMidQ.setup (processor.apvts, "eq_mid_q", "Facteur Q", {});
+    eqAirHz.setup (processor.apvts, "eq_air_hz", juce::String::fromUTF8 ("Fr\xc3\xa9quence"), " Hz");
+    eqAirG.setup (processor.apvts, "eq_air_gain", "Gain", " dB");
+    for (auto* c : { &eqMudTitle, &eqMidTitle, &eqAirTitle })
+        addTo (pageEq, *c);
+    for (auto* c : { &eqLowHz, &eqLowG, &eqLowQ, &eqMidHz, &eqMidG, &eqMidQ, &eqAirHz, &eqAirG })
+        addTo (pageEq, *c);
+
+    sectionTitle (compTitle, "Compresseur", lnf.palette.gold);
+    sectionTitle (deessTitle, "De-esser", lnf.palette.gold);
+    compTh.setup (processor.apvts, "comp_threshold", "Seuil", " dB");
+    compRatio.setup (processor.apvts, "comp_ratio", "Ratio", " :1");
+    compAtk.setup (processor.apvts, "comp_attack", "Attaque", " ms");
+    compRel.setup (processor.apvts, "comp_release", "Release", " ms");
+    compMk.setup (processor.apvts, "comp_makeup", "Makeup", " dB");
+    deessHz.setup (processor.apvts, "deess_hz", juce::String::fromUTF8 ("Fr\xc3\xa9quence"), " Hz");
+    deessAmt.setupPercent (processor.apvts, "deess_amount", "Amount");
+    addTo (pageDyn, compTitle);
+    addTo (pageDyn, deessTitle);
+    addTo (pageDyn, grMeter);
+    for (auto* c : { &compTh, &compRatio, &compAtk, &compRel, &compMk, &deessHz, &deessAmt })
+        addTo (pageDyn, *c);
+
+    satOn.setup (processor.apvts, "sat_on", "Saturation active");
+    satDrv.setupPercent (processor.apvts, "sat_drive", "Drive");
+    satMix.setupPercent (processor.apvts, "sat_mix", "Mix");
+    addTo (pageSat, satOn);
+    addTo (pageSat, satDrv);
+    addTo (pageSat, satMix);
+
+    auto setupSend = [this] (juce::Label& title, const juce::String& text, juce::ComboBox& box,
+                             const char* choiceId,
+                             std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment>& att,
+                             ControlRow& level, const char* levelId, juce::Label& notes,
+                             LayoutPage& page,
+                             ControlRow& hpf, ControlRow& lpf, ControlRow& smash,
+                             ControlRow& dsHz, ControlRow& ds, ControlRow& sDrv, ControlRow& sMix,
+                             ControlRow& rMix, ControlRow& rDec, ControlRow& rDamp,
+                             ControlRow& dMix, ControlRow& dMs, ControlRow& dFb,
+                             ControlRow& hHz, ControlRow& hCut,
+                             const juce::String& prefix)
     {
-        l.setColour (juce::Label::textColourId, lnf.palette.text);
-        l.setFont (juce::Font (juce::FontOptions (16.0f).withStyle ("Bold")));
-        l.setJustificationType (juce::Justification::centredLeft);
-        addAndMakeVisible (l);
+        sectionTitle (title, text, lnf.palette.gold);
+        addTo (page, title);
+        addTo (page, box);
+        att = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
+            processor.apvts, choiceId, box);
+        level.setup (processor.apvts, levelId, "Niveau", " dB");
+        addTo (page, level);
+        colourLabel (notes, lnf.palette.muted);
+        notes.setJustificationType (juce::Justification::topLeft);
+        addTo (page, notes);
+        hpf.setup (processor.apvts, prefix + "hpf", "HPF", " Hz");
+        lpf.setup (processor.apvts, prefix + "lpf", "LPF", " Hz");
+        smash.setupPercent (processor.apvts, prefix + "smash", "Smash");
+        dsHz.setup (processor.apvts, prefix + "deess_hz", "De-ess Hz", " Hz");
+        ds.setupPercent (processor.apvts, prefix + "deess", "De-ess");
+        sDrv.setupPercent (processor.apvts, prefix + "sat_drv", "Sat drive");
+        sMix.setupPercent (processor.apvts, prefix + "sat_mix", "Sat mix");
+        rMix.setupPercent (processor.apvts, prefix + "rev_mix", "Reverb mix");
+        rDec.setup (processor.apvts, prefix + "rev_decay", "Decay", " s");
+        rDamp.setupPercent (processor.apvts, prefix + "rev_damp", "Damp");
+        dMix.setupPercent (processor.apvts, prefix + "dly_mix", "Delay mix");
+        dMs.setup (processor.apvts, prefix + "dly_ms", "Delay", " ms");
+        dFb.setupPercent (processor.apvts, prefix + "dly_fb", "Feedback");
+        hHz.setup (processor.apvts, prefix + "harsh_hz", "Harsh Hz", " Hz");
+        hCut.setup (processor.apvts, prefix + "harsh_cut", "Harsh cut", " dB");
+        for (auto* c : { &hpf, &lpf, &smash, &dsHz, &ds, &sDrv, &sMix, &rMix, &rDec, &rDamp, &dMix, &dMs, &dFb, &hHz, &hCut })
+            addTo (page, *c);
     };
-    setupName (sendAName);
-    setupName (sendBName);
 
-    auto setupLevel = [this] (juce::Slider& s)
-    {
-        s.setSliderStyle (juce::Slider::LinearHorizontal);
-        s.setTextBoxStyle (juce::Slider::TextBoxRight, false, 62, 20);
-        s.setTextValueSuffix (" dB");
-        addAndMakeVisible (s);
-    };
-    setupLevel (sendALevel);
-    setupLevel (sendBLevel);
-    sendAAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
-        processor.apvts, "send_a_db", sendALevel);
-    sendBAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
-        processor.apvts, "send_b_db", sendBLevel);
+    setupSend (sendATitle, juce::String::fromUTF8 ("Send A  \xc2\xb7  FX interne"), sendABox, "send_a_preset",
+               sendABoxAttach, sendALevel, "send_a_db", sendANotes, pageSendA,
+               saHpf, saLpf, saSmash, saDsHz, saDs, saSatDrv, saSatMix,
+               saRevMix, saRevDec, saRevDamp, saDlyMix, saDlyMs, saDlyFb, saHarshHz, saHarshCut, "send_a_");
+    setupSend (sendBTitle, juce::String::fromUTF8 ("Send B  \xc2\xb7  FX interne"), sendBBox, "send_b_preset",
+               sendBBoxAttach, sendBLevel, "send_b_db", sendBNotes, pageSendB,
+               sbHpf, sbLpf, sbSmash, sbDsHz, sbDs, sbSatDrv, sbSatMix,
+               sbRevMix, sbRevDec, sbRevDamp, sbDlyMix, sbDlyMs, sbDlyFb, sbHarshHz, sbHarshCut, "send_b_");
 
-    sendAReadout.setColour (juce::Label::textColourId, lnf.palette.muted);
-    sendBReadout.setColour (juce::Label::textColourId, lnf.palette.muted);
-    sendAReadout.setJustificationType (juce::Justification::topLeft);
-    sendBReadout.setJustificationType (juce::Justification::topLeft);
-    addAndMakeVisible (sendAReadout);
-    addAndMakeVisible (sendBReadout);
-
-    auto setupMix = [this] (juce::Slider& s, const juce::String& suffix)
-    {
-        s.setSliderStyle (juce::Slider::LinearHorizontal);
-        s.setTextBoxStyle (juce::Slider::TextBoxRight, false, 56, 20);
-        s.setTextValueSuffix (suffix);
-        addAndMakeVisible (s);
-    };
-    setupMix (dryWet, " %");
-    setupMix (returnMix, " %");
-    setupMix (outputDb, " dB");
-
-    dryAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
-        processor.apvts, "dry_wet", dryWet);
-    retAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
-        processor.apvts, "return_mix", returnMix);
-    outAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
-        processor.apvts, "output_db", outputDb);
-
-    dryWet.textFromValueFunction = [] (double v)
-    {
-        return juce::String (juce::roundToInt (v * 100.0));
-    };
-    dryWet.valueFromTextFunction = [] (const juce::String& t)
-    {
-        return t.getDoubleValue() / 100.0;
-    };
-    returnMix.textFromValueFunction = [] (double v)
-    {
-        return juce::String (juce::roundToInt (v * 100.0));
-    };
-    returnMix.valueFromTextFunction = [] (const juce::String& t)
-    {
-        return t.getDoubleValue() / 100.0;
-    };
-    dryWet.updateText();
-    returnMix.updateText();
-
-    dryLabel.setText ("Dry/Wet", juce::dontSendNotification);
-    returnLabel.setText ("Return mix", juce::dontSendNotification);
-    outLabel.setText ("Output", juce::dontSendNotification);
-    for (auto* l : { &dryLabel, &returnLabel, &outLabel })
-    {
-        l->setColour (juce::Label::textColourId, lnf.palette.muted);
-        addAndMakeVisible (l);
-    }
+    planHint.setText (juce::String::fromUTF8 (
+                          "Checklist manuelle si tu veux recr\xc3\xa9" "er CLA-76, RVox, etc. sur le mixer FL."),
+                      juce::dontSendNotification);
+    colourLabel (planHint, lnf.palette.muted);
+    addTo (pagePlan, planHint);
+    copyPlanButton.setColour (juce::TextButton::buttonColourId, juce::Colour (0xff2a2416));
+    copyPlanButton.setColour (juce::TextButton::textColourOffId, lnf.palette.gold);
+    copyPlanButton.onClick = [this] { copyFlInsertPlan(); };
+    addTo (pagePlan, copyPlanButton);
+    styleReadOnly (planView);
+    addTo (pagePlan, planView);
 
     syncCombosFromProcessor();
     updateReadouts();
-    if (const auto* fx = processor.library.fxAt (fxPresetBox.getSelectedItemIndex()))
-        fxChoiceReadout.setText (fx->notes, juce::dontSendNotification);
-
     statusLabel.setText (processor.lastStatus.isNotEmpty()
                              ? processor.lastStatus
                              : juce::String::fromUTF8 (
-                                   "Cha\xc3\xae" "ne insert + sends internes \xe2\x80\x94 pas le mixer FL Studio"),
+                                   "Cha\xc3\xae" "ne insert + r\xc3\xa9" "glages manuels \xe2\x80\x94 pas le mixer FL"),
                          juce::dontSendNotification);
     startTimerHz (8);
 }
@@ -236,13 +340,15 @@ PresetsEditor::~PresetsEditor()
 {
     stopTimer();
     bypassAttachment.reset();
-    sendAAttach.reset();
-    sendBAttach.reset();
-    dryAttach.reset();
-    retAttach.reset();
-    outAttach.reset();
+    sendABoxAttach.reset();
+    sendBBoxAttach.reset();
     juce::LookAndFeel::setDefaultLookAndFeel (nullptr);
     setLookAndFeel (nullptr);
+}
+
+void PresetsEditor::addTo (juce::Component& page, juce::Component& child)
+{
+    page.addAndMakeVisible (child);
 }
 
 void PresetsEditor::styleReadOnly (juce::TextEditor& editor)
@@ -260,13 +366,98 @@ void PresetsEditor::styleReadOnly (juce::TextEditor& editor)
     editor.setColour (juce::TextEditor::textColourId, lnf.palette.text);
 }
 
+void PresetsEditor::layoutChainPage()
+{
+    auto r = pageChain.getLocalBounds().reduced (16, 12);
+    chainHint.setBounds (r.removeFromTop (36));
+    r.removeFromTop (6);
+    auto left = r.removeFromLeft (juce::jmax (360, r.getWidth() * 48 / 100));
+    r.removeFromLeft (16);
+    chainView.setBounds (left);
+    stackRows (r, hpfOn, 30);
+    stackRows (r, hpfSlope, 28);
+    stackRows (r, hpfHz);
+    stackRows (r, inputDb);
+    stackRows (r, dryWet);
+    stackRows (r, returnMix);
+    stackRows (r, outputDb);
+}
+
+void PresetsEditor::layoutEqPage()
+{
+    auto r = pageEq.getLocalBounds().reduced (16, 14);
+    const int colW = (r.getWidth() - 24) / 3;
+    auto mud = r.removeFromLeft (colW);
+    r.removeFromLeft (12);
+    auto mid = r.removeFromLeft (colW);
+    r.removeFromLeft (12);
+    auto air = r;
+    auto layBand = [] (juce::Rectangle<int> b, juce::Label& t, ControlRow& hz, ControlRow& g, ControlRow* q)
+    {
+        t.setBounds (b.removeFromTop (24));
+        b.removeFromTop (10);
+        hz.setBounds (b.removeFromTop (28));
+        b.removeFromTop (8);
+        g.setBounds (b.removeFromTop (28));
+        if (q != nullptr)
+        {
+            b.removeFromTop (8);
+            q->setBounds (b.removeFromTop (28));
+        }
+    };
+    layBand (mud, eqMudTitle, eqLowHz, eqLowG, &eqLowQ);
+    layBand (mid, eqMidTitle, eqMidHz, eqMidG, &eqMidQ);
+    layBand (air, eqAirTitle, eqAirHz, eqAirG, nullptr);
+}
+
+void PresetsEditor::layoutDynPage()
+{
+    auto r = pageDyn.getLocalBounds().reduced (16, 14);
+    auto left = r.removeFromLeft ((r.getWidth() - 16) / 2);
+    r.removeFromLeft (16);
+    compTitle.setBounds (left.removeFromTop (22));
+    left.removeFromTop (8);
+    grMeter.setBounds (left.removeFromTop (32));
+    left.removeFromTop (10);
+    stackRows (left, compTh);
+    stackRows (left, compRatio);
+    stackRows (left, compAtk);
+    stackRows (left, compRel);
+    stackRows (left, compMk);
+    deessTitle.setBounds (r.removeFromTop (22));
+    r.removeFromTop (10);
+    stackRows (r, deessHz);
+    stackRows (r, deessAmt);
+}
+
+void PresetsEditor::layoutSatPage()
+{
+    auto r = pageSat.getLocalBounds().reduced (20, 18);
+    r = r.removeFromLeft (juce::jmin (640, r.getWidth()));
+    stackRows (r, satOn, 32);
+    stackRows (r, satDrv, 28);
+    stackRows (r, satMix, 28);
+}
+
+void PresetsEditor::layoutPlanPage()
+{
+    auto r = pagePlan.getLocalBounds().reduced (16, 12);
+    auto top = r.removeFromTop (28);
+    copyPlanButton.setBounds (top.removeFromRight (88));
+    top.removeFromRight (8);
+    planHint.setBounds (top);
+    r.removeFromTop (8);
+    planView.setBounds (r);
+}
+
 void PresetsEditor::timerCallback()
 {
     syncCombosFromProcessor();
     updateReadouts();
+    grMeter.setGrDb (processor.getCompGrDb());
     if (statusTicks > 0 && --statusTicks == 0)
         statusLabel.setText (juce::String::fromUTF8 (
-                                 "Cha\xc3\xae" "ne insert + sends internes \xe2\x80\x94 pas le mixer FL Studio"),
+                                 "Cha\xc3\xae" "ne insert + r\xc3\xa9" "glages manuels \xe2\x80\x94 pas le mixer FL"),
                              juce::dontSendNotification);
 }
 
@@ -295,6 +486,15 @@ void PresetsEditor::updateReadouts()
             return fx->name;
         return "Off";
     };
+    auto fxNotes = [this] (const char* paramId) -> juce::String
+    {
+        int idx = 0;
+        if (auto* p = dynamic_cast<juce::AudioParameterChoice*> (processor.apvts.getParameter (paramId)))
+            idx = p->getIndex();
+        if (const auto* fx = processor.library.fxAt (idx))
+            return fx->notes;
+        return {};
+    };
 
     if (const auto* p = processor.library.vocalAt (vocalBox.getSelectedItemIndex()))
     {
@@ -319,20 +519,8 @@ void PresetsEditor::updateReadouts()
             planView.setText (plan, false);
     }
 
-    auto fxNotes = [this] (const char* paramId) -> juce::String
-    {
-        int idx = 0;
-        if (auto* p = dynamic_cast<juce::AudioParameterChoice*> (processor.apvts.getParameter (paramId)))
-            idx = p->getIndex();
-        if (const auto* fx = processor.library.fxAt (idx))
-            return fx->notes;
-        return {};
-    };
-
-    sendAName.setText (liveFxName ("send_a_preset"), juce::dontSendNotification);
-    sendBName.setText (liveFxName ("send_b_preset"), juce::dontSendNotification);
-    sendAReadout.setText (fxNotes ("send_a_preset"), juce::dontSendNotification);
-    sendBReadout.setText (fxNotes ("send_b_preset"), juce::dontSendNotification);
+    sendANotes.setText (fxNotes ("send_a_preset"), juce::dontSendNotification);
+    sendBNotes.setText (fxNotes ("send_b_preset"), juce::dontSendNotification);
 }
 
 void PresetsEditor::applySelectedChain()
@@ -381,11 +569,9 @@ void PresetsEditor::showAbout()
     t += "K3CH Presets " + juce::String (K3CH_VERSION) + "\n";
     t += processor.library.getStudio() + juce::String::fromUTF8 (" \xe2\x80\x94 Alger\n\n");
     t += juce::String::fromUTF8 (
-        "Cha\xc3\xae" "ne (insert FL) = tout le traitement interne, dans l\xe2\x80\x99ordre, "
-        "avec les r\xc3\xa9" "glages du preset. Pose K3CH Presets sur l\xe2\x80\x99insert FL de ton choix.\n"
-        "Un VST3 ne peut pas ins\xc3\xa9rer/contr\xc3\xb4ler CLA-76, RVox, etc. sur le mixer "
-        "\xe2\x80\x94 voir Plan d\xe2\x80\x99inserts FL (manuel).\n"
-        "Sends A/B = FX internes (Placer sur).\n\n");
+        "Appliquer la cha\xc3\xae" "ne remplit HPF / EQ / dynamique / sat / sends.\n"
+        "Tous les r\xc3\xa9" "glages restent \xc3\xa9" "ditables dans les onglets.\n"
+        "Un VST3 ne pilote pas le mixer FL \xe2\x80\x94 voir Plan FL (manuel).\n\n");
     if (processor.library.getVersion().isNotEmpty())
         t += "Presets runtime : " + processor.library.getVersion() + "\n";
     t += juce::String::fromUTF8 ("D\xc3\xa9riv\xc3\xa9 de mix-knowledge.json. Local only.");
@@ -438,25 +624,6 @@ void PresetsEditor::paint (juce::Graphics& g)
     g.setColour (pal.goldDim);
     g.setFont (juce::Font (juce::FontOptions (11.5f).withStyle ("Bold")));
     g.drawText ("COMMANDE (optionnel)", juce::Rectangle<int> (20, 88, 280, 16), juce::Justification::centredLeft);
-
-    auto card = [&] (juce::Rectangle<int> r, const juce::String& title)
-    {
-        g.setColour (pal.bgCard);
-        g.fillRoundedRectangle (r.toFloat(), 8.0f);
-        g.setColour (pal.gold);
-        g.fillRect ((float) r.getX(), (float) r.getY() + 10.0f, 3.0f, 18.0f);
-        g.setColour (pal.border.withAlpha (0.7f));
-        g.drawRoundedRectangle (r.toFloat(), 8.0f, 1.0f);
-        g.setColour (pal.gold);
-        g.setFont (juce::Font (juce::FontOptions (13.0f).withStyle ("Bold")));
-        g.drawText (title, r.reduced (16, 10).removeFromTop (22), juce::Justification::centredLeft);
-    };
-
-    card (chainCard, juce::String::fromUTF8 ("CHA\xc3\x8eNE (INSERT FL)"));
-    card (planCard, juce::String::fromUTF8 ("PLAN D\xe2\x80\x99INSERTS FL (MANUEL)"));
-    card (placeCard, juce::String::fromUTF8 ("PRESET FX  \xc2\xb7  PLACER SUR UN SEND"));
-    card (sendACard, juce::String::fromUTF8 ("SEND A  \xc2\xb7  actuel"));
-    card (sendBCard, juce::String::fromUTF8 ("SEND B  \xc2\xb7  actuel"));
 }
 
 void PresetsEditor::resized()
@@ -481,87 +648,21 @@ void PresetsEditor::resized()
     cmdRow.removeFromRight (8);
     commandBox.setBounds (cmdRow);
 
-    constraintNote.setBounds (bounds.removeFromTop (26).reduced (20, 2));
+    constraintNote.setBounds (bounds.removeFromTop (24).reduced (20, 2));
 
-    auto cols = bounds.reduced (16, 10);
-    auto top = cols.removeFromTop (juce::jmax (340, cols.getHeight() * 58 / 100));
-    cols.removeFromTop (10);
-    chainCard = top.removeFromLeft (juce::jmax (360, top.getWidth() * 42 / 100));
-    top.removeFromLeft (12);
-    auto rightCol = top;
-    planCard = rightCol.removeFromTop (juce::jmax (170, (rightCol.getHeight() - 10) * 54 / 100));
-    rightCol.removeFromTop (10);
-    placeCard = rightCol;
-    sendACard = cols.removeFromLeft ((cols.getWidth() - 12) / 2);
-    cols.removeFromLeft (12);
-    sendBCard = cols;
+    auto strip = bounds.removeFromTop (44).reduced (16, 6);
+    chainLabel.setBounds (strip.removeFromLeft (130));
+    vocalBox.setBounds (strip.removeFromLeft (170));
+    strip.removeFromLeft (8);
+    applyChainButton.setBounds (strip.removeFromLeft (168));
+    strip.removeFromLeft (16);
+    sendTargetLabel.setBounds (strip.removeFromLeft (78));
+    sendTargetBox.setBounds (strip.removeFromLeft (100));
+    strip.removeFromLeft (8);
+    fxPresetLabel.setBounds (strip.removeFromLeft (72));
+    fxPresetBox.setBounds (strip.removeFromLeft (juce::jmin (180, strip.getWidth() - 100)));
+    strip.removeFromLeft (8);
+    placeButton.setBounds (strip.removeFromLeft (90));
 
-    auto inner = [] (juce::Rectangle<int> r)
-    {
-        r = r.reduced (16, 12);
-        r.removeFromTop (26);
-        return r;
-    };
-
-    auto v = inner (chainCard);
-    chainLabel.setBounds (v.removeFromTop (20));
-    v.removeFromTop (4);
-    auto chainRow = v.removeFromTop (32);
-    applyChainButton.setBounds (chainRow.removeFromRight (168));
-    chainRow.removeFromRight (8);
-    vocalBox.setBounds (chainRow);
-    v.removeFromTop (6);
-    chainHint.setBounds (v.removeFromTop (36));
-    v.removeFromTop (6);
-    auto mixRow = v.removeFromTop (24);
-    dryLabel.setBounds (mixRow.removeFromLeft (72));
-    dryWet.setBounds (mixRow);
-    v.removeFromTop (4);
-    mixRow = v.removeFromTop (24);
-    returnLabel.setBounds (mixRow.removeFromLeft (72));
-    returnMix.setBounds (mixRow);
-    v.removeFromTop (4);
-    mixRow = v.removeFromTop (24);
-    outLabel.setBounds (mixRow.removeFromLeft (72));
-    outputDb.setBounds (mixRow);
-    v.removeFromTop (8);
-    chainView.setBounds (v);
-
-    auto plan = inner (planCard);
-    auto planTop = plan.removeFromTop (28);
-    copyPlanButton.setBounds (planTop.removeFromRight (88));
-    planTop.removeFromRight (8);
-    planHint.setBounds (planTop);
-    plan.removeFromTop (6);
-    planView.setBounds (plan);
-
-    auto p = inner (placeCard);
-    auto destRow = p.removeFromTop (28);
-    sendTargetLabel.setBounds (destRow.removeFromLeft (110));
-    destRow.removeFromLeft (8);
-    sendTargetBox.setBounds (destRow.removeFromLeft (juce::jmin (160, destRow.getWidth())));
-    p.removeFromTop (6);
-    auto fxRow = p.removeFromTop (28);
-    fxPresetLabel.setBounds (fxRow.removeFromLeft (110));
-    fxRow.removeFromLeft (8);
-    fxPresetBox.setBounds (fxRow);
-    p.removeFromTop (6);
-    placeButton.setBounds (p.removeFromTop (30).removeFromLeft (140));
-    p.removeFromTop (6);
-    fxChoiceReadout.setBounds (p.removeFromTop (28));
-    p.removeFromTop (2);
-    placeHint.setBounds (p);
-
-    auto layoutSend = [] (juce::Rectangle<int> r, juce::Label& name, juce::Slider& level, juce::Label& notes)
-    {
-        r = r.reduced (16, 12);
-        r.removeFromTop (26);
-        name.setBounds (r.removeFromTop (26));
-        r.removeFromTop (6);
-        level.setBounds (r.removeFromTop (28));
-        r.removeFromTop (6);
-        notes.setBounds (r.removeFromTop (70));
-    };
-    layoutSend (sendACard, sendAName, sendALevel, sendAReadout);
-    layoutSend (sendBCard, sendBName, sendBLevel, sendBReadout);
+    tabs.setBounds (bounds.reduced (12, 8));
 }

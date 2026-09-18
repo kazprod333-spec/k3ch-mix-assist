@@ -19,7 +19,8 @@ Knowledge is **local/embedded** (`Resources/mix-knowledge.json` for the encyclop
 - Numbered chain steps show order + key settings (one insert you put on the FL slot you choose)
 - **Plan d’inserts FL (manuel)** : checklist for CLA-76, RVox, etc. + **Copier**. A VST3 cannot insert or control third-party plugins on the FL mixer
 - Internal **Send A** / **Send B** with **Placer sur** + **Preset FX** + **Placer**
-- Dry/wet, send levels, return mix, peak/RMS meter
+- Full manual controls (tabs): HPF on/slope/Hz, EQ bands (freq/gain/Q), compressor + GR, de-esser, sat on/drive/mix, input/output/dry-wet/return, Send A/B preset + level + HPF/LPF/smash/de-ess/sat/reverb/delay/harsh
+- Preset apply fills every control; then you can override anything
 - Optional command bar (`charge ModernRap`, `mets Air parallèle sur send A`, …)
 
 Runtime recipes are derived from the studio knowledge pack (ModernRap, Bodak, ALLTY5, JuiceWRLD, TrapDrill, PopUrbaine, BGV, VoixOff, Weeknd, Ninho, Hamza, Freeze, …).

@@ -139,4 +139,27 @@ void K3chLookAndFeel::drawPopupMenuBackground (juce::Graphics& g, int width, int
     g.drawRect (0, 0, width, height, 1);
 }
 
+void K3chLookAndFeel::drawTabButton (juce::TabBarButton& button, juce::Graphics& g,
+                                     bool isMouseOver, bool)
+{
+    auto r = button.getLocalBounds().toFloat();
+    const bool front = button.isFrontTab();
+    g.setColour (front ? palette.bgCard : (isMouseOver ? palette.bgCard.brighter (0.04f) : palette.bgSidebar));
+    g.fillRect (r);
+    if (front)
+    {
+        g.setColour (palette.gold);
+        g.fillRect (r.removeFromBottom (2.0f));
+    }
+    g.setColour (front ? palette.gold : palette.muted);
+    g.setFont (juce::Font (juce::FontOptions (13.0f).withStyle (front ? "Bold" : "Regular")));
+    g.drawText (button.getButtonText(), button.getLocalBounds().reduced (6, 0),
+                juce::Justification::centred);
+}
+
+int K3chLookAndFeel::getTabButtonBestWidth (juce::TabBarButton& button, int)
+{
+    return 28 + button.getButtonText().length() * 8;
+}
+
 } // namespace k3ch

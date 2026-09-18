@@ -27,6 +27,9 @@ struct VocalSettings
     float deessAmount = 0.0f;
     float satDrive = 0.0f;
     float satMix = 0.0f;
+    bool hpfOn = true;
+    bool hpfSlope24 = true;
+    bool satOn = true;
 };
 
 struct SendSettings
@@ -53,6 +56,7 @@ struct MixSettings
 {
     float dryWet = 1.0f;
     float returnMix = 1.0f;
+    float inputGain = 1.0f;
     float outputGain = 1.0f;
     float sendGainA = 0.0f;
     float sendGainB = 0.0f;
@@ -74,6 +78,7 @@ public:
     float lastPeakR() const { return peakR; }
     float lastRmsL() const { return rmsL; }
     float lastRmsR() const { return rmsR; }
+    float lastCompGrDb() const { return comp.lastGrDb; }
 
 private:
     struct Biquad
@@ -201,7 +206,8 @@ private:
     struct Compressor
     {
         float env = 0;
-        void reset() { env = 0; }
+        float lastGrDb = 0;
+        void reset() { env = 0; lastGrDb = 0; }
         void process (float& L, float& R, const VocalSettings& v, double sr);
         void processSmash (float& L, float& R, float amount, double sr);
     };
@@ -243,7 +249,7 @@ private:
     std::vector<float> dryL, dryR, procL, procR;
 
     float peakL = 0, peakR = 0, rmsL = 0, rmsR = 0;
-    float smDryWet = 1, smRet = 1, smOut = 1, smSendA = 0, smSendB = 0;
+    float smDryWet = 1, smRet = 1, smIn = 1, smOut = 1, smSendA = 0, smSendB = 0;
     bool primed = false;
 };
 

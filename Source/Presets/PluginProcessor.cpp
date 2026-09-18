@@ -5,9 +5,13 @@ namespace
 {
 constexpr const char* kBypass = "bypass";
 constexpr const char* kDryWet = "dry_wet";
+constexpr const char* kInput = "input_db";
 constexpr const char* kOutput = "output_db";
 constexpr const char* kVocal = "vocal_preset";
+constexpr const char* kHpfOn = "hpf_on";
+constexpr const char* kHpfSlope = "hpf_slope";
 constexpr const char* kHpf = "hpf_hz";
+constexpr const char* kSatOn = "sat_on";
 constexpr const char* kEqLowHz = "eq_low_hz";
 constexpr const char* kEqLowG = "eq_low_gain";
 constexpr const char* kEqLowQ = "eq_low_q";
@@ -82,11 +86,19 @@ juce::AudioProcessorValueTreeState::ParameterLayout PresetsProcessor::createLayo
     params.push_back (std::make_unique<juce::AudioParameterBool> (
         juce::ParameterID { kBypass, 1 }, "Bypass", false));
     params.push_back (mkFloat (kDryWet, "Dry/Wet", 0.0f, 1.0f, 1.0f, 0.01f));
+    params.push_back (mkFloat (kInput, "Input", -24.0f, 12.0f, 0.0f, 0.1f));
     params.push_back (mkFloat (kOutput, "Output", -24.0f, 12.0f, 0.0f, 0.1f));
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         juce::ParameterID { kVocal, 1 }, "Vocal Preset", vocalNames, 0));
 
+    params.push_back (std::make_unique<juce::AudioParameterBool> (
+        juce::ParameterID { kHpfOn, 1 }, "HPF On", true));
+    params.push_back (std::make_unique<juce::AudioParameterChoice> (
+        juce::ParameterID { kHpfSlope, 1 }, "HPF Slope",
+        juce::StringArray { "12 dB/oct", "24 dB/oct" }, 1));
     params.push_back (mkFloat (kHpf, "HPF", 20.0f, 300.0f, 85.0f, 1.0f));
+    params.push_back (std::make_unique<juce::AudioParameterBool> (
+        juce::ParameterID { kSatOn, 1 }, "Sat On", true));
     params.push_back (mkFloat (kEqLowHz, "EQ Low Hz", 80.0f, 500.0f, 280.0f, 1.0f));
     params.push_back (mkFloat (kEqLowG, "EQ Low", -12.0f, 6.0f, -3.0f, 0.1f));
     params.push_back (mkFloat (kEqLowQ, "EQ Low Q", 0.3f, 4.0f, 1.2f, 0.01f));
@@ -114,6 +126,34 @@ juce::AudioProcessorValueTreeState::ParameterLayout PresetsProcessor::createLayo
     params.push_back (mkFloat (kSendBdB, "Send B Level", -60.0f, 0.0f, -15.0f, 0.1f));
     params.push_back (mkFloat (kReturn, "Return Mix", 0.0f, 1.0f, 1.0f, 0.01f));
 
+    auto addSendFloat = [&] (const juce::String& id, const juce::String& name,
+                             float min, float max, float def, float step)
+    {
+        params.push_back (std::make_unique<juce::AudioParameterFloat> (
+            juce::ParameterID { id, 1 }, name,
+            juce::NormalisableRange<float> (min, max, step), def));
+    };
+    auto addSendDsp = [&] (const juce::String& prefix, const juce::String& label)
+    {
+        addSendFloat (prefix + "hpf",       label + " HPF",          20.0f,   400.0f,    20.0f, 1.0f);
+        addSendFloat (prefix + "lpf",       label + " LPF",        2000.0f, 20000.0f, 20000.0f, 1.0f);
+        addSendFloat (prefix + "smash",     label + " Smash",         0.0f,     1.0f,     0.0f, 0.01f);
+        addSendFloat (prefix + "deess_hz",  label + " De-ess Hz",  3000.0f, 10000.0f,  6500.0f, 1.0f);
+        addSendFloat (prefix + "deess",     label + " De-ess",        0.0f,     1.0f,     0.0f, 0.01f);
+        addSendFloat (prefix + "sat_drv",   label + " Sat Drive",     0.0f,     1.0f,     0.0f, 0.01f);
+        addSendFloat (prefix + "sat_mix",   label + " Sat Mix",       0.0f,     1.0f,     0.0f, 0.01f);
+        addSendFloat (prefix + "rev_mix",   label + " Reverb Mix",    0.0f,     1.0f,     0.0f, 0.01f);
+        addSendFloat (prefix + "rev_decay", label + " Reverb Decay",  0.1f,     4.0f,     0.8f, 0.01f);
+        addSendFloat (prefix + "rev_damp",  label + " Reverb Damp",   0.05f,    0.9f,     0.5f, 0.01f);
+        addSendFloat (prefix + "dly_mix",   label + " Delay Mix",     0.0f,     1.0f,     0.0f, 0.01f);
+        addSendFloat (prefix + "dly_ms",    label + " Delay ms",      1.0f,   800.0f,   125.0f, 1.0f);
+        addSendFloat (prefix + "dly_fb",    label + " Delay FB",      0.0f,    0.85f,     0.2f, 0.01f);
+        addSendFloat (prefix + "harsh_hz",  label + " Harsh Hz",   2000.0f, 10000.0f,  6500.0f, 1.0f);
+        addSendFloat (prefix + "harsh_cut", label + " Harsh Cut",   -12.0f,     0.0f,     0.0f, 0.1f);
+    };
+    addSendDsp ("send_a_", "Send A");
+    addSendDsp ("send_b_", "Send B");
+
     return { params.begin(), params.end() };
 }
 
@@ -133,6 +173,30 @@ void PresetsProcessor::setBoolParam (const juce::String& id, bool value, bool)
 {
     if (auto* p = dynamic_cast<juce::AudioParameterBool*> (apvts.getParameter (id)))
         p->setValueNotifyingHost (value ? 1.0f : 0.0f);
+}
+
+juce::String PresetsProcessor::sendParamId (int sendSlot, const char* suffix) const
+{
+    return (sendSlot == 0 ? "send_a_" : "send_b_") + juce::String (suffix);
+}
+
+void PresetsProcessor::writeSendParams (int sendSlot, const k3ch_presets::SendSettings& s, bool notifyHost)
+{
+    setFloatParam (sendParamId (sendSlot, "hpf"), s.hpfHz, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "lpf"), s.lpfHz, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "smash"), s.smash, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "deess_hz"), s.deessHz, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "deess"), s.deessAmount, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "sat_drv"), s.satDrive, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "sat_mix"), s.satMix, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "rev_mix"), s.reverbMix, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "rev_decay"), s.reverbDecayS, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "rev_damp"), s.reverbDamp, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "dly_mix"), s.delayMix, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "dly_ms"), s.delayMs, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "dly_fb"), s.delayFeedback, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "harsh_hz"), s.harshHz, notifyHost);
+    setFloatParam (sendParamId (sendSlot, "harsh_cut"), s.harshCutDb, notifyHost);
 }
 
 void PresetsProcessor::loadVocalIndex (int index, bool notifyHost)
@@ -160,6 +224,9 @@ void PresetsProcessor::loadVocalIndex (int index, bool notifyHost)
     setFloatParam (kCompMk, s.compMakeupDb, notifyHost);
     setFloatParam (kDeessHz, s.deessHz, notifyHost);
     setFloatParam (kDeessAmt, s.deessAmount, notifyHost);
+    setBoolParam (kHpfOn, true, notifyHost);
+    setChoiceParam (kHpfSlope, 1, notifyHost);
+    setBoolParam (kSatOn, s.satMix > 0.01f || s.satDrive > 0.01f, notifyHost);
     setFloatParam (kSatDrv, s.satDrive, notifyHost);
     setFloatParam (kSatMix, s.satMix, notifyHost);
 
@@ -172,6 +239,7 @@ void PresetsProcessor::loadVocalIndex (int index, bool notifyHost)
         if (fxP == nullptr)
             return juce::String();
         setChoiceParam (slot == 0 ? kSendA : kSendB, fx, notifyHost);
+        writeSendParams (slot, fxP->settings, notifyHost);
         if (fxP->settings.active)
             setFloatParam (slot == 0 ? kSendAdB : kSendBdB, fxP->defaultSendDb, notifyHost);
         return fxP->name;
@@ -199,6 +267,7 @@ void PresetsProcessor::loadFxIndex (int sendSlot, int index, bool applyDefaultLe
 
     const juce::ScopedValueSetter<bool> sv (applyingPreset, true);
     setChoiceParam (sendSlot == 0 ? kSendA : kSendB, index, notifyHost);
+    writeSendParams (sendSlot, p->settings, notifyHost);
     if (applyDefaultLevel && p->settings.active)
         setFloatParam (sendSlot == 0 ? kSendAdB : kSendBdB, p->defaultSendDb, notifyHost);
 
@@ -271,7 +340,7 @@ void PresetsProcessor::parameterChanged (const juce::String& parameterID, float)
 
 void PresetsProcessor::pushEngineFromParams()
 {
-    auto gf = [this] (const char* id, float fb) -> float
+    auto gf = [this] (const juce::String& id, float fb) -> float
     {
         if (auto* v = apvts.getRawParameterValue (id))
             return v->load();
@@ -279,6 +348,10 @@ void PresetsProcessor::pushEngineFromParams()
     };
 
     k3ch_presets::VocalSettings v;
+    v.hpfOn = gf (kHpfOn, 1.0f) >= 0.5f;
+    v.hpfSlope24 = true;
+    if (auto* p = dynamic_cast<juce::AudioParameterChoice*> (apvts.getParameter (kHpfSlope)))
+        v.hpfSlope24 = p->getIndex() >= 1;
     v.hpfHz = gf (kHpf, 85.0f);
     v.eqLowHz = gf (kEqLowHz, 280.0f);
     v.eqLowGainDb = gf (kEqLowG, 0.0f);
@@ -295,18 +368,34 @@ void PresetsProcessor::pushEngineFromParams()
     v.compMakeupDb = gf (kCompMk, 2.0f);
     v.deessHz = gf (kDeessHz, 6500.0f);
     v.deessAmount = gf (kDeessAmt, 0.0f);
+    v.satOn = gf (kSatOn, 1.0f) >= 0.5f;
     v.satDrive = gf (kSatDrv, 0.0f);
     v.satMix = gf (kSatMix, 0.0f);
     engine.setVocal (v);
 
-    auto applySend = [this] (int slot, const char* choiceId)
+    auto applySend = [this, &gf] (int slot, const char* choiceId)
     {
         int idx = 0;
         if (auto* p = dynamic_cast<juce::AudioParameterChoice*> (apvts.getParameter (choiceId)))
             idx = p->getIndex();
         k3ch_presets::SendSettings s;
         if (const auto* fx = library.fxAt (idx))
-            s = fx->settings;
+            s.active = fx->settings.active;
+        s.hpfHz = gf (sendParamId (slot, "hpf"), 20.0f);
+        s.lpfHz = gf (sendParamId (slot, "lpf"), 20000.0f);
+        s.smash = gf (sendParamId (slot, "smash"), 0.0f);
+        s.deessHz = gf (sendParamId (slot, "deess_hz"), 6500.0f);
+        s.deessAmount = gf (sendParamId (slot, "deess"), 0.0f);
+        s.satDrive = gf (sendParamId (slot, "sat_drv"), 0.0f);
+        s.satMix = gf (sendParamId (slot, "sat_mix"), 0.0f);
+        s.reverbMix = gf (sendParamId (slot, "rev_mix"), 0.0f);
+        s.reverbDecayS = gf (sendParamId (slot, "rev_decay"), 0.8f);
+        s.reverbDamp = gf (sendParamId (slot, "rev_damp"), 0.5f);
+        s.delayMix = gf (sendParamId (slot, "dly_mix"), 0.0f);
+        s.delayMs = gf (sendParamId (slot, "dly_ms"), 125.0f);
+        s.delayFeedback = gf (sendParamId (slot, "dly_fb"), 0.2f);
+        s.harshHz = gf (sendParamId (slot, "harsh_hz"), 6500.0f);
+        s.harshCutDb = gf (sendParamId (slot, "harsh_cut"), 0.0f);
         engine.setSend (slot, s);
     };
     applySend (0, kSendA);
@@ -315,6 +404,7 @@ void PresetsProcessor::pushEngineFromParams()
     k3ch_presets::MixSettings mix;
     mix.dryWet = gf (kDryWet, 1.0f);
     mix.returnMix = gf (kReturn, 1.0f);
+    mix.inputGain = dbToLin (gf (kInput, 0.0f));
     mix.outputGain = dbToLin (gf (kOutput, 0.0f));
     mix.sendGainA = dbToLin (gf (kSendAdB, -15.0f));
     mix.sendGainB = dbToLin (gf (kSendBdB, -15.0f));
@@ -398,6 +488,11 @@ void PresetsProcessor::getMeterLevels (float& peakL, float& peakR, float& rmsL, 
     peakR = peak[1].load();
     rmsL = rms[0].load();
     rmsR = rms[1].load();
+}
+
+float PresetsProcessor::getCompGrDb() const
+{
+    return engine.lastCompGrDb();
 }
 
 void PresetsProcessor::getStateInformation (juce::MemoryBlock& destData)
