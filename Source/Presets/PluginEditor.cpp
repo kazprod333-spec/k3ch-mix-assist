@@ -114,11 +114,7 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
         addAndMakeVisible (s);
     };
     setupMix (dryWet, " %");
-    dryWet.textFromValueFunction = [] (double v) { return juce::String (juce::roundToInt (v * 100.0)); };
-    dryWet.valueFromTextFunction = [] (const juce::String& t) { return t.getDoubleValue() / 100.0; };
     setupMix (returnMix, " %");
-    returnMix.textFromValueFunction = [] (double v) { return juce::String (juce::roundToInt (v * 100.0)); };
-    returnMix.valueFromTextFunction = [] (const juce::String& t) { return t.getDoubleValue() / 100.0; };
     setupMix (outputDb, " dB");
 
     dryAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
@@ -127,6 +123,25 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
         processor.apvts, "return_mix", returnMix);
     outAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
         processor.apvts, "output_db", outputDb);
+
+    dryWet.textFromValueFunction = [] (double v)
+    {
+        return juce::String (juce::roundToInt (v * 100.0));
+    };
+    dryWet.valueFromTextFunction = [] (const juce::String& t)
+    {
+        return t.getDoubleValue() / 100.0;
+    };
+    returnMix.textFromValueFunction = [] (double v)
+    {
+        return juce::String (juce::roundToInt (v * 100.0));
+    };
+    returnMix.valueFromTextFunction = [] (const juce::String& t)
+    {
+        return t.getDoubleValue() / 100.0;
+    };
+    dryWet.updateText();
+    returnMix.updateText();
 
     dryLabel.setText ("Dry/Wet", juce::dontSendNotification);
     returnLabel.setText ("Return mix", juce::dontSendNotification);
