@@ -286,17 +286,7 @@ void PresetsEditor::syncCombosFromProcessor()
 
 void PresetsEditor::updateReadouts()
 {
-    if (const auto* p = processor.library.vocalAt (vocalBox.getSelectedItemIndex()))
-    {
-        const auto chain = p->appliedChainText();
-        if (chainView.getText() != chain)
-            chainView.setText (chain, false);
-        const auto plan = p->flInsertPlanText();
-        if (planView.getText() != plan)
-            planView.setText (plan, false);
-    }
-
-    auto fxName = [this] (const char* paramId) -> juce::String
+    auto liveFxName = [this] (const char* paramId) -> juce::String
     {
         int idx = 0;
         if (auto* p = dynamic_cast<juce::AudioParameterChoice*> (processor.apvts.getParameter (paramId)))
@@ -305,6 +295,30 @@ void PresetsEditor::updateReadouts()
             return fx->name;
         return "Off";
     };
+
+    if (const auto* p = processor.library.vocalAt (vocalBox.getSelectedItemIndex()))
+    {
+        juce::String chain;
+        for (const auto& step : p->appliedChain)
+        {
+            auto settings = step.settings;
+            if (step.title.containsIgnoreCase ("Send A"))
+                settings = liveFxName ("send_a_preset");
+            else if (step.title.containsIgnoreCase ("Send B"))
+                settings = liveFxName ("send_b_preset");
+            chain += juce::String (step.n) + ".  " + step.title;
+            if (settings.isNotEmpty())
+                chain += juce::String::fromUTF8 ("  \xe2\x80\x94  ") + settings;
+            chain += "\n";
+        }
+        chain = chain.trimEnd();
+        if (chainView.getText() != chain)
+            chainView.setText (chain, false);
+        const auto plan = p->flInsertPlanText();
+        if (planView.getText() != plan)
+            planView.setText (plan, false);
+    }
+
     auto fxNotes = [this] (const char* paramId) -> juce::String
     {
         int idx = 0;
@@ -315,8 +329,8 @@ void PresetsEditor::updateReadouts()
         return {};
     };
 
-    sendAName.setText (fxName ("send_a_preset"), juce::dontSendNotification);
-    sendBName.setText (fxName ("send_b_preset"), juce::dontSendNotification);
+    sendAName.setText (liveFxName ("send_a_preset"), juce::dontSendNotification);
+    sendBName.setText (liveFxName ("send_b_preset"), juce::dontSendNotification);
     sendAReadout.setText (fxNotes ("send_a_preset"), juce::dontSendNotification);
     sendBReadout.setText (fxNotes ("send_b_preset"), juce::dontSendNotification);
 }
