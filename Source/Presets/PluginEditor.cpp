@@ -32,7 +32,6 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     setOpaque (true);
     setResizable (true, true);
     setResizeLimits (1120, 780, 1800, 1400);
-    setSize (1320, 900);
 
     applyChainButton.setButtonText (juce::String::fromUTF8 ("Appliquer la cha\xc3\xae" "ne"));
     copyPlanButton.setButtonText (juce::String::fromUTF8 ("Copier"));
@@ -124,18 +123,6 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     tabs.setColour (juce::TabbedComponent::backgroundColourId, lnf.palette.bg);
     tabs.setColour (juce::TabbedComponent::outlineColourId, lnf.palette.border);
     addAndMakeVisible (tabs);
-
-    auto addTab = [this] (const juce::String& name, LayoutPage& page)
-    {
-        tabs.addTab (name, lnf.palette.bgCard, &page, false);
-    };
-    addTab (juce::String::fromUTF8 ("Cha\xc3\xae" "ne vocale"), pageChain);
-    addTab ("EQ", pageEq);
-    addTab ("Dynamique", pageDyn);
-    addTab ("Sat", pageSat);
-    addTab ("Send A", pageSendA);
-    addTab ("Send B", pageSendB);
-    addTab ("Plan FL", pagePlan);
 
     pageChain.lay = [this] { layoutChainPage(); };
     pageEq.lay = [this] { layoutEqPage(); };
@@ -247,7 +234,12 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     compTh.setup (processor.apvts, "comp_threshold", "Seuil", " dB");
     compRatio.setup (processor.apvts, "comp_ratio", "Ratio", " :1");
     compAtk.setup (processor.apvts, "comp_attack", "Attaque", " ms");
-    compRel.setup (processor.apvts, "comp_release", "Release", " ms");
+    {
+        juce::String relache ("Rel");
+        relache += juce::String::charToString (juce::juce_wchar (0x00E2));
+        relache += "chement";
+        compRel.setup (processor.apvts, "comp_release", relache, " ms");
+    }
     compMk.setup (processor.apvts, "comp_makeup", "Makeup", " dB");
     deessHz.setup (processor.apvts, "deess_hz", juce::String::fromUTF8 ("Fr\xc3\xa9quence"), " Hz");
     deessAmt.setupPercent (processor.apvts, "deess_amount", "Amount");
@@ -325,6 +317,20 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     addTo (pagePlan, copyPlanButton);
     styleReadOnly (planView);
     addTo (pagePlan, planView);
+
+    auto addTab = [this] (const juce::String& name, LayoutPage& page)
+    {
+        tabs.addTab (name, lnf.palette.bgCard, &page, false);
+    };
+    addTab (juce::String::fromUTF8 ("Cha\xc3\xae" "ne vocale"), pageChain);
+    addTab ("EQ", pageEq);
+    addTab ("Dynamique", pageDyn);
+    addTab ("Sat", pageSat);
+    addTab ("Send A", pageSendA);
+    addTab ("Send B", pageSendB);
+    addTab ("Plan FL", pagePlan);
+
+    setSize (1320, 900);
 
     syncCombosFromProcessor();
     updateReadouts();
