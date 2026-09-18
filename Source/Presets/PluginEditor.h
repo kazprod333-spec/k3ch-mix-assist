@@ -17,12 +17,15 @@ public:
 private:
     void timerCallback() override;
     void applyCommand();
+    void applySelectedChain();
     void placeFxOnSelectedSend();
+    void copyFlInsertPlan();
     void syncCombosFromProcessor();
     void updateReadouts();
     void showAbout();
+    void styleReadOnly (juce::TextEditor& editor);
 
-    juce::Rectangle<int> vocalCard, placeCard, sendACard, sendBCard;
+    juce::Rectangle<int> chainCard, planCard, placeCard, sendACard, sendBCard;
 
     PresetsProcessor& processor;
     k3ch::K3chLookAndFeel lnf;
@@ -31,12 +34,19 @@ private:
     juce::TextEditor commandBox;
     juce::TextButton applyButton { "Appliquer" };
     juce::Label statusLabel;
+    juce::Label constraintNote;
     juce::TextButton bypassButton { "BYPASS" };
     juce::TextButton aboutButton { "About" };
 
-    juce::Label vocalPresetLabel;
+    juce::Label chainLabel;
     juce::ComboBox vocalBox;
-    juce::Label vocalReadout;
+    juce::TextButton applyChainButton;
+    juce::Label chainHint;
+    juce::TextEditor chainView;
+
+    juce::Label planHint;
+    juce::TextButton copyPlanButton;
+    juce::TextEditor planView;
 
     juce::Label sendTargetLabel;
     juce::ComboBox sendTargetBox;

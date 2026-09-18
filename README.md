@@ -15,9 +15,10 @@ Knowledge is **local/embedded** (`Resources/mix-knowledge.json` for the encyclop
 
 ## K3CH Presets — v1
 
-- Vocal insert: HPF / 3-band EQ / compressor / de-esser / optional saturation
-- Internal **Send A** and **Send B**: each loads an FX recipe (Air parallèle, Body, Sat, Harsh, Plate, Room, Hall, Delay 1/8, Slap)
-- **Placer sur** combo (Send A / Send B) + **Preset FX** combo + **Placer** — no typing required
+- **Chaîne (insert FL)** + **Appliquer la chaîne** : choosing ModernRap / Hamza / Weeknd / … applies the full ordered insert path (HPF → EQ bands → compressor → de-ess → sat) plus the chain’s internal Send A/B recipes
+- Numbered chain steps show order + key settings (one insert you put on the FL slot you choose)
+- **Plan d’inserts FL (manuel)** : checklist for CLA-76, RVox, etc. + **Copier**. A VST3 cannot insert or control third-party plugins on the FL mixer
+- Internal **Send A** / **Send B** with **Placer sur** + **Preset FX** + **Placer**
 - Dry/wet, send levels, return mix, peak/RMS meter
 - Optional command bar (`charge ModernRap`, `mets Air parallèle sur send A`, …)
 
@@ -143,7 +144,7 @@ Copy to `~/.vst3`.
 Edit `Resources/mix-knowledge.json` (encyclopedia UI) and/or `Resources/presets-runtime.json` (DSP mappings) and rebuild. Files are compiled into the plugins via JUCE BinaryData.
 
 - `ui_sections` drives the encyclopedia left-hand navigation
-- **K3CH Presets** reads `vocal_presets[]` and `fx_presets[]` from the runtime JSON (aliases feed the command bar)
+- **K3CH Presets** reads `vocal_presets[]` (`params`, `sends`, `applied_chain`, `fl_insert_plan`) and `fx_presets[]` from the runtime JSON (aliases feed the command bar)
 - New encyclopedia sections: add a `ui_sections` row (see `NOTES.md`)
 
 ## License

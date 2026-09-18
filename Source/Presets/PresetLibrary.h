@@ -8,6 +8,21 @@
 namespace k3ch_presets
 {
 
+struct ChainStep
+{
+    int n = 0;
+    juce::String title;
+    juce::String settings;
+};
+
+struct FlInsertRow
+{
+    int slot = 0;
+    juce::String plugin;
+    juce::String setting;
+    juce::String notes;
+};
+
 struct VocalPreset
 {
     juce::String id;
@@ -16,6 +31,13 @@ struct VocalPreset
     juce::String notes;
     std::vector<juce::String> aliases;
     VocalSettings settings;
+    juce::String sendAId;
+    juce::String sendBId;
+    std::vector<ChainStep> appliedChain;
+    std::vector<FlInsertRow> flInsertPlan;
+
+    juce::String appliedChainText() const;
+    juce::String flInsertPlanText() const;
 };
 
 struct FxPreset

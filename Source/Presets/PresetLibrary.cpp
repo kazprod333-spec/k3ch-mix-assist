@@ -100,7 +100,140 @@ juce::String fold (juce::String s)
     return s.trim();
 }
 
+std::vector<ChainStep> readAppliedChain (const juce::var& node)
+{
+    std::vector<ChainStep> out;
+    if (auto* arr = node.getProperty ("applied_chain", {}).getArray())
+    {
+        for (const auto& item : *arr)
+        {
+            ChainStep s;
+            s.n = juce::roundToInt (num (item.getProperty ("n", {}), (float) out.size() + 1.0f));
+            s.title = item.getProperty ("title", {}).toString();
+            s.settings = item.getProperty ("settings", {}).toString();
+            if (s.title.isNotEmpty() || s.settings.isNotEmpty())
+                out.push_back (std::move (s));
+        }
+    }
+    return out;
+}
+
+std::vector<FlInsertRow> readFlPlan (const juce::var& node)
+{
+    std::vector<FlInsertRow> out;
+    if (auto* arr = node.getProperty ("fl_insert_plan", {}).getArray())
+    {
+        for (const auto& item : *arr)
+        {
+            FlInsertRow r;
+            r.slot = juce::roundToInt (num (item.getProperty ("slot", {}), (float) out.size() + 1.0f));
+            r.plugin = item.getProperty ("plugin", {}).toString();
+            r.setting = item.getProperty ("setting", {}).toString();
+            r.notes = item.getProperty ("notes", {}).toString();
+            if (r.plugin.isNotEmpty())
+                out.push_back (std::move (r));
+        }
+    }
+    return out;
+}
+
+juce::String fmtHz (float hz)
+{
+    return juce::String (juce::roundToInt (hz)) + " Hz";
+}
+
+juce::String fmtDb (float db)
+{
+    juce::String s;
+    if (db > 0.0f)
+        s = "+";
+    s += juce::String (db, 1) + " dB";
+    return s;
+}
+
+std::vector<ChainStep> fallbackChain (const VocalPreset& p, const PresetLibrary& lib)
+{
+    std::vector<ChainStep> out;
+    const auto& s = p.settings;
+    int n = 1;
+    auto add = [&] (const juce::String& title, const juce::String& settings)
+    {
+        out.push_back ({ n++, title, settings });
+    };
+    add ("HPF", fmtHz (s.hpfHz) + juce::String::fromUTF8 (" \xc2\xb7 24 dB/oct"));
+    add ("EQ mud", fmtDb (s.eqLowGainDb) + " @ " + fmtHz (s.eqLowHz)
+                       + juce::String::fromUTF8 (" \xc2\xb7 Q ") + juce::String (s.eqLowQ, 1));
+    add (juce::String::fromUTF8 ("EQ pr\xc3\xa9sence"),
+         fmtDb (s.eqMidGainDb) + " @ " + fmtHz (s.eqMidHz)
+             + juce::String::fromUTF8 (" \xc2\xb7 Q ") + juce::String (s.eqMidQ, 1));
+    add ("EQ air", fmtDb (s.eqAirGainDb) + " @ " + fmtHz (s.eqAirHz) + " (shelf)");
+    add ("Compresseur",
+         juce::String (s.compRatio, 1) + ":1"
+             + juce::String::fromUTF8 (" \xc2\xb7 att ") + juce::String (s.compAttackMs, 0) + " ms"
+             + juce::String::fromUTF8 (" \xc2\xb7 rel ") + juce::String (s.compReleaseMs, 0) + " ms"
+             + juce::String::fromUTF8 (" \xc2\xb7 thresh ") + fmtDb (s.compThresholdDb)
+             + juce::String::fromUTF8 (" \xc2\xb7 makeup ") + fmtDb (s.compMakeupDb));
+    add ("De-esser", fmtHz (s.deessHz) + juce::String::fromUTF8 (" \xc2\xb7 amount ")
+                         + juce::String (juce::roundToInt (s.deessAmount * 100.0f)) + " %");
+    add ("Saturation",
+         "drive " + juce::String (juce::roundToInt (s.satDrive * 100.0f)) + " %"
+             + juce::String::fromUTF8 (" \xc2\xb7 mix ")
+             + juce::String (juce::roundToInt (s.satMix * 100.0f)) + " %");
+    auto sendName = [&] (const juce::String& id) -> juce::String
+    {
+        if (id.isEmpty())
+            return "Off";
+        if (const auto* fx = lib.findFx (id))
+            return fx->name;
+        return id;
+    };
+    add ("Send A (interne)", sendName (p.sendAId));
+    add ("Send B (interne)", sendName (p.sendBId));
+    return out;
+}
+
+std::vector<FlInsertRow> fallbackFlPlan (const VocalPreset& p)
+{
+    return {
+        { 1, "K3CH Presets",
+          juce::String::fromUTF8 (
+              "Pose CE plug-in sur l\xe2\x80\x99insert FL choisi \xe2\x80\x94 applique HPF/EQ/comp/DS/sat + sends internes"),
+          p.name }
+    };
+}
+
 } // namespace
+
+juce::String VocalPreset::appliedChainText() const
+{
+    juce::String t;
+    for (const auto& step : appliedChain)
+    {
+        t += juce::String (step.n) + ".  " + step.title;
+        if (step.settings.isNotEmpty())
+            t += juce::String::fromUTF8 ("  \xe2\x80\x94  ") + step.settings;
+        t += "\n";
+    }
+    return t.trimEnd();
+}
+
+juce::String VocalPreset::flInsertPlanText() const
+{
+    juce::String t;
+    t += juce::String::fromUTF8 ("Plan d\xe2\x80\x99inserts FL \xe2\x80\x94 ") + name + "\n";
+    t += juce::String::fromUTF8 (
+        "Un VST3 ne peut pas poser ces plugins pour toi. Recr\xc3\xa9e \xc3\xa0 la main :\n\n");
+    for (const auto& row : flInsertPlan)
+    {
+        t += "Insert " + juce::String (row.slot) + " = " + row.plugin;
+        if (row.setting.isNotEmpty())
+            t += juce::String::fromUTF8 ("  \xc2\xb7  ") + row.setting;
+        if (row.notes.isNotEmpty())
+            t += "  (" + row.notes + ")";
+        t += "\n";
+    }
+    return t.trimEnd();
+}
 
 PresetLibrary PresetLibrary::loadEmbedded()
 {
@@ -135,6 +268,11 @@ PresetLibrary PresetLibrary::parse (const juce::String& jsonText)
             p.notes = item.getProperty ("notes", {}).toString();
             p.aliases = readAliases (item, p.id, p.name);
             p.settings = vocalFrom (item.getProperty ("params", {}));
+            const auto sends = item.getProperty ("sends", {});
+            p.sendAId = sends.getProperty ("a", {}).toString();
+            p.sendBId = sends.getProperty ("b", {}).toString();
+            p.appliedChain = readAppliedChain (item);
+            p.flInsertPlan = readFlPlan (item);
             if (p.id.isNotEmpty())
                 lib.vocalPresets.push_back (std::move (p));
         }
@@ -156,6 +294,14 @@ PresetLibrary PresetLibrary::parse (const juce::String& jsonText)
             if (p.id.isNotEmpty())
                 lib.fxPresets.push_back (std::move (p));
         }
+    }
+
+    for (auto& vocal : lib.vocalPresets)
+    {
+        if (vocal.appliedChain.empty())
+            vocal.appliedChain = fallbackChain (vocal, lib);
+        if (vocal.flInsertPlan.empty())
+            vocal.flInsertPlan = fallbackFlPlan (vocal);
     }
 
     lib.valid = ! lib.vocalPresets.empty() && ! lib.fxPresets.empty();

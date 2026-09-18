@@ -162,7 +162,32 @@ void PresetsProcessor::loadVocalIndex (int index, bool notifyHost)
     setFloatParam (kDeessAmt, s.deessAmount, notifyHost);
     setFloatParam (kSatDrv, s.satDrive, notifyHost);
     setFloatParam (kSatMix, s.satMix, notifyHost);
-    lastStatus = juce::String::fromUTF8 ("Cha\xc3\xaene voix : ") + p->name;
+
+    auto applyDefinedSend = [this, notifyHost] (int slot, const juce::String& fxId)
+    {
+        if (fxId.isEmpty())
+            return juce::String();
+        const int fx = library.findFxIndex (fxId);
+        const auto* fxP = library.fxAt (fx);
+        if (fxP == nullptr)
+            return juce::String();
+        setChoiceParam (slot == 0 ? kSendA : kSendB, fx, notifyHost);
+        if (fxP->settings.active)
+            setFloatParam (slot == 0 ? kSendAdB : kSendBdB, fxP->defaultSendDb, notifyHost);
+        return fxP->name;
+    };
+    const auto sendAName = applyDefinedSend (0, p->sendAId);
+    const auto sendBName = applyDefinedSend (1, p->sendBId);
+
+    lastStatus = juce::String::fromUTF8 ("Cha\xc3\xaene appliqu\xc3\xa9e : ") + p->name
+                 + juce::String::fromUTF8 (" \xe2\x80\x94 pose ce plug-in sur l\xe2\x80\x99insert FL choisi");
+    if (sendAName.isNotEmpty() || sendBName.isNotEmpty())
+    {
+        lastStatus += juce::String::fromUTF8 (" \xc2\xb7 Send A ");
+        lastStatus += sendAName.isNotEmpty() ? sendAName : "Off";
+        lastStatus += juce::String::fromUTF8 (" / Send B ");
+        lastStatus += sendBName.isNotEmpty() ? sendBName : "Off";
+    }
     pushEngineFromParams();
 }
 

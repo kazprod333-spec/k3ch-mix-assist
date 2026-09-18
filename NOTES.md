@@ -51,4 +51,4 @@ Generic walker: unit suffixes, ranges, `eq_bands`, `{ plugin, setting/gr_db }`, 
 
 **K3CH Plugin** (encyclopedia) stays a cheap pass-through insert. Recipes are copied and applied by hand in FL / Studio One.
 
-**K3CH Presets** (separate VST3, plugin code `K3pr`) is the DSP product: vocal insert + internal sends A/B. Runtime map: `Resources/presets-runtime.json`. Commands never control the host mixer.
+**K3CH Presets** (separate VST3, plugin code `K3pr`) is the DSP product: vocal insert chain + internal sends A/B. Runtime map: `Resources/presets-runtime.json` (`applied_chain`, `sends`, `fl_insert_plan`). Selecting a vocal preset applies the full ordered DSP path inside this plug-in. The FL insert plan is a manual checklist — a VST3 cannot insert/control third-party plugins on the host mixer.
