@@ -23,6 +23,21 @@ K3chLookAndFeel::K3chLookAndFeel()
     setColour (juce::AlertWindow::backgroundColourId, palette.bgPanel);
     setColour (juce::AlertWindow::textColourId, palette.text);
     setColour (juce::AlertWindow::outlineColourId, palette.gold);
+    setColour (juce::ComboBox::backgroundColourId, palette.bgCard);
+    setColour (juce::ComboBox::textColourId, palette.text);
+    setColour (juce::ComboBox::outlineColourId, palette.border);
+    setColour (juce::ComboBox::arrowColourId, palette.gold);
+    setColour (juce::ComboBox::focusedOutlineColourId, palette.gold);
+    setColour (juce::PopupMenu::backgroundColourId, palette.bgPanel);
+    setColour (juce::PopupMenu::textColourId, palette.text);
+    setColour (juce::PopupMenu::highlightedBackgroundColourId, juce::Colour (0xff2a2416));
+    setColour (juce::PopupMenu::highlightedTextColourId, palette.gold);
+    setColour (juce::Slider::backgroundColourId, palette.bg);
+    setColour (juce::Slider::trackColourId, palette.goldDim);
+    setColour (juce::Slider::thumbColourId, palette.gold);
+    setColour (juce::Slider::textBoxTextColourId, palette.text);
+    setColour (juce::Slider::textBoxBackgroundColourId, palette.bgCard);
+    setColour (juce::Slider::textBoxOutlineColourId, palette.border);
 }
 
 void K3chLookAndFeel::drawButtonBackground (juce::Graphics& g, juce::Button& button,
@@ -85,6 +100,43 @@ void K3chLookAndFeel::drawTextEditorOutline (juce::Graphics& g, int width, int h
 {
     g.setColour (editor.hasKeyboardFocus (true) ? palette.gold : palette.border);
     g.drawRoundedRectangle (0.5f, 0.5f, (float) width - 1.0f, (float) height - 1.0f, 6.0f, 1.0f);
+}
+
+void K3chLookAndFeel::drawComboBox (juce::Graphics& g, int width, int height, bool,
+                                    int, int, int, int, juce::ComboBox& box)
+{
+    auto bounds = juce::Rectangle<float> (0.0f, 0.0f, (float) width, (float) height);
+    g.setColour (palette.bgCard);
+    g.fillRoundedRectangle (bounds, 6.0f);
+    g.setColour (box.hasKeyboardFocus (true) ? palette.gold : palette.border);
+    g.drawRoundedRectangle (bounds.reduced (0.5f), 6.0f, 1.0f);
+
+    const float ah = 5.0f, aw = 7.0f;
+    juce::Path p;
+    p.addTriangle (width - 16.0f - aw * 0.5f, height * 0.5f - ah * 0.35f,
+                   width - 16.0f + aw * 0.5f, height * 0.5f - ah * 0.35f,
+                   width - 16.0f, height * 0.5f + ah * 0.55f);
+    g.setColour (palette.gold);
+    g.fillPath (p);
+}
+
+void K3chLookAndFeel::positionComboBoxText (juce::ComboBox& box, juce::Label& labelToPosition)
+{
+    labelToPosition.setBounds (10, 1, box.getWidth() - 30, box.getHeight() - 2);
+    labelToPosition.setFont (getComboBoxFont (box));
+    labelToPosition.setJustificationType (juce::Justification::centredLeft);
+}
+
+juce::Font K3chLookAndFeel::getComboBoxFont (juce::ComboBox&)
+{
+    return juce::Font (juce::FontOptions (14.5f));
+}
+
+void K3chLookAndFeel::drawPopupMenuBackground (juce::Graphics& g, int width, int height)
+{
+    g.fillAll (palette.bgPanel);
+    g.setColour (palette.gold.withAlpha (0.45f));
+    g.drawRect (0, 0, width, height, 1);
 }
 
 } // namespace k3ch

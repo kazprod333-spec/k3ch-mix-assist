@@ -1,23 +1,39 @@
-# K3CH Plugin
+# K3CH plugins
 
 **Maison K3CH Production — Alger**
 
-VST3 mix-helper insert for FL Studio (and other VST3 hosts). Engineers drop it on a track, browse studio recipes (vocal chains, EQ starting points, gain staging, kick/808, session checklist, mastering targets), and copy a plain-text recipe to apply manually in the DAW.
+This repo ships **two** VST3 products (same CMake project, unique plugin codes):
 
-Audio is **true pass-through** (in → out) with an optional peak/RMS meter. There is no heavy DSP in v1. Knowledge is **local/embedded** (`Resources/mix-knowledge.json`) — no network, no model API.
+| Product | CMake target | What it does |
+|---------|----------------|--------------|
+| **K3CH Plugin** | `K3CHMixAssist` | Mix encyclopedia / recipe browser. True **pass-through** audio. Copy recipes and apply them by hand in the DAW. |
+| **K3CH Presets** | `K3CHPresets` | Vocal-chain **preset loader** + **internal multi-FX sends** A/B. Real DSP (HPF/EQ → compressor → de-esser → sat, plus reverb/delay/parallel recipes). |
 
-## Features
+Natural-language commands in **K3CH Presets** (French or English) apply to **this plug-in’s own** processing and send slots. They cannot drive FL Studio’s mixer — host mixer control is not possible via VST3.
 
-- Navigate `ui_sections` from the knowledge pack (new sections/presets show up without rewriting the UI)
-- Concrete numbers: Hz, dB, dB GR, LUFS, dBTP
-- Search/filter across titles and values
-- **Copier la recette** → clipboard as numbered/plain-text steps
-- Bypass + stereo peak/RMS meter
-- Standalone app for testing without a DAW
+Knowledge is **local/embedded** (`Resources/mix-knowledge.json` for the encyclopedia, `Resources/presets-runtime.json` for DSP mappings). No network, no model API.
+
+## K3CH Presets — v1
+
+- Vocal insert: HPF / 3-band EQ / compressor / de-esser / optional saturation
+- Internal **Send A** and **Send B**: each loads an FX recipe (Air parallèle, Body, Sat, Harsh, Plate, Room, Hall, Delay 1/8, Slap)
+- Dry/wet, send levels, return mix, peak/RMS meter
+- Command bar examples:
+  - `charge ModernRap`
+  - `mets Air parallèle sur send A`
+  - `harsh sur send B`
+  - `send A -15` · `dry 80` · `bypass`
+
+Runtime recipes are derived from the studio knowledge pack (ModernRap, Bodak, ALLTY5, JuiceWRLD, TrapDrill, PopUrbaine, BGV, VoixOff, Weeknd, Ninho, Hamza, Freeze, …).
 
 ## Download Windows VST3 (no Visual Studio)
 
-GitHub Actions builds Release x64 on this branch. Open **Actions → Windows VST3**, pick the latest green run, download artifact **K3CH-Plugin-Windows-VST3**, unzip, then copy the folder `K3CH Plugin.vst3` into `C:\Program Files\Common Files\VST3`. In FL Studio: **Options → Manage plugins → Find plugins**.
+GitHub Actions builds Release x64 on this branch. Open **Actions → Windows VST3**, pick the latest green run, download artifact **K3CH-Windows-VST3**, unzip, then copy **both** folders into `C:\Program Files\Common Files\VST3`:
+
+- `K3CH Plugin.vst3`
+- `K3CH Presets.vst3`
+
+In FL Studio: **Options → Manage plugins → Find plugins**.
 
 ## Requirements (Windows / FL Studio)
 
@@ -36,8 +52,9 @@ In **x64 Native Tools Command Prompt for VS 2022** or PowerShell (from the repo 
 
 ```bat
 cmake -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Release --target K3CHMixAssist_VST3
-cmake --build build --config Release --target K3CHMixAssist_Standalone
+cmake --build build --config Release --target K3CHMixAssist_VST3 K3CHPresets_VST3
+cmake --build build --config Release --target K3CHMixAssist_Standalone K3CHPresets_Standalone
+cmake --build build --config Release --target K3CHPresetsSmoke
 ```
 
 Artefacts:
@@ -45,6 +62,8 @@ Artefacts:
 ```
 build\K3CHMixAssist_artefacts\Release\VST3\K3CH Plugin.vst3
 build\K3CHMixAssist_artefacts\Release\Standalone\K3CH Plugin.exe
+build\K3CHPresets_artefacts\Release\VST3\K3CH Presets.vst3
+build\K3CHPresets_artefacts\Release\Standalone\K3CH Presets.exe
 ```
 
 Optional local JUCE instead of FetchContent:
@@ -53,13 +72,16 @@ Optional local JUCE instead of FetchContent:
 cmake -B build -G "Visual Studio 17 2022" -A x64 -DJUCE_PATH=C:\src\JUCE
 ```
 
-Run the Standalone `.exe` first to confirm the editor opens and recipes appear.
+Run each Standalone `.exe` first: encyclopedia should list recipes; Presets should load **ModernRap** by default and change the sound (not pass-through).
 
 ## Install in FL Studio (Windows)
 
-1. Copy the whole bundle `K3CH Plugin.vst3` into:
+1. Copy the whole bundles into:
 
    `C:\Program Files\Common Files\VST3`
+
+   - `K3CH Plugin.vst3` (encyclopedia)
+   - `K3CH Presets.vst3` (vocal + internal sends)
 
    (Create the folder if it does not exist. This is the standard VST3 location; FL Studio scans it.)
 
@@ -67,11 +89,13 @@ Run the Standalone `.exe` first to confirm the editor opens and recipes appear.
 
 3. In FL Studio: **Options → Manage plugins** → **Find plugins** (wait for the scan).
 
-4. Verify **K3CH Plugin** is in the list, vendor **Maison K3CH Production**, type VST3. Make sure it is **enabled**.
+4. Verify both **K3CH Plugin** and **K3CH Presets**, vendor **Maison K3CH Production**, type VST3, **enabled**.
 
-5. Insert it like any effect: mixer insert slot → select **K3CH Plugin**. It will not change the sound (pass-through). Use the editor to copy recipes, then set EQ/comp/sends on your usual plugins.
+5. Insert:
+   - **K3CH Plugin** on a mixer insert to **browse/copy recipes**. It will not change the sound.
+   - **K3CH Presets** on a vocal insert to **hear** a chain and assign Send A/B recipes inside the plug-in (not FL send slots).
 
-If FL does not see it: confirm you built **x64 Release**, copied the **folder** `K3CH Plugin.vst3` (not a lone `.dll`), and that you are not mixing a 32-bit host with a 64-bit plug-in.
+If FL does not see them: confirm you built **x64 Release**, copied the **folder** `*.vst3` (not a lone `.dll`), and that you are not mixing a 32-bit host with a 64-bit plug-in.
 
 ## macOS (brief)
 
@@ -79,7 +103,8 @@ Needs Xcode command-line tools and CMake 3.22+.
 
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --target K3CHMixAssist_VST3 K3CHMixAssist_Standalone
+cmake --build build --target K3CHMixAssist_VST3 K3CHMixAssist_Standalone \
+                      K3CHPresets_VST3 K3CHPresets_Standalone
 ```
 
 Universal binary (Intel + Apple Silicon):
@@ -88,7 +113,7 @@ Universal binary (Intel + Apple Silicon):
 cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 ```
 
-Copy `K3CH Plugin.vst3` to `~/Library/Audio/Plug-Ins/VST3/` (or `/Library/Audio/Plug-Ins/VST3/` for all users). Rescan plugins in Logic, Ableton, Reaper, etc.
+Copy both `.vst3` bundles to `~/Library/Audio/Plug-Ins/VST3/` (or `/Library/Audio/Plug-Ins/VST3/` for all users). Rescan plugins in Logic, Ableton, Reaper, etc.
 
 ## Linux (developers)
 
@@ -99,22 +124,30 @@ sudo apt install g++ cmake ninja-build pkg-config libasound2-dev \
   libglu1-mesa-dev
 
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build build --target K3CHMixAssist_Standalone K3CHMixAssist_VST3
+cmake --build build --target K3CHMixAssist_Standalone K3CHMixAssist_VST3 \
+                      K3CHPresets_Standalone K3CHPresets_VST3 K3CHPresetsSmoke
+./build/K3CHPresetsSmoke
 ```
 
-Standalone smoke-test: `build/K3CHMixAssist_artefacts/Release/Standalone/K3CH\ Plugin`
+Standalone:
 
-VST3 bundle: `build/K3CHMixAssist_artefacts/Release/VST3/K3CH Plugin.vst3` — copy to `~/.vst3`.
+- `build/K3CHMixAssist_artefacts/Release/Standalone/K3CH Plugin`
+- `build/K3CHPresets_artefacts/Release/Standalone/K3CH Presets`
+
+VST3:
+
+- `build/K3CHMixAssist_artefacts/Release/VST3/K3CH Plugin.vst3`
+- `build/K3CHPresets_artefacts/Release/VST3/K3CH Presets.vst3`
+
+Copy to `~/.vst3`.
 
 ## Knowledge pack
 
-Edit `Resources/mix-knowledge.json` and rebuild. The file is compiled into the plugin via JUCE BinaryData.
+Edit `Resources/mix-knowledge.json` (encyclopedia UI) and/or `Resources/presets-runtime.json` (DSP mappings) and rebuild. Files are compiled into the plugins via JUCE BinaryData.
 
-- `ui_sections` drives the left-hand navigation (id, title, priority)
-- **25 presets** (studio MIX/FX, artist chains, scène FR) plus checklists, EQ, sidechains, 7 circuits, harsh, pense-bête
-- New **top-level arrays/objects** can be exposed by adding a `ui_sections` entry with a matching `id` (aliases: `compressors` → `compressor_circuits`, `harsh` → `harsh_guide`)
-- Optional `section_bindings` map (see `NOTES.md`) if the id does not match a JSON key
-- Unit suffixes (`_hz`, `_db`, `gr_db`, `_lufs`, `_ms`, `_pct`, …) are formatted for display without UI changes
+- `ui_sections` drives the encyclopedia left-hand navigation
+- **K3CH Presets** reads `vocal_presets[]` and `fx_presets[]` from the runtime JSON (aliases feed the command bar)
+- New encyclopedia sections: add a `ui_sections` row (see `NOTES.md`)
 
 ## License
 

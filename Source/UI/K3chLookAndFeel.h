@@ -41,6 +41,13 @@ public:
     void fillTextEditorBackground (juce::Graphics&, int width, int height, juce::TextEditor&) override;
     void drawTextEditorOutline (juce::Graphics&, int width, int height, juce::TextEditor&) override;
 
+    void drawComboBox (juce::Graphics&, int width, int height, bool isButtonDown,
+                       int buttonX, int buttonY, int buttonW, int buttonH,
+                       juce::ComboBox&) override;
+    void positionComboBoxText (juce::ComboBox&, juce::Label& labelToPosition) override;
+    juce::Font getComboBoxFont (juce::ComboBox&) override;
+    void drawPopupMenuBackground (juce::Graphics&, int width, int height) override;
+
     Palette palette;
 };
 

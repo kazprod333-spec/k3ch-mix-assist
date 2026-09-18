@@ -47,7 +47,8 @@ Generic walker: unit suffixes, ranges, `eq_bands`, `{ plugin, setting/gr_db }`, 
 3. Add a `ui_sections` row only for a **new** category (`id` = JSON key, or alias in MixKnowledge).
 4. Bump `version`. Rebuild so BinaryData updates.
 
-## DSP backlog (not v1)
+## DSP backlog
 
-- Keep the insert cheap (pass-through).
-- Recipes are applied by hand in FL / Studio One.
+**K3CH Plugin** (encyclopedia) stays a cheap pass-through insert. Recipes are copied and applied by hand in FL / Studio One.
+
+**K3CH Presets** (separate VST3, plugin code `K3pr`) is the DSP product: vocal insert + internal sends A/B. Runtime map: `Resources/presets-runtime.json`. Commands never control the host mixer.
