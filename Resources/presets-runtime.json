@@ -1,0 +1,2277 @@
+{
+  "source": "Derived from Resources/mix-knowledge.json (2026-09-17b) — DSP-mapped vocal + send recipes",
+  "version": "2026-09-17b-presets-v2",
+  "studio": "Maison K3CH Production",
+  "city": "Alger",
+  "notes": "La chaîne s’applique dans CE plug-in (insert + sends A/B internes). Un VST3 ne peut pas ajouter/régler d’autres plugins sur le mixer FL — le plan d’inserts est manuel.",
+  "vocal_presets": [
+    {
+      "id": "modern_rap",
+      "name": "ModernRap",
+      "source_id": "MIX_Voix_Lead_ModernRap_v1",
+      "aliases": [
+        "modernrap",
+        "modern rap",
+        "moderne",
+        "rap vocal moderne",
+        "rap moderne",
+        "socle",
+        "mix_voix_lead_modernrap_v1"
+      ],
+      "notes": "HPF 85 · mud −3@280 · présence +2@3.5k · air +1.8@11k · FET 4:1 · DS 6.4k · sat 25%",
+      "params": {
+        "hpf_hz": 85,
+        "eq_low_hz": 280,
+        "eq_low_gain_db": -3.0,
+        "eq_low_q": 1.2,
+        "eq_mid_hz": 3500,
+        "eq_mid_gain_db": 2.0,
+        "eq_mid_q": 1.4,
+        "eq_air_hz": 11000,
+        "eq_air_gain_db": 1.8,
+        "comp_threshold_db": -18.0,
+        "comp_ratio": 4.0,
+        "comp_attack_ms": 3.0,
+        "comp_release_ms": 80.0,
+        "comp_makeup_db": 4.0,
+        "deess_hz": 6400,
+        "deess_amount": 0.42,
+        "sat_drive": 0.22,
+        "sat_mix": 0.28
+      },
+      "sends": {
+        "a": "plate",
+        "b": "delay8"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "85 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-3 dB @ 280 Hz · Q 1.2"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+2 dB @ 3500 Hz · Q 1.4"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+1.8 dB @ 11000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "4:1 · att 3 ms · rel 80 ms · thresh -18 dB · makeup +4 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6400 Hz · amount 42 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 22 % · mix 28 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Plate"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Delay 1/8"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Gate / NS",
+          "setting": null,
+          "notes": "si besoin"
+        },
+        {
+          "slot": 3,
+          "plugin": "Tune / Auto-Tune",
+          "setting": "20–30 ms · Humanize 25–40 % · Formant ON",
+          "notes": "key du beat"
+        },
+        {
+          "slot": 4,
+          "plugin": "Pro-Q 3",
+          "setting": "HPF 85 · –3@280 Q1.2 · +2@3.5 Q1.4 · +1.8@11k",
+          "notes": "soustractif puis additif"
+        },
+        {
+          "slot": 5,
+          "plugin": "CLA-76",
+          "setting": "4:1 · Att 3 · Rel 6–7 · GR 4–7",
+          "notes": "output compensé"
+        },
+        {
+          "slot": 6,
+          "plugin": "De-esser",
+          "setting": "6.3–6.5 kHz · –3/−4 dB",
+          "notes": "après 76"
+        },
+        {
+          "slot": 7,
+          "plugin": "CLA-2A / RVox",
+          "setting": "GR 2–3.5",
+          "notes": "leveler"
+        },
+        {
+          "slot": 8,
+          "plugin": "Decap / sat",
+          "setting": "Drive 2–3 ou para 25–30 %",
+          "notes": null
+        },
+        {
+          "slot": 9,
+          "plugin": "Sends",
+          "setting": "Plate 0.7–1.1 · H-Delay 1/8",
+          "notes": "returns filtrés"
+        }
+      ]
+    },
+    {
+      "id": "bodak",
+      "name": "Bodak",
+      "source_id": "MIX_Voix_Lead_Bodak_v1",
+      "aliases": [
+        "bodak",
+        "bodak yellow",
+        "cardi",
+        "cardi b"
+      ],
+      "notes": "HPF 100 · coupe harsh ~4k · DS 4.3k · air discret · sat grit",
+      "params": {
+        "hpf_hz": 100,
+        "eq_low_hz": 300,
+        "eq_low_gain_db": -3.0,
+        "eq_low_q": 1.1,
+        "eq_mid_hz": 4000,
+        "eq_mid_gain_db": -3.0,
+        "eq_mid_q": 2.2,
+        "eq_air_hz": 11000,
+        "eq_air_gain_db": 1.0,
+        "comp_threshold_db": -16.0,
+        "comp_ratio": 4.0,
+        "comp_attack_ms": 3.0,
+        "comp_release_ms": 70.0,
+        "comp_makeup_db": 5.0,
+        "deess_hz": 4300,
+        "deess_amount": 0.55,
+        "sat_drive": 0.38,
+        "sat_mix": 0.3
+      },
+      "sends": {
+        "a": "delay8",
+        "b": "plate"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "100 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-3 dB @ 300 Hz · Q 1.1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "-3 dB @ 4000 Hz · Q 2.2"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+1 dB @ 11000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "4:1 · att 3 ms · rel 70 ms · thresh -16 dB · makeup +5 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "4300 Hz · amount 55 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 38 % · mix 30 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Delay 1/8"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Plate"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Tune",
+          "setting": "20–30 ms",
+          "notes": "comme Moderne"
+        },
+        {
+          "slot": 3,
+          "plugin": "Pro-Q",
+          "setting": "HPF 100 · –3@280–300 · –3@3.8–4.2k · présence +1@3.2k max",
+          "notes": "pas HPF 85"
+        },
+        {
+          "slot": 4,
+          "plugin": "CLA-76",
+          "setting": "4:1 · Att 3 · Rel 6–7 · GR 4–7",
+          "notes": "pics only"
+        },
+        {
+          "slot": 5,
+          "plugin": "Waves De-esser",
+          "setting": "~4.3 kHz",
+          "notes": "mid-harsh Cardi"
+        },
+        {
+          "slot": 6,
+          "plugin": "RVox / 2A",
+          "setting": "léger",
+          "notes": null
+        },
+        {
+          "slot": 7,
+          "plugin": "Decap / PARA_SAT",
+          "setting": "Drive 2–3 ou parallel 25–30%",
+          "notes": "grit"
+        },
+        {
+          "slot": 8,
+          "plugin": "Bus Vox1",
+          "setting": "Pro-DS + RComp + C4 opt + SSL 1–2",
+          "notes": "pas limiteur"
+        },
+        {
+          "slot": 9,
+          "plugin": "Delay hook",
+          "setting": "1/8 ou dotted ducké",
+          "notes": "Hook ≠ Verse"
+        }
+      ]
+    },
+    {
+      "id": "allty5",
+      "name": "ALLTY5",
+      "source_id": "MIX_Voix_Lead_TrippieALLTY5_v1",
+      "aliases": [
+        "allty5",
+        "allty 5",
+        "trippie",
+        "trippie redd"
+      ],
+      "notes": "HPF 110 · boxy −2.5 · présence +1 max · PAS d'air · RVox glue",
+      "params": {
+        "hpf_hz": 110,
+        "eq_low_hz": 320,
+        "eq_low_gain_db": -2.5,
+        "eq_low_q": 1.1,
+        "eq_mid_hz": 3500,
+        "eq_mid_gain_db": 1.0,
+        "eq_mid_q": 1.3,
+        "eq_air_hz": 5500,
+        "eq_air_gain_db": -1.5,
+        "comp_threshold_db": -17.0,
+        "comp_ratio": 3.5,
+        "comp_attack_ms": 5.0,
+        "comp_release_ms": 90.0,
+        "comp_makeup_db": 4.0,
+        "deess_hz": 6000,
+        "deess_amount": 0.38,
+        "sat_drive": 0.12,
+        "sat_mix": 0.15
+      },
+      "sends": {
+        "a": "plate",
+        "b": "off"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "110 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-2.5 dB @ 320 Hz · Q 1.1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+1 dB @ 3500 Hz · Q 1.3"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "-1.5 dB @ 5500 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "3.5:1 · att 5 ms · rel 90 ms · thresh -17 dB · makeup +4 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6000 Hz · amount 38 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 12 % · mix 15 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Plate"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Off"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Tune",
+          "setting": "12–20 ms · Formant ON · Humanize 20–35%",
+          "notes": "mélodie ALLTY5"
+        },
+        {
+          "slot": 3,
+          "plugin": "Pro-Q HPF",
+          "setting": "100–120 Hz (cible 110)",
+          "notes": "évite pompe 76"
+        },
+        {
+          "slot": 4,
+          "plugin": "CLA-76 insert",
+          "setting": "3–6 dB · Rel 7",
+          "notes": "contrôle"
+        },
+        {
+          "slot": 5,
+          "plugin": "Pro-MB",
+          "setting": "mud boxy + sizzle dyn",
+          "notes": "Heldens"
+        },
+        {
+          "slot": 6,
+          "plugin": "Pro-Q",
+          "setting": "thud + notch nasal · présence +1 max",
+          "notes": null
+        },
+        {
+          "slot": 7,
+          "plugin": "RVox",
+          "setting": "2–3.5 dB",
+          "notes": "obligatoire"
+        },
+        {
+          "slot": 8,
+          "plugin": "Harsh dyn",
+          "setting": "DS 5–7k + Pro-Q dyn",
+          "notes": "= C1"
+        },
+        {
+          "slot": 9,
+          "plugin": "PARA 76 Blue",
+          "setting": "8–10 dB · mix 20–30% · coupe >5k",
+          "notes": "texture"
+        },
+        {
+          "slot": 10,
+          "plugin": "Sends",
+          "setting": "plate/hall 1.0–1.6 s · H-Delay 1/8 + 1/2",
+          "notes": "ducking"
+        },
+        {
+          "slot": 11,
+          "plugin": "Bus_VOX",
+          "setting": "SSL 1–2 dB",
+          "notes": "pas limiteur"
+        }
+      ]
+    },
+    {
+      "id": "juice",
+      "name": "JuiceWRLD",
+      "source_id": "MIX_Voix_Lead_JuiceWRLD_v1",
+      "aliases": [
+        "juice",
+        "juice wrld",
+        "juicewrld",
+        "999"
+      ],
+      "notes": "HPF 90 · mud −2 · présence +1.5 · air +1 · DS léger 6.5k",
+      "params": {
+        "hpf_hz": 90,
+        "eq_low_hz": 320,
+        "eq_low_gain_db": -2.0,
+        "eq_low_q": 1.0,
+        "eq_mid_hz": 3250,
+        "eq_mid_gain_db": 1.5,
+        "eq_mid_q": 1.2,
+        "eq_air_hz": 12000,
+        "eq_air_gain_db": 1.0,
+        "comp_threshold_db": -18.0,
+        "comp_ratio": 4.0,
+        "comp_attack_ms": 4.0,
+        "comp_release_ms": 100.0,
+        "comp_makeup_db": 3.5,
+        "deess_hz": 6500,
+        "deess_amount": 0.28,
+        "sat_drive": 0.18,
+        "sat_mix": 0.2
+      },
+      "sends": {
+        "a": "plate",
+        "b": "delay8"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "90 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-2 dB @ 320 Hz · Q 1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+1.5 dB @ 3250 Hz · Q 1.2"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+1 dB @ 12000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "4:1 · att 4 ms · rel 100 ms · thresh -18 dB · makeup +3.5 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6500 Hz · amount 28 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 18 % · mix 20 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Plate"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Delay 1/8"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Tune",
+          "setting": "10–18 ms · Formant ON · Humanize 15–30",
+          "notes": "vibrato plugin OFF"
+        },
+        {
+          "slot": 3,
+          "plugin": "Pro-Q",
+          "setting": "HPF 90 · –2@250–400 · +1.5@3–3.5k · air +1@11k",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "CLA-76",
+          "setting": "4–6 dB · Att ouverte · Rel 7",
+          "notes": null
+        },
+        {
+          "slot": 5,
+          "plugin": "RVox / 2A",
+          "setting": "2–3 dB",
+          "notes": "= opto Max Lord"
+        },
+        {
+          "slot": 6,
+          "plugin": "De-esser",
+          "setting": "6–7 k léger",
+          "notes": null
+        },
+        {
+          "slot": 7,
+          "plugin": "Sat",
+          "setting": "Drive 1",
+          "notes": "douce"
+        },
+        {
+          "slot": 8,
+          "plugin": "PARA",
+          "setting": "3–5 dB · mix 15–25%",
+          "notes": null
+        },
+        {
+          "slot": 9,
+          "plugin": "Sends",
+          "setting": "Plate 1.2–1.8 s · H-Delay 1/8+1/2 · chorus opt bas",
+          "notes": "adlibs plus wet"
+        },
+        {
+          "slot": 10,
+          "plugin": "Bus_VOX",
+          "setting": "SSL 1–2 dB",
+          "notes": "pas limiteur"
+        }
+      ]
+    },
+    {
+      "id": "trap_drill",
+      "name": "TrapDrill",
+      "source_id": "MIX_Voix_Lead_TrapDrill",
+      "aliases": [
+        "trap",
+        "drill",
+        "trapdrill",
+        "trap drill",
+        "trap / drill"
+      ],
+      "notes": "HPF 105 · scoop mud · présence plus forte · sat Drive 4–7",
+      "params": {
+        "hpf_hz": 105,
+        "eq_low_hz": 320,
+        "eq_low_gain_db": -4.0,
+        "eq_low_q": 1.0,
+        "eq_mid_hz": 3200,
+        "eq_mid_gain_db": 3.0,
+        "eq_mid_q": 1.3,
+        "eq_air_hz": 9000,
+        "eq_air_gain_db": 1.0,
+        "comp_threshold_db": -15.0,
+        "comp_ratio": 5.0,
+        "comp_attack_ms": 2.0,
+        "comp_release_ms": 60.0,
+        "comp_makeup_db": 5.5,
+        "deess_hz": 6000,
+        "deess_amount": 0.48,
+        "sat_drive": 0.55,
+        "sat_mix": 0.35
+      },
+      "sends": {
+        "a": "delay8",
+        "b": "room"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "105 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-4 dB @ 320 Hz · Q 1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+3 dB @ 3200 Hz · Q 1.3"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+1 dB @ 9000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "5:1 · att 2 ms · rel 60 ms · thresh -15 dB · makeup +5.5 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6000 Hz · amount 48 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 55 % · mix 35 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Delay 1/8"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Room"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Pro-Q 3",
+          "setting": "HP 90–120 · scoop 250–400 · présence 2.5–4k",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "RVox",
+          "setting": "GR 5–8",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "Pro-C 2",
+          "setting": "3:1–4:1 punch",
+          "notes": null
+        },
+        {
+          "slot": 5,
+          "plugin": "Pro-DS",
+          "setting": "ferme",
+          "notes": null
+        },
+        {
+          "slot": 6,
+          "plugin": "Decapitator",
+          "setting": "Drive 4–7",
+          "notes": null
+        },
+        {
+          "slot": 7,
+          "plugin": "Saturn 2 opt",
+          "setting": "sat multibande médiums",
+          "notes": null
+        },
+        {
+          "slot": 8,
+          "plugin": "Pro-Q finitions",
+          "setting": "air 8–10k · coupe 5–6k si agressif",
+          "notes": null
+        },
+        {
+          "slot": 9,
+          "plugin": "Sends",
+          "setting": "delay court filtré · reverb 0.6–1.0 s",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "pop_urbaine",
+      "name": "PopUrbaine",
+      "source_id": "MIX_Voix_Lead_PopUrbaine",
+      "aliases": [
+        "pop",
+        "pop urbaine",
+        "popurbaine",
+        "melodique",
+        "mélodique"
+      ],
+      "notes": "HPF 80 · opto doux · air 12–16k · sat très bas",
+      "params": {
+        "hpf_hz": 80,
+        "eq_low_hz": 320,
+        "eq_low_gain_db": -2.0,
+        "eq_low_q": 0.9,
+        "eq_mid_hz": 4000,
+        "eq_mid_gain_db": 2.5,
+        "eq_mid_q": 1.1,
+        "eq_air_hz": 14000,
+        "eq_air_gain_db": 3.0,
+        "comp_threshold_db": -20.0,
+        "comp_ratio": 2.5,
+        "comp_attack_ms": 12.0,
+        "comp_release_ms": 180.0,
+        "comp_makeup_db": 2.5,
+        "deess_hz": 7000,
+        "deess_amount": 0.32,
+        "sat_drive": 0.1,
+        "sat_mix": 0.12
+      },
+      "sends": {
+        "a": "hall",
+        "b": "slap"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "80 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-2 dB @ 320 Hz · Q 0.9"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+2.5 dB @ 4000 Hz · Q 1.1"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+3 dB @ 14000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "2.5:1 · att 12 ms · rel 180 ms · thresh -20 dB · makeup +2.5 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "7000 Hz · amount 32 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 10 % · mix 12 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Hall"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Slap"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Pro-Q 3",
+          "setting": "HP 70–90 · scoop 250–400",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "CLA-2A",
+          "setting": "GR 2–5",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "Pro-C 2",
+          "setting": "pics légers",
+          "notes": null
+        },
+        {
+          "slot": 5,
+          "plugin": "Pro-DS",
+          "setting": null,
+          "notes": null
+        },
+        {
+          "slot": 6,
+          "plugin": "Sat légère",
+          "setting": "drive bas",
+          "notes": null
+        },
+        {
+          "slot": 7,
+          "plugin": "Pro-Q",
+          "setting": "présence 3–5k · air 12–16k",
+          "notes": null
+        },
+        {
+          "slot": 8,
+          "plugin": "MicroShift léger",
+          "setting": null,
+          "notes": "lead ou doubles"
+        },
+        {
+          "slot": 9,
+          "plugin": "Sends",
+          "setting": "Hall 1.5–2.5 · slap+1/4",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "bgv",
+      "name": "BGV",
+      "source_id": "MIX_Voix_BGV_v1",
+      "aliases": [
+        "bgv",
+        "backs",
+        "doubles",
+        "adlibs"
+      ],
+      "notes": "HPF 135 · dip présence 2.5–5k · plus plat que lead",
+      "params": {
+        "hpf_hz": 135,
+        "eq_low_hz": 280,
+        "eq_low_gain_db": -3.0,
+        "eq_low_q": 1.0,
+        "eq_mid_hz": 3500,
+        "eq_mid_gain_db": -3.0,
+        "eq_mid_q": 2.0,
+        "eq_air_hz": 10000,
+        "eq_air_gain_db": 0.0,
+        "comp_threshold_db": -14.0,
+        "comp_ratio": 4.0,
+        "comp_attack_ms": 2.0,
+        "comp_release_ms": 70.0,
+        "comp_makeup_db": 3.0,
+        "deess_hz": 6500,
+        "deess_amount": 0.4,
+        "sat_drive": 0.08,
+        "sat_mix": 0.1
+      },
+      "sends": {
+        "a": "plate",
+        "b": "off"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "135 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-3 dB @ 280 Hz · Q 1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "-3 dB @ 3500 Hz · Q 2"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+0 dB @ 10000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "4:1 · att 2 ms · rel 70 ms · thresh -14 dB · makeup +3 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6500 Hz · amount 40 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 8 % · mix 10 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Plate"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Off"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Tune",
+          "setting": "par piste",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "Pro-Q",
+          "setting": "HPF 120–150 · dip 2.5–5k Q≤2.5",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "76/RVox",
+          "setting": "GR 5–8",
+          "notes": null
+        },
+        {
+          "slot": 5,
+          "plugin": "Sends",
+          "setting": "plus bas · pan 70–85 %",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "voix_off",
+      "name": "VoixOff",
+      "source_id": "MIX_VoixOff_v1",
+      "aliases": [
+        "voixoff",
+        "voix off",
+        "voix-off",
+        "podcast",
+        "narration"
+      ],
+      "notes": "HPF 70 · boxy −3 · présence douce · DS essentiel · peu de sat",
+      "params": {
+        "hpf_hz": 70,
+        "eq_low_hz": 300,
+        "eq_low_gain_db": -3.0,
+        "eq_low_q": 1.0,
+        "eq_mid_hz": 3000,
+        "eq_mid_gain_db": 1.5,
+        "eq_mid_q": 1.0,
+        "eq_air_hz": 11000,
+        "eq_air_gain_db": 0.5,
+        "comp_threshold_db": -16.0,
+        "comp_ratio": 2.0,
+        "comp_attack_ms": 18.0,
+        "comp_release_ms": 220.0,
+        "comp_makeup_db": 2.0,
+        "deess_hz": 6500,
+        "deess_amount": 0.5,
+        "sat_drive": 0.05,
+        "sat_mix": 0.05
+      },
+      "sends": {
+        "a": "off",
+        "b": "off"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "70 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-3 dB @ 300 Hz · Q 1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+1.5 dB @ 3000 Hz · Q 1"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+0.5 dB @ 11000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "2:1 · att 18 ms · rel 220 ms · thresh -16 dB · makeup +2 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6500 Hz · amount 50 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 5 % · mix 5 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Off"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Off"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Pro-Q 3",
+          "setting": "HP 60–80 · scoop boxy · présence 2–4k",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "Pro-C 2 / RVox",
+          "setting": "GR 2–4",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "Pro-DS",
+          "setting": null,
+          "notes": "essentiel"
+        },
+        {
+          "slot": 5,
+          "plugin": "RVox / CLA Vocals opt",
+          "setting": "polish",
+          "notes": null
+        },
+        {
+          "slot": 6,
+          "plugin": "Pro-Q finitions",
+          "setting": "air 10–12k léger",
+          "notes": null
+        },
+        {
+          "slot": 7,
+          "plugin": "Pro-L 2",
+          "setting": "ceiling –1",
+          "notes": "pas squash"
+        }
+      ]
+    },
+    {
+      "id": "weeknd",
+      "name": "Weeknd",
+      "source_id": "weeknd",
+      "aliases": [
+        "weeknd",
+        "the weeknd",
+        "theweeknd",
+        "bailey"
+      ],
+      "notes": "HPF ~120 · sombre · air haut doux · opto · peu de sat",
+      "params": {
+        "hpf_hz": 120,
+        "eq_low_hz": 450,
+        "eq_low_gain_db": -2.5,
+        "eq_low_q": 1.1,
+        "eq_mid_hz": 2800,
+        "eq_mid_gain_db": 1.0,
+        "eq_mid_q": 1.0,
+        "eq_air_hz": 13000,
+        "eq_air_gain_db": 2.5,
+        "comp_threshold_db": -20.0,
+        "comp_ratio": 2.5,
+        "comp_attack_ms": 15.0,
+        "comp_release_ms": 200.0,
+        "comp_makeup_db": 2.5,
+        "deess_hz": 7000,
+        "deess_amount": 0.3,
+        "sat_drive": 0.1,
+        "sat_mix": 0.12
+      },
+      "sends": {
+        "a": "plate",
+        "b": "hall"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "120 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-2.5 dB @ 450 Hz · Q 1.1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+1 dB @ 2800 Hz · Q 1"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+2.5 dB @ 13000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "2.5:1 · att 15 ms · rel 200 ms · thresh -20 dB · makeup +2.5 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "7000 Hz · amount 30 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 10 % · mix 12 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Plate"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Hall"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Pitch (Melodyne+Tune)",
+          "setting": "15–25 ms",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "Pro-Q",
+          "setting": "HPF 80–160 · coupes dyn 400/650/900",
+          "notes": "preset Production Ready Vocals éventuel"
+        },
+        {
+          "slot": 4,
+          "plugin": "RVox",
+          "setting": "compression douce",
+          "notes": null
+        },
+        {
+          "slot": 5,
+          "plugin": "SSL Channel",
+          "setting": "shaping + légère comp",
+          "notes": "secret sauce"
+        },
+        {
+          "slot": 6,
+          "plugin": "LA-2A",
+          "setting": "glue optique",
+          "notes": null
+        },
+        {
+          "slot": 7,
+          "plugin": "Pultec",
+          "setting": "air 12–16 kHz + atten bas",
+          "notes": null
+        },
+        {
+          "slot": 8,
+          "plugin": "De-esser(s)",
+          "setting": "1–2",
+          "notes": null
+        },
+        {
+          "slot": 9,
+          "plugin": "C6 multiband",
+          "setting": "colle basses/mids/aigus",
+          "notes": null
+        },
+        {
+          "slot": 10,
+          "plugin": "Pro-Q + Fresh Air",
+          "setting": "polish · Fresh Air Mid/High ≈2",
+          "notes": null
+        },
+        {
+          "slot": 11,
+          "plugin": "Soothe / Silk",
+          "setting": "résonances restantes",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "ninho",
+      "name": "Ninho",
+      "source_id": "ninho",
+      "aliases": [
+        "ninho"
+      ],
+      "notes": "HPF 110 · présence +2.5@3.2k · sat 1.5 · clair devant",
+      "params": {
+        "hpf_hz": 110,
+        "eq_low_hz": 300,
+        "eq_low_gain_db": -3.0,
+        "eq_low_q": 1.1,
+        "eq_mid_hz": 3200,
+        "eq_mid_gain_db": 2.5,
+        "eq_mid_q": 1.3,
+        "eq_air_hz": 12000,
+        "eq_air_gain_db": 1.8,
+        "comp_threshold_db": -17.0,
+        "comp_ratio": 3.5,
+        "comp_attack_ms": 6.0,
+        "comp_release_ms": 110.0,
+        "comp_makeup_db": 3.5,
+        "deess_hz": 6200,
+        "deess_amount": 0.45,
+        "sat_drive": 0.15,
+        "sat_mix": 0.18
+      },
+      "sends": {
+        "a": "plate",
+        "b": "delay8"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "110 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-3 dB @ 300 Hz · Q 1.1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+2.5 dB @ 3200 Hz · Q 1.3"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+1.8 dB @ 12000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "3.5:1 · att 6 ms · rel 110 ms · thresh -17 dB · makeup +3.5 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6200 Hz · amount 45 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 15 % · mix 18 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Plate"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Delay 1/8"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Diag / Soothe-style",
+          "setting": "résonances",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "Comp série",
+          "setting": "légère puis serrée (RVox/2A + autre)",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "EQ",
+          "setting": "HPF 100–120 · coupe 200–400 · présence 2–5k + air",
+          "notes": null
+        },
+        {
+          "slot": 5,
+          "plugin": "De-esser",
+          "setting": "2 étages",
+          "notes": null
+        },
+        {
+          "slot": 6,
+          "plugin": "Sends",
+          "setting": "plate courte + delay rythmique",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "hamza",
+      "name": "Hamza",
+      "source_id": "hamza",
+      "aliases": [
+        "hamza",
+        "crystal"
+      ],
+      "notes": "Clarté + air · peu de sat · polish",
+      "params": {
+        "hpf_hz": 90,
+        "eq_low_hz": 280,
+        "eq_low_gain_db": -2.0,
+        "eq_low_q": 0.9,
+        "eq_mid_hz": 3800,
+        "eq_mid_gain_db": 2.0,
+        "eq_mid_q": 1.1,
+        "eq_air_hz": 14000,
+        "eq_air_gain_db": 3.5,
+        "comp_threshold_db": -20.0,
+        "comp_ratio": 2.2,
+        "comp_attack_ms": 14.0,
+        "comp_release_ms": 190.0,
+        "comp_makeup_db": 2.0,
+        "deess_hz": 7500,
+        "deess_amount": 0.35,
+        "sat_drive": 0.06,
+        "sat_mix": 0.08
+      },
+      "sends": {
+        "a": "hall",
+        "b": "slap"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "90 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-2 dB @ 280 Hz · Q 0.9"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+2 dB @ 3800 Hz · Q 1.1"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+3.5 dB @ 14000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "2.2:1 · att 14 ms · rel 190 ms · thresh -20 dB · makeup +2 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "7500 Hz · amount 35 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 6 % · mix 8 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Hall"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Slap"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "EQ transparent",
+          "setting": "boost HF contrôlé",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "Comp douce",
+          "setting": "garde dyn émotionnelle",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "Sends",
+          "setting": "reverb aérienne + delay subtil",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "freeze",
+      "name": "Freeze",
+      "source_id": "freeze_corleone",
+      "aliases": [
+        "freeze",
+        "freeze corleone",
+        "sombre",
+        "drill sombre"
+      ],
+      "notes": "Frontale et sombre · peu d'air · sat froide",
+      "params": {
+        "hpf_hz": 95,
+        "eq_low_hz": 250,
+        "eq_low_gain_db": -1.5,
+        "eq_low_q": 0.8,
+        "eq_mid_hz": 2200,
+        "eq_mid_gain_db": 1.5,
+        "eq_mid_q": 1.0,
+        "eq_air_hz": 10000,
+        "eq_air_gain_db": -1.5,
+        "comp_threshold_db": -15.0,
+        "comp_ratio": 4.5,
+        "comp_attack_ms": 4.0,
+        "comp_release_ms": 75.0,
+        "comp_makeup_db": 4.0,
+        "deess_hz": 5500,
+        "deess_amount": 0.35,
+        "sat_drive": 0.4,
+        "sat_mix": 0.28
+      },
+      "sends": {
+        "a": "room",
+        "b": "off"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "95 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-1.5 dB @ 250 Hz · Q 0.8"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+1.5 dB @ 2200 Hz · Q 1"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "-1.5 dB @ 10000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "4.5:1 · att 4 ms · rel 75 ms · thresh -15 dB · makeup +4 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "5500 Hz · amount 35 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 40 % · mix 28 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Room"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Off"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "EQ dark",
+          "setting": "body contrôlé · peu d’air agressif",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "Comp + sat",
+          "setting": "caractère froid",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "Reverb",
+          "setting": "sombre courte",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "kendrick",
+      "name": "Kendrick",
+      "source_id": "kendrick",
+      "aliases": [
+        "kendrick",
+        "kendrick lamar",
+        "kdot"
+      ],
+      "notes": "Punch mid · DS 2 étages · air contrôlé",
+      "params": {
+        "hpf_hz": 90,
+        "eq_low_hz": 300,
+        "eq_low_gain_db": -2.5,
+        "eq_low_q": 1.1,
+        "eq_mid_hz": 2800,
+        "eq_mid_gain_db": 2.2,
+        "eq_mid_q": 1.4,
+        "eq_air_hz": 11000,
+        "eq_air_gain_db": 1.2,
+        "comp_threshold_db": -16.0,
+        "comp_ratio": 4.0,
+        "comp_attack_ms": 3.0,
+        "comp_release_ms": 70.0,
+        "comp_makeup_db": 4.5,
+        "deess_hz": 6000,
+        "deess_amount": 0.44,
+        "sat_drive": 0.2,
+        "sat_mix": 0.22
+      },
+      "sends": {
+        "a": "plate",
+        "b": "delay8"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "90 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-2.5 dB @ 300 Hz · Q 1.1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+2.2 dB @ 2800 Hz · Q 1.4"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+1.2 dB @ 11000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "4:1 · att 3 ms · rel 70 ms · thresh -16 dB · makeup +4.5 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6000 Hz · amount 44 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 20 % · mix 22 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Plate"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Delay 1/8"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Pitch",
+          "setting": "30–50 ms verses / 20 ms hooks",
+          "notes": null
+        },
+        {
+          "slot": 3,
+          "plugin": "EQ soustractive",
+          "setting": "HPF 70–100 · –1/−2@250–350 · notch ~1k",
+          "notes": null
+        },
+        {
+          "slot": 4,
+          "plugin": "CLA-76",
+          "setting": "Att 5–15 ms · 3:1–4:1 · GR 3–6",
+          "notes": null
+        },
+        {
+          "slot": 5,
+          "plugin": "EQ présence+air",
+          "setting": "2.5–5k · shelf +1.5/+2.5@10–14k",
+          "notes": null
+        },
+        {
+          "slot": 6,
+          "plugin": "De-esser",
+          "setting": "5–9k · –2/−4 dB",
+          "notes": null
+        },
+        {
+          "slot": 7,
+          "plugin": "Glue",
+          "setting": "RVox/LA-2A/SSL",
+          "notes": null
+        },
+        {
+          "slot": 8,
+          "plugin": "Sat opt",
+          "setting": "légère",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "bad_bunny",
+      "name": "BadBunny",
+      "source_id": "bad_bunny",
+      "aliases": [
+        "bad bunny",
+        "badbunny",
+        "bunny"
+      ],
+      "notes": "Grit · DS après comp · sat présente",
+      "params": {
+        "hpf_hz": 90,
+        "eq_low_hz": 280,
+        "eq_low_gain_db": -2.5,
+        "eq_low_q": 1.0,
+        "eq_mid_hz": 3300,
+        "eq_mid_gain_db": 2.0,
+        "eq_mid_q": 1.2,
+        "eq_air_hz": 11500,
+        "eq_air_gain_db": 1.5,
+        "comp_threshold_db": -16.0,
+        "comp_ratio": 4.0,
+        "comp_attack_ms": 3.5,
+        "comp_release_ms": 85.0,
+        "comp_makeup_db": 4.0,
+        "deess_hz": 6200,
+        "deess_amount": 0.4,
+        "sat_drive": 0.42,
+        "sat_mix": 0.32
+      },
+      "sends": {
+        "a": "delay8",
+        "b": "plate"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "90 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "-2.5 dB @ 280 Hz · Q 1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+2 dB @ 3300 Hz · Q 1.2"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+1.5 dB @ 11500 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "4:1 · att 3.5 ms · rel 85 ms · thresh -16 dB · makeup +4 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6200 Hz · amount 40 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 42 % · mix 32 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Delay 1/8"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Plate"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets",
+          "setting": "Pose CE plug-in sur l’insert FL choisi — applique HPF/EQ/comp/DS/sat + sends internes",
+          "notes": "Ne remplace pas CLA-76 / RVox hardware"
+        },
+        {
+          "slot": 2,
+          "plugin": "Auto-Tune",
+          "setting": "20–30 ms · Formant ON · Humanize 15–30%",
+          "notes": "AT assumé"
+        },
+        {
+          "slot": 3,
+          "plugin": "EQ",
+          "setting": "HPF 80–100 · –2/−4@200–350 · +1.5/+3@3–5k · shelf +1.5/+2.5@10–12k",
+          "notes": "soustractive avant comp"
+        },
+        {
+          "slot": 4,
+          "plugin": "CLA-76",
+          "setting": "4:1–6:1 · Att 10–20 ms · Rel 80–120 · GR 6–10",
+          "notes": "punch"
+        },
+        {
+          "slot": 5,
+          "plugin": "De-esser",
+          "setting": "5–8 kHz · –3/−5 dB",
+          "notes": null
+        },
+        {
+          "slot": 6,
+          "plugin": "Saturation",
+          "setting": "20–40% · parallel 20–40%",
+          "notes": "grit"
+        },
+        {
+          "slot": 7,
+          "plugin": "Air polish",
+          "setting": "+1/+2 shelf très haut",
+          "notes": null
+        },
+        {
+          "slot": 8,
+          "plugin": "Sends",
+          "setting": "delay rythmique + plate 0.8–1.5s",
+          "notes": null
+        }
+      ]
+    },
+    {
+      "id": "clean",
+      "name": "Clean",
+      "source_id": null,
+      "aliases": [
+        "clean",
+        "neutral",
+        "neutre",
+        "dry chain",
+        "plat"
+      ],
+      "notes": "HPF 80 sécurité · EQ plat · comp très léger — A/B",
+      "params": {
+        "hpf_hz": 80,
+        "eq_low_hz": 280,
+        "eq_low_gain_db": 0.0,
+        "eq_low_q": 1.0,
+        "eq_mid_hz": 3500,
+        "eq_mid_gain_db": 0.0,
+        "eq_mid_q": 1.0,
+        "eq_air_hz": 12000,
+        "eq_air_gain_db": 0.0,
+        "comp_threshold_db": -8.0,
+        "comp_ratio": 1.4,
+        "comp_attack_ms": 10.0,
+        "comp_release_ms": 120.0,
+        "comp_makeup_db": 0.0,
+        "deess_hz": 6500,
+        "deess_amount": 0.0,
+        "sat_drive": 0.0,
+        "sat_mix": 0.0
+      },
+      "sends": {
+        "a": "off",
+        "b": "off"
+      },
+      "applied_chain": [
+        {
+          "n": 1,
+          "title": "HPF",
+          "settings": "80 Hz · 24 dB/oct"
+        },
+        {
+          "n": 2,
+          "title": "EQ mud",
+          "settings": "+0 dB @ 280 Hz · Q 1"
+        },
+        {
+          "n": 3,
+          "title": "EQ présence",
+          "settings": "+0 dB @ 3500 Hz · Q 1"
+        },
+        {
+          "n": 4,
+          "title": "EQ air",
+          "settings": "+0 dB @ 12000 Hz (shelf)"
+        },
+        {
+          "n": 5,
+          "title": "Compresseur",
+          "settings": "1.4:1 · att 10 ms · rel 120 ms · thresh -8 dB · makeup +0 dB"
+        },
+        {
+          "n": 6,
+          "title": "De-esser",
+          "settings": "6500 Hz · amount 0 %"
+        },
+        {
+          "n": 7,
+          "title": "Saturation",
+          "settings": "drive 0 % · mix 0 %"
+        },
+        {
+          "n": 8,
+          "title": "Send A (interne)",
+          "settings": "Off"
+        },
+        {
+          "n": 9,
+          "title": "Send B (interne)",
+          "settings": "Off"
+        }
+      ],
+      "fl_insert_plan": [
+        {
+          "slot": 1,
+          "plugin": "K3CH Presets (cet insert)",
+          "setting": "Appliquer la chaîne dans ce plug-in",
+          "notes": "HPF → EQ → comp → DS → sat"
+        },
+        {
+          "slot": 2,
+          "plugin": "Tune / Auto-Tune (FL, si besoin)",
+          "setting": "avant K3CH Presets",
+          "notes": "non inclus dans le DSP v1"
+        }
+      ]
+    }
+  ],
+  "fx_presets": [
+    {
+      "id": "off",
+      "name": "Off",
+      "kind": "off",
+      "aliases": [
+        "off",
+        "none",
+        "rien",
+        "mute",
+        "stop"
+      ],
+      "notes": "Send silencieux",
+      "default_send_db": -60.0,
+      "params": {
+        "hpf_hz": 20,
+        "lpf_hz": 20000,
+        "smash": 0.0,
+        "deess_hz": 6500,
+        "deess_amount": 0.0,
+        "sat_drive": 0.0,
+        "sat_mix": 0.0,
+        "reverb_mix": 0.0,
+        "reverb_decay_s": 0.4,
+        "reverb_damp": 0.5,
+        "delay_mix": 0.0,
+        "delay_ms": 125,
+        "delay_feedback": 0.15,
+        "harsh_hz": 6500,
+        "harsh_cut_db": 0.0
+      }
+    },
+    {
+      "id": "air",
+      "name": "Air parallèle",
+      "kind": "air",
+      "source_id": "FX_PARA_AIR_v1",
+      "aliases": [
+        "air",
+        "air parallele",
+        "air parallèle",
+        "para air",
+        "para_air",
+        "fx_para_air",
+        "hf"
+      ],
+      "notes": "HPF 7k · DS · 76 smash HF · send −15 — l'air se colle, il ne se booste pas",
+      "default_send_db": -15.0,
+      "params": {
+        "hpf_hz": 7000,
+        "lpf_hz": 18000,
+        "smash": 0.75,
+        "deess_hz": 7000,
+        "deess_amount": 0.62,
+        "sat_drive": 0.12,
+        "sat_mix": 0.18,
+        "reverb_mix": 0.0,
+        "reverb_decay_s": 0.3,
+        "reverb_damp": 0.4,
+        "delay_mix": 0.0,
+        "delay_ms": 125,
+        "delay_feedback": 0.1,
+        "harsh_hz": 7500,
+        "harsh_cut_db": 0.0
+      }
+    },
+    {
+      "id": "body",
+      "name": "Body parallèle",
+      "kind": "body",
+      "source_id": "FX_PARA_BODY_v1",
+      "aliases": [
+        "body",
+        "body parallele",
+        "body parallèle",
+        "para body",
+        "para_body",
+        "corps"
+      ],
+      "notes": "HPF 80 · LPF 5k · smash 8–12 dB · send −15 — BODY ≠ AIR",
+      "default_send_db": -15.0,
+      "params": {
+        "hpf_hz": 80,
+        "lpf_hz": 5000,
+        "smash": 0.8,
+        "deess_hz": 5000,
+        "deess_amount": 0.2,
+        "sat_drive": 0.1,
+        "sat_mix": 0.12,
+        "reverb_mix": 0.0,
+        "reverb_decay_s": 0.3,
+        "reverb_damp": 0.5,
+        "delay_mix": 0.0,
+        "delay_ms": 125,
+        "delay_feedback": 0.1,
+        "harsh_hz": 4000,
+        "harsh_cut_db": 0.0
+      }
+    },
+    {
+      "id": "sat",
+      "name": "Sat parallèle",
+      "kind": "sat",
+      "source_id": "PARA_SAT",
+      "aliases": [
+        "sat",
+        "saturation",
+        "para sat",
+        "para_sat",
+        "grit",
+        "decap"
+      ],
+      "notes": "Drive parallèle ~25–30% · HPF 80 · pas 3 sats empilées",
+      "default_send_db": -12.0,
+      "params": {
+        "hpf_hz": 80,
+        "lpf_hz": 12000,
+        "smash": 0.25,
+        "deess_hz": 6000,
+        "deess_amount": 0.15,
+        "sat_drive": 0.55,
+        "sat_mix": 1.0,
+        "reverb_mix": 0.0,
+        "reverb_decay_s": 0.2,
+        "reverb_damp": 0.5,
+        "delay_mix": 0.0,
+        "delay_ms": 125,
+        "delay_feedback": 0.1,
+        "harsh_hz": 6000,
+        "harsh_cut_db": 0.0
+      }
+    },
+    {
+      "id": "harsh",
+      "name": "Harsh",
+      "kind": "harsh",
+      "source_id": "harsh_guide",
+      "aliases": [
+        "harsh",
+        "sibilance",
+        "deess bus",
+        "ds bus",
+        "sss"
+      ],
+      "notes": "Bus DS + coupe 6.5k · room sombre courte — S→DS pas cloche large @7k",
+      "default_send_db": -18.0,
+      "params": {
+        "hpf_hz": 350,
+        "lpf_hz": 8000,
+        "smash": 0.2,
+        "deess_hz": 6500,
+        "deess_amount": 0.78,
+        "sat_drive": 0.08,
+        "sat_mix": 0.1,
+        "reverb_mix": 0.25,
+        "reverb_decay_s": 0.35,
+        "reverb_damp": 0.7,
+        "delay_mix": 0.0,
+        "delay_ms": 90,
+        "delay_feedback": 0.08,
+        "harsh_hz": 6500,
+        "harsh_cut_db": -4.0
+      }
+    },
+    {
+      "id": "plate",
+      "name": "Plate",
+      "kind": "reverb",
+      "source_id": "sends_guide",
+      "aliases": [
+        "plate",
+        "reverb",
+        "reverb plate",
+        "valhalla",
+        "petite plate"
+      ],
+      "notes": "Plate 0.7–1.1 s · return HPF 350 · LPF 6k · 100% wet interne",
+      "default_send_db": -16.0,
+      "params": {
+        "hpf_hz": 350,
+        "lpf_hz": 6500,
+        "smash": 0.0,
+        "deess_hz": 6500,
+        "deess_amount": 0.15,
+        "sat_drive": 0.0,
+        "sat_mix": 0.0,
+        "reverb_mix": 1.0,
+        "reverb_decay_s": 0.9,
+        "reverb_damp": 0.45,
+        "delay_mix": 0.0,
+        "delay_ms": 125,
+        "delay_feedback": 0.1,
+        "harsh_hz": 6500,
+        "harsh_cut_db": 0.0
+      }
+    },
+    {
+      "id": "room",
+      "name": "Room",
+      "kind": "reverb",
+      "aliases": [
+        "room",
+        "piece",
+        "pièce",
+        "small room",
+        "chambre"
+      ],
+      "notes": "Room courte 0.45 s · filtrée",
+      "default_send_db": -14.0,
+      "params": {
+        "hpf_hz": 300,
+        "lpf_hz": 7000,
+        "smash": 0.0,
+        "deess_hz": 6500,
+        "deess_amount": 0.1,
+        "sat_drive": 0.0,
+        "sat_mix": 0.0,
+        "reverb_mix": 1.0,
+        "reverb_decay_s": 0.45,
+        "reverb_damp": 0.5,
+        "delay_mix": 0.0,
+        "delay_ms": 80,
+        "delay_feedback": 0.08,
+        "harsh_hz": 6500,
+        "harsh_cut_db": 0.0
+      }
+    },
+    {
+      "id": "hall",
+      "name": "Hall",
+      "kind": "reverb",
+      "aliases": [
+        "hall",
+        "grande reverb",
+        "long reverb",
+        "pop reverb"
+      ],
+      "notes": "Hall 1.8 s — pop urbaine / mélodique",
+      "default_send_db": -18.0,
+      "params": {
+        "hpf_hz": 280,
+        "lpf_hz": 6000,
+        "smash": 0.0,
+        "deess_hz": 7000,
+        "deess_amount": 0.12,
+        "sat_drive": 0.0,
+        "sat_mix": 0.0,
+        "reverb_mix": 1.0,
+        "reverb_decay_s": 1.8,
+        "reverb_damp": 0.4,
+        "delay_mix": 0.0,
+        "delay_ms": 60,
+        "delay_feedback": 0.05,
+        "harsh_hz": 7000,
+        "harsh_cut_db": 0.0
+      }
+    },
+    {
+      "id": "delay8",
+      "name": "Delay 1/8",
+      "kind": "delay",
+      "aliases": [
+        "delay",
+        "delay 1/8",
+        "1/8",
+        "h-delay",
+        "hdelay",
+        "echo"
+      ],
+      "notes": "1/8 @ 120 BPM (~125 ms) · FB 20% · filtré · ducked-ish via mix",
+      "default_send_db": -18.0,
+      "params": {
+        "hpf_hz": 350,
+        "lpf_hz": 5500,
+        "smash": 0.0,
+        "deess_hz": 6500,
+        "deess_amount": 0.1,
+        "sat_drive": 0.0,
+        "sat_mix": 0.0,
+        "reverb_mix": 0.0,
+        "reverb_decay_s": 0.3,
+        "reverb_damp": 0.5,
+        "delay_mix": 1.0,
+        "delay_ms": 125,
+        "delay_feedback": 0.22,
+        "harsh_hz": 6500,
+        "harsh_cut_db": 0.0
+      }
+    },
+    {
+      "id": "slap",
+      "name": "Slap",
+      "kind": "delay",
+      "aliases": [
+        "slap",
+        "slapback",
+        "delay court",
+        "80ms",
+        "100ms"
+      ],
+      "notes": "Slap 80–120 ms · FB bas",
+      "default_send_db": -16.0,
+      "params": {
+        "hpf_hz": 400,
+        "lpf_hz": 7000,
+        "smash": 0.0,
+        "deess_hz": 6500,
+        "deess_amount": 0.08,
+        "sat_drive": 0.0,
+        "sat_mix": 0.0,
+        "reverb_mix": 0.0,
+        "reverb_decay_s": 0.2,
+        "reverb_damp": 0.5,
+        "delay_mix": 1.0,
+        "delay_ms": 100,
+        "delay_feedback": 0.08,
+        "harsh_hz": 6500,
+        "harsh_cut_db": 0.0
+      }
+    }
+  ]
+}

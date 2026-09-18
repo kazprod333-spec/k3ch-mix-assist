@@ -1,0 +1,46 @@
+name: Windows VST3
+
+on:
+  push:
+    branches:
+      - cursor/k3ch-mix-assist-vst3-aa90
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Git long paths
+        run: git config --global core.longpaths true
+
+      - name: Configure CMake (Visual Studio x64)
+        run: cmake -B build -A x64
+
+      - name: Build both VST3s (Release)
+        run: cmake --build build --config Release --target K3CHMixAssist_VST3 K3CHPresets_VST3 --parallel
+
+      - name: DSP smoke (K3CH Presets)
+        run: cmake --build build --config Release --target K3CHPresetsSmoke --parallel && .\build\Release\K3CHPresetsSmoke.exe
+
+      - name: Stage VST3 bundles
+        shell: pwsh
+        run: |
+          $plugin = "build\K3CHMixAssist_artefacts\Release\VST3\K3CH Plugin.vst3"
+          $presets = "build\K3CHPresets_artefacts\Release\VST3\K3CH Presets.vst3"
+          if (-not (Test-Path $plugin)) { throw "VST3 bundle not found: $plugin" }
+          if (-not (Test-Path $presets)) { throw "VST3 bundle not found: $presets" }
+          New-Item -ItemType Directory -Force -Path staging | Out-Null
+          Copy-Item -Recurse -Force $plugin "staging\K3CH Plugin.vst3"
+          Copy-Item -Recurse -Force $presets "staging\K3CH Presets.vst3"
+          Get-ChildItem -Recurse staging | Select-Object -ExpandProperty FullName
+
+      - name: Upload VST3 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: K3CH-Windows-VST3
+          path: staging
+          if-no-files-found: error
