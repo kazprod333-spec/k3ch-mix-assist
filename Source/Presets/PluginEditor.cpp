@@ -12,7 +12,7 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     setResizeLimits (1100, 760, 1800, 1400);
     setSize (1260, 920);
 
-    applyChainButton.setButtonText (juce::String::fromUTF8 ("Appliquer la cha\xc3\xaene"));
+    applyChainButton.setButtonText (juce::String::fromUTF8 ("Appliquer la cha\xc3\xae" "ne"));
     copyPlanButton.setButtonText (juce::String::fromUTF8 ("Copier"));
 
     commandBox.setTextToShowWhenEmpty (
@@ -31,7 +31,7 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
 
     constraintNote.setText (
         juce::String::fromUTF8 (
-            "Un VST3 ne peut pas ins\xc3\xa9rer ni contr\xc3\xb4ler d\xe2\x80\x99autres plugins tiers "
+            "Un VST3 ne peut pas ins\xc3\xa9rer ni contr\xc3\xb4ler d\xe2\x80\x99" "autres plugins tiers "
             "sur les inserts du mixer FL."),
         juce::dontSendNotification);
     constraintNote.setColour (juce::Label::textColourId, lnf.palette.gold);
@@ -52,11 +52,11 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     aboutButton.onClick = [this] { showAbout(); };
     addAndMakeVisible (aboutButton);
 
-    chainLabel.setText (juce::String::fromUTF8 ("Cha\xc3\xaene (insert FL)"), juce::dontSendNotification);
+    chainLabel.setText (juce::String::fromUTF8 ("Cha\xc3\xae" "ne (insert FL)"), juce::dontSendNotification);
     chainLabel.setColour (juce::Label::textColourId, lnf.palette.gold);
     addAndMakeVisible (chainLabel);
 
-    vocalBox.setTextWhenNothingSelected (juce::String::fromUTF8 ("Cha\xc3\xaene"));
+    vocalBox.setTextWhenNothingSelected (juce::String::fromUTF8 ("Cha\xc3\xae" "ne"));
     int i = 1;
     for (const auto& name : processor.library.vocalNames())
         vocalBox.addItem (name, i++);
@@ -75,7 +75,7 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
 
     chainHint.setText (juce::String::fromUTF8 (
                            "Pose CE plug-in sur l\xe2\x80\x99insert FL choisi. "
-                           "La cha\xc3\xaene s\xe2\x80\x99applique ici, dans l\xe2\x80\x99ordre, avec les r\xc3\xa9glages."),
+                           "La cha\xc3\xae" "ne s\xe2\x80\x99" "applique ici, dans l\xe2\x80\x99ordre, avec les r\xc3\xa9" "glages."),
                        juce::dontSendNotification);
     chainHint.setColour (juce::Label::textColourId, lnf.palette.muted);
     chainHint.setJustificationType (juce::Justification::topLeft);
@@ -85,7 +85,7 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     addAndMakeVisible (chainView);
 
     planHint.setText (juce::String::fromUTF8 (
-                          "Checklist manuelle si tu veux recr\xc3\xa9er CLA-76, RVox, etc. sur le mixer FL."),
+                          "Checklist manuelle si tu veux recr\xc3\xa9" "er CLA-76, RVox, etc. sur le mixer FL."),
                       juce::dontSendNotification);
     planHint.setColour (juce::Label::textColourId, lnf.palette.muted);
     planHint.setJustificationType (juce::Justification::centredLeft);
@@ -227,7 +227,7 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     statusLabel.setText (processor.lastStatus.isNotEmpty()
                              ? processor.lastStatus
                              : juce::String::fromUTF8 (
-                                   "Cha\xc3\xaene insert + sends internes \xe2\x80\x94 pas le mixer FL Studio"),
+                                   "Cha\xc3\xae" "ne insert + sends internes \xe2\x80\x94 pas le mixer FL Studio"),
                          juce::dontSendNotification);
     startTimerHz (8);
 }
@@ -266,7 +266,7 @@ void PresetsEditor::timerCallback()
     updateReadouts();
     if (statusTicks > 0 && --statusTicks == 0)
         statusLabel.setText (juce::String::fromUTF8 (
-                                 "Cha\xc3\xaene insert + sends internes \xe2\x80\x94 pas le mixer FL Studio"),
+                                 "Cha\xc3\xae" "ne insert + sends internes \xe2\x80\x94 pas le mixer FL Studio"),
                              juce::dontSendNotification);
 }
 
@@ -367,8 +367,8 @@ void PresetsEditor::showAbout()
     t += "K3CH Presets " + juce::String (K3CH_VERSION) + "\n";
     t += processor.library.getStudio() + juce::String::fromUTF8 (" \xe2\x80\x94 Alger\n\n");
     t += juce::String::fromUTF8 (
-        "Cha\xc3\xaene (insert FL) = tout le traitement interne, dans l\xe2\x80\x99ordre, "
-        "avec les r\xc3\xa9glages du preset. Pose K3CH Presets sur l\xe2\x80\x99insert FL de ton choix.\n"
+        "Cha\xc3\xae" "ne (insert FL) = tout le traitement interne, dans l\xe2\x80\x99ordre, "
+        "avec les r\xc3\xa9" "glages du preset. Pose K3CH Presets sur l\xe2\x80\x99insert FL de ton choix.\n"
         "Un VST3 ne peut pas ins\xc3\xa9rer/contr\xc3\xb4ler CLA-76, RVox, etc. sur le mixer "
         "\xe2\x80\x94 voir Plan d\xe2\x80\x99inserts FL (manuel).\n"
         "Sends A/B = FX internes (Placer sur).\n\n");

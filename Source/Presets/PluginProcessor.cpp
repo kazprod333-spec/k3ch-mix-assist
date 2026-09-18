@@ -179,7 +179,7 @@ void PresetsProcessor::loadVocalIndex (int index, bool notifyHost)
     const auto sendAName = applyDefinedSend (0, p->sendAId);
     const auto sendBName = applyDefinedSend (1, p->sendBId);
 
-    lastStatus = juce::String::fromUTF8 ("Cha\xc3\xaene appliqu\xc3\xa9e : ") + p->name
+    lastStatus = juce::String::fromUTF8 ("Cha\xc3\xae" "ne appliqu" "\xc3\xa9" "e : ") + p->name
                  + juce::String::fromUTF8 (" \xe2\x80\x94 pose ce plug-in sur l\xe2\x80\x99insert FL choisi");
     if (sendAName.isNotEmpty() || sendBName.isNotEmpty())
     {

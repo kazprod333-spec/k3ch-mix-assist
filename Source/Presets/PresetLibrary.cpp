@@ -222,7 +222,7 @@ juce::String VocalPreset::flInsertPlanText() const
     juce::String t;
     t += juce::String::fromUTF8 ("Plan d\xe2\x80\x99inserts FL \xe2\x80\x94 ") + name + "\n";
     t += juce::String::fromUTF8 (
-        "Un VST3 ne peut pas poser ces plugins pour toi. Recr\xc3\xa9e \xc3\xa0 la main :\n\n");
+        "Un VST3 ne peut pas poser ces plugins pour toi. Recr\xc3\xa9" "e \xc3\xa0 la main :\n\n");
     for (const auto& row : flInsertPlan)
     {
         t += "Insert " + juce::String (row.slot) + " = " + row.plugin;
