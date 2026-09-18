@@ -17,12 +17,9 @@ Knowledge is **local/embedded** (`Resources/mix-knowledge.json` for the encyclop
 
 - Vocal insert: HPF / 3-band EQ / compressor / de-esser / optional saturation
 - Internal **Send A** and **Send B**: each loads an FX recipe (Air parallèle, Body, Sat, Harsh, Plate, Room, Hall, Delay 1/8, Slap)
+- **Placer sur** combo (Send A / Send B) + **Preset FX** combo + **Placer** — no typing required
 - Dry/wet, send levels, return mix, peak/RMS meter
-- Command bar examples:
-  - `charge ModernRap`
-  - `mets Air parallèle sur send A`
-  - `harsh sur send B`
-  - `send A -15` · `dry 80` · `bypass`
+- Optional command bar (`charge ModernRap`, `mets Air parallèle sur send A`, …)
 
 Runtime recipes are derived from the studio knowledge pack (ModernRap, Bodak, ALLTY5, JuiceWRLD, TrapDrill, PopUrbaine, BGV, VoixOff, Weeknd, Ninho, Hamza, Freeze, …).
 

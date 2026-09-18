@@ -17,9 +17,12 @@ public:
 private:
     void timerCallback() override;
     void applyCommand();
+    void placeFxOnSelectedSend();
     void syncCombosFromProcessor();
     void updateReadouts();
     void showAbout();
+
+    juce::Rectangle<int> vocalCard, placeCard, sendACard, sendBCard;
 
     PresetsProcessor& processor;
     k3ch::K3chLookAndFeel lnf;
@@ -31,10 +34,19 @@ private:
     juce::TextButton bypassButton { "BYPASS" };
     juce::TextButton aboutButton { "About" };
 
+    juce::Label vocalPresetLabel;
     juce::ComboBox vocalBox;
     juce::Label vocalReadout;
 
-    juce::ComboBox sendABox, sendBBox;
+    juce::Label sendTargetLabel;
+    juce::ComboBox sendTargetBox;
+    juce::Label fxPresetLabel;
+    juce::ComboBox fxPresetBox;
+    juce::TextButton placeButton { "Placer" };
+    juce::Label placeHint;
+    juce::Label fxChoiceReadout;
+
+    juce::Label sendAName, sendBName;
     juce::Slider sendALevel, sendBLevel;
     juce::Label sendAReadout, sendBReadout;
     juce::Slider dryWet, returnMix, outputDb;

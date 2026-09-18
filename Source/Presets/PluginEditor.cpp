@@ -9,11 +9,11 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     juce::LookAndFeel::setDefaultLookAndFeel (&lnf);
     setOpaque (true);
     setResizable (true, true);
-    setResizeLimits (900, 560, 1600, 1200);
-    setSize (1080, 680);
+    setResizeLimits (960, 620, 1600, 1200);
+    setSize (1120, 720);
 
     commandBox.setTextToShowWhenEmpty (
-        juce::String::fromUTF8 ("charge ModernRap  ·  mets Air parall\xc3\xa8le sur send A  ·  harsh sur send B"),
+        juce::String::fromUTF8 ("optionnel : charge ModernRap  ·  mets Air sur send A"),
         lnf.palette.muted);
     commandBox.setJustification (juce::Justification::centredLeft);
     commandBox.setIndents (10, 0);
@@ -40,6 +40,11 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     aboutButton.onClick = [this] { showAbout(); };
     addAndMakeVisible (aboutButton);
 
+    vocalPresetLabel.setText (juce::String::fromUTF8 ("Preset insert (cha\xc3\xaene voix)"),
+                              juce::dontSendNotification);
+    vocalPresetLabel.setColour (juce::Label::textColourId, lnf.palette.muted);
+    addAndMakeVisible (vocalPresetLabel);
+
     vocalBox.setTextWhenNothingSelected ("Vocal");
     int i = 1;
     for (const auto& name : processor.library.vocalNames())
@@ -50,6 +55,8 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
             return;
         processor.loadVocalIndex (vocalBox.getSelectedItemIndex(), true);
         updateReadouts();
+        statusLabel.setText (processor.lastStatus, juce::dontSendNotification);
+        statusTicks = 20;
     };
     addAndMakeVisible (vocalBox);
 
@@ -58,32 +65,59 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
     vocalReadout.setMinimumHorizontalScale (0.8f);
     addAndMakeVisible (vocalReadout);
 
-    auto fillFx = [this] (juce::ComboBox& box)
-    {
-        box.clear (juce::dontSendNotification);
-        int id = 1;
-        for (const auto& name : processor.library.fxNames())
-            box.addItem (name, id++);
-    };
-    fillFx (sendABox);
-    fillFx (sendBBox);
+    sendTargetLabel.setText (juce::String::fromUTF8 ("1. Placer sur"), juce::dontSendNotification);
+    sendTargetLabel.setColour (juce::Label::textColourId, lnf.palette.gold);
+    addAndMakeVisible (sendTargetLabel);
 
-    sendABox.onChange = [this]
+    sendTargetBox.addItem ("Send A", 1);
+    sendTargetBox.addItem ("Send B", 2);
+    sendTargetBox.setSelectedId (1, juce::dontSendNotification);
+    addAndMakeVisible (sendTargetBox);
+
+    fxPresetLabel.setText ("2. Preset FX", juce::dontSendNotification);
+    fxPresetLabel.setColour (juce::Label::textColourId, lnf.palette.gold);
+    addAndMakeVisible (fxPresetLabel);
+
+    fxPresetBox.setTextWhenNothingSelected ("Preset FX");
+    int fxId = 1;
+    for (const auto& name : processor.library.fxNames())
+        fxPresetBox.addItem (name, fxId++);
+    // Default to Air parallèle (skip Off at index 0) when the library has it.
+    const int air = processor.library.findFxIndex ("air");
+    fxPresetBox.setSelectedItemIndex (air >= 0 ? air : 0, juce::dontSendNotification);
+    fxPresetBox.onChange = [this]
     {
-        if (ignoreCombo)
-            return;
-        processor.loadFxIndex (0, sendABox.getSelectedItemIndex(), true, true);
-        updateReadouts();
+        if (const auto* fx = processor.library.fxAt (fxPresetBox.getSelectedItemIndex()))
+            fxChoiceReadout.setText (fx->notes, juce::dontSendNotification);
     };
-    sendBBox.onChange = [this]
+    addAndMakeVisible (fxPresetBox);
+
+    placeButton.setColour (juce::TextButton::buttonColourId, juce::Colour (0xff2a2416));
+    placeButton.setColour (juce::TextButton::textColourOffId, lnf.palette.gold);
+    placeButton.onClick = [this] { placeFxOnSelectedSend(); };
+    addAndMakeVisible (placeButton);
+
+    placeHint.setText (juce::String::fromUTF8 (
+                           "Je choisis le send, je choisis le preset, j'applique. "
+                           "Sends internes \xc3\xa0 CE plug-in \xe2\x80\x94 pas le mixer FL."),
+                       juce::dontSendNotification);
+    placeHint.setColour (juce::Label::textColourId, lnf.palette.muted);
+    placeHint.setJustificationType (juce::Justification::topLeft);
+    addAndMakeVisible (placeHint);
+
+    fxChoiceReadout.setColour (juce::Label::textColourId, lnf.palette.muted);
+    fxChoiceReadout.setJustificationType (juce::Justification::topLeft);
+    addAndMakeVisible (fxChoiceReadout);
+
+    auto setupName = [this] (juce::Label& l)
     {
-        if (ignoreCombo)
-            return;
-        processor.loadFxIndex (1, sendBBox.getSelectedItemIndex(), true, true);
-        updateReadouts();
+        l.setColour (juce::Label::textColourId, lnf.palette.text);
+        l.setFont (juce::Font (juce::FontOptions (16.0f).withStyle ("Bold")));
+        l.setJustificationType (juce::Justification::centredLeft);
+        addAndMakeVisible (l);
     };
-    addAndMakeVisible (sendABox);
-    addAndMakeVisible (sendBBox);
+    setupName (sendAName);
+    setupName (sendBName);
 
     auto setupLevel = [this] (juce::Slider& s)
     {
@@ -154,6 +188,9 @@ PresetsEditor::PresetsEditor (PresetsProcessor& p)
 
     syncCombosFromProcessor();
     updateReadouts();
+    if (const auto* fx = processor.library.fxAt (fxPresetBox.getSelectedItemIndex()))
+        fxChoiceReadout.setText (fx->notes, juce::dontSendNotification);
+
     statusLabel.setText (processor.lastStatus.isNotEmpty()
                              ? processor.lastStatus
                              : juce::String::fromUTF8 ("Insert DSP + sends internes \xe2\x80\x94 pas le mixer FL Studio"),
@@ -194,8 +231,6 @@ void PresetsEditor::syncCombosFromProcessor()
 
     ignoreCombo = true;
     vocalBox.setSelectedItemIndex (choiceIndex ("vocal_preset"), juce::dontSendNotification);
-    sendABox.setSelectedItemIndex (choiceIndex ("send_a_preset"), juce::dontSendNotification);
-    sendBBox.setSelectedItemIndex (choiceIndex ("send_b_preset"), juce::dontSendNotification);
     ignoreCombo = false;
 }
 
@@ -205,14 +240,39 @@ void PresetsEditor::updateReadouts()
     if (const auto* p = processor.library.vocalAt (vocalIdx))
         vocalReadout.setText (p->notes, juce::dontSendNotification);
 
-    auto fxText = [this] (int idx) -> juce::String
+    auto fxName = [this] (const char* paramId) -> juce::String
     {
-        if (const auto* p = processor.library.fxAt (idx))
-            return p->notes;
+        int idx = 0;
+        if (auto* p = dynamic_cast<juce::AudioParameterChoice*> (processor.apvts.getParameter (paramId)))
+            idx = p->getIndex();
+        if (const auto* fx = processor.library.fxAt (idx))
+            return fx->name;
+        return "Off";
+    };
+    auto fxNotes = [this] (const char* paramId) -> juce::String
+    {
+        int idx = 0;
+        if (auto* p = dynamic_cast<juce::AudioParameterChoice*> (processor.apvts.getParameter (paramId)))
+            idx = p->getIndex();
+        if (const auto* fx = processor.library.fxAt (idx))
+            return fx->notes;
         return {};
     };
-    sendAReadout.setText (fxText (sendABox.getSelectedItemIndex()), juce::dontSendNotification);
-    sendBReadout.setText (fxText (sendBBox.getSelectedItemIndex()), juce::dontSendNotification);
+
+    sendAName.setText (fxName ("send_a_preset"), juce::dontSendNotification);
+    sendBName.setText (fxName ("send_b_preset"), juce::dontSendNotification);
+    sendAReadout.setText (fxNotes ("send_a_preset"), juce::dontSendNotification);
+    sendBReadout.setText (fxNotes ("send_b_preset"), juce::dontSendNotification);
+}
+
+void PresetsEditor::placeFxOnSelectedSend()
+{
+    const int sendSlot = juce::jlimit (0, 1, sendTargetBox.getSelectedItemIndex());
+    const int fxIndex = fxPresetBox.getSelectedItemIndex();
+    processor.loadFxIndex (sendSlot, fxIndex, true, true);
+    updateReadouts();
+    statusLabel.setText (processor.lastStatus, juce::dontSendNotification);
+    statusTicks = 24;
 }
 
 void PresetsEditor::applyCommand()
@@ -232,8 +292,8 @@ void PresetsEditor::showAbout()
     t += "K3CH Presets " + juce::String (K3CH_VERSION) + "\n";
     t += processor.library.getStudio() + juce::String::fromUTF8 (" \xe2\x80\x94 Alger\n\n");
     t += juce::String::fromUTF8 (
-        "Cha\xc3\xaene voix (HPF / EQ / comp / de-esser / sat) + 2 sends internes A/B.\n"
-        "Les commandes pilotent CE plug-in, pas le mixer FL Studio (impossible en VST3).\n\n");
+        "Cha\xc3\xaene voix = insert. Preset FX + Placer sur = send interne A/B.\n"
+        "Les commandes et le bouton Placer pilotent CE plug-in, pas le mixer FL Studio.\n\n");
     if (processor.library.getVersion().isNotEmpty())
         t += "Presets runtime : " + processor.library.getVersion() + "\n";
     t += juce::String::fromUTF8 ("D\xc3\xa9riv\xc3\xa9 de mix-knowledge.json. Local only.");
@@ -277,7 +337,7 @@ void PresetsEditor::paint (juce::Graphics& g)
     auto body = getLocalBounds();
     body.removeFromTop (80);
     body.removeFromBottom (48);
-    auto cmdBar = body.removeFromTop (86);
+    auto cmdBar = body.removeFromTop (78);
     g.setColour (pal.bgSidebar);
     g.fillRect (cmdBar);
     g.setColour (pal.border);
@@ -285,13 +345,7 @@ void PresetsEditor::paint (juce::Graphics& g)
 
     g.setColour (pal.goldDim);
     g.setFont (juce::Font (juce::FontOptions (11.5f).withStyle ("Bold")));
-    g.drawText ("COMMANDE", juce::Rectangle<int> (20, 88, 200, 16), juce::Justification::centredLeft);
-
-    auto cols = body.reduced (16, 16);
-    auto left = cols.removeFromLeft (juce::jmax (280, cols.getWidth() * 38 / 100));
-    cols.removeFromLeft (12);
-    auto sendA = cols.removeFromLeft (cols.getWidth() / 2);
-    cols.removeFromLeft (10);
+    g.drawText ("COMMANDE (optionnel)", juce::Rectangle<int> (20, 88, 280, 16), juce::Justification::centredLeft);
 
     auto card = [&] (juce::Rectangle<int> r, const juce::String& title)
     {
@@ -306,9 +360,10 @@ void PresetsEditor::paint (juce::Graphics& g)
         g.drawText (title, r.reduced (16, 10).removeFromTop (22), juce::Justification::centredLeft);
     };
 
-    card (left, juce::String::fromUTF8 ("CHA\xc3\x8eNE VOIX"));
-    card (sendA, "SEND A");
-    card (cols, "SEND B");
+    card (vocalCard, juce::String::fromUTF8 ("CHA\xc3\x8eNE VOIX  \xc2\xb7  INSERT"));
+    card (placeCard, juce::String::fromUTF8 ("PRESET FX  \xc2\xb7  PLACER SUR UN SEND"));
+    card (sendACard, juce::String::fromUTF8 ("SEND A  \xc2\xb7  actuel"));
+    card (sendBCard, juce::String::fromUTF8 ("SEND B  \xc2\xb7  actuel"));
 }
 
 void PresetsEditor::resized()
@@ -326,54 +381,76 @@ void PresetsEditor::resized()
     footInner.removeFromRight (10);
     statusLabel.setBounds (footInner);
 
-    auto cmdBar = bounds.removeFromTop (86).reduced (16, 10);
-    cmdBar.removeFromTop (14);
-    auto cmdRow = cmdBar.removeFromTop (34);
+    auto cmdBar = bounds.removeFromTop (78).reduced (16, 8);
+    cmdBar.removeFromTop (16);
+    auto cmdRow = cmdBar.removeFromTop (32);
     applyButton.setBounds (cmdRow.removeFromRight (120));
     cmdRow.removeFromRight (8);
     commandBox.setBounds (cmdRow);
 
-    auto cols = bounds.reduced (16, 16);
-    auto left = cols.removeFromLeft (juce::jmax (280, cols.getWidth() * 38 / 100));
+    auto cols = bounds.reduced (16, 12);
+    auto top = cols.removeFromTop (juce::jmax (250, cols.getHeight() * 54 / 100));
+    cols.removeFromTop (10);
+    vocalCard = top.removeFromLeft (juce::jmax (300, top.getWidth() * 38 / 100));
+    top.removeFromLeft (12);
+    placeCard = top;
+    sendACard = cols.removeFromLeft ((cols.getWidth() - 12) / 2);
     cols.removeFromLeft (12);
-    auto sendA = cols.removeFromLeft (cols.getWidth() / 2);
-    cols.removeFromLeft (10);
-    auto sendB = cols;
+    sendBCard = cols;
 
-    auto layoutCard = [] (juce::Rectangle<int> r)
+    auto inner = [] (juce::Rectangle<int> r)
     {
         r = r.reduced (16, 12);
         r.removeFromTop (26);
         return r;
     };
 
-    auto v = layoutCard (left);
+    auto v = inner (vocalCard);
+    vocalPresetLabel.setBounds (v.removeFromTop (20));
+    v.removeFromTop (4);
     vocalBox.setBounds (v.removeFromTop (32));
+    v.removeFromTop (8);
+    vocalReadout.setBounds (v.removeFromTop (56));
     v.removeFromTop (10);
-    vocalReadout.setBounds (v.removeFromTop (70));
-    v.removeFromTop (12);
-    auto mixRow = v.removeFromTop (28);
+    auto mixRow = v.removeFromTop (26);
     dryLabel.setBounds (mixRow.removeFromLeft (80));
     dryWet.setBounds (mixRow);
-    v.removeFromTop (8);
-    mixRow = v.removeFromTop (28);
+    v.removeFromTop (6);
+    mixRow = v.removeFromTop (26);
     returnLabel.setBounds (mixRow.removeFromLeft (80));
     returnMix.setBounds (mixRow);
-    v.removeFromTop (8);
-    mixRow = v.removeFromTop (28);
+    v.removeFromTop (6);
+    mixRow = v.removeFromTop (26);
     outLabel.setBounds (mixRow.removeFromLeft (80));
     outputDb.setBounds (mixRow);
 
-    auto layoutSend = [] (juce::Rectangle<int> r, juce::ComboBox& box, juce::Slider& level, juce::Label& notes)
+    auto p = inner (placeCard);
+    auto destRow = p.removeFromTop (32);
+    sendTargetLabel.setBounds (destRow.removeFromLeft (120));
+    destRow.removeFromLeft (8);
+    sendTargetBox.setBounds (destRow.removeFromLeft (juce::jmin (200, destRow.getWidth())));
+    p.removeFromTop (10);
+    auto fxRow = p.removeFromTop (32);
+    fxPresetLabel.setBounds (fxRow.removeFromLeft (120));
+    fxRow.removeFromLeft (8);
+    fxPresetBox.setBounds (fxRow);
+    p.removeFromTop (10);
+    placeButton.setBounds (p.removeFromTop (34).removeFromLeft (160));
+    p.removeFromTop (10);
+    fxChoiceReadout.setBounds (p.removeFromTop (40));
+    p.removeFromTop (4);
+    placeHint.setBounds (p);
+
+    auto layoutSend = [] (juce::Rectangle<int> r, juce::Label& name, juce::Slider& level, juce::Label& notes)
     {
         r = r.reduced (16, 12);
         r.removeFromTop (26);
-        box.setBounds (r.removeFromTop (32));
-        r.removeFromTop (10);
+        name.setBounds (r.removeFromTop (26));
+        r.removeFromTop (8);
         level.setBounds (r.removeFromTop (28));
-        r.removeFromTop (10);
-        notes.setBounds (r.removeFromTop (90));
+        r.removeFromTop (8);
+        notes.setBounds (r.removeFromTop (70));
     };
-    layoutSend (sendA, sendABox, sendALevel, sendAReadout);
-    layoutSend (sendB, sendBBox, sendBLevel, sendBReadout);
+    layoutSend (sendACard, sendAName, sendALevel, sendAReadout);
+    layoutSend (sendBCard, sendBName, sendBLevel, sendBReadout);
 }
