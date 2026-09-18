@@ -1260,7 +1260,7 @@ juce::String MixKnowledge::formatClipboard (const juce::String& sectionId,
 {
     const auto* section = findSection (sectionId);
     juce::String t;
-    t += "K3CH MIX ASSIST\n";
+    t += "K3CH PLUGIN\n";
     t += studioName + juce::String::fromUTF8 (" \xe2\x80\x94 Alger\n");
     if (knowledgeVersion.isNotEmpty())
         t += "Knowledge " + knowledgeVersion + "\n";
@@ -1289,7 +1289,7 @@ juce::String MixKnowledge::formatClipboard (const juce::String& sectionId,
 juce::String MixKnowledge::aboutText() const
 {
     juce::String t;
-    t += "K3CH Mix Assist " + juce::String (K3CH_VERSION) + "\n";
+    t += "K3CH Plugin " + juce::String (K3CH_VERSION) + "\n";
     t += studioName + juce::String::fromUTF8 (" \xe2\x80\x94 Alger\n\n");
     t += "Insert utilitaire : bypass / pass-through, recipes locales.\n";
     t += utf8 ("Aucune API r\xc3\xa9seau, aucun mod\xc3\xa8le distant.\n\n");

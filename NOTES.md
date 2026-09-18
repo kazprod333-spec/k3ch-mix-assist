@@ -1,4 +1,4 @@
-# NOTES — later knowledge ingest
+# NOTES — K3CH Plugin knowledge ingest
 
 Runtime knowledge is **`Resources/mix-knowledge.json`**, compiled into the VST via JUCE BinaryData. The editor never calls a network API.
 

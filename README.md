@@ -1,4 +1,4 @@
-# K3CH Mix Assist
+# K3CH Plugin
 
 **Maison K3CH Production — Alger**
 
@@ -15,12 +15,16 @@ Audio is **true pass-through** (in → out) with an optional peak/RMS meter. The
 - Bypass + stereo peak/RMS meter
 - Standalone app for testing without a DAW
 
+## Download Windows VST3 (no Visual Studio)
+
+GitHub Actions builds Release x64 on this branch. Open **Actions → Windows VST3**, pick the latest green run, download artifact **K3CH-Plugin-Windows-VST3**, unzip, then copy the folder `K3CH Plugin.vst3` into `C:\Program Files\Common Files\VST3`. In FL Studio: **Options → Manage plugins → Find plugins**.
+
 ## Requirements (Windows / FL Studio)
 
 | Tool | Notes |
 |------|--------|
 | Windows 10/11 x64 | FL Studio 20.8+ with VST3 enabled |
-| Visual Studio 2022 | Workload **Desktop development with C++** |
+| Visual Studio 2022 | Workload **Desktop development with C++** (local builds only) |
 | CMake 3.22+ | [cmake.org](https://cmake.org/download/) or `winget install Kitware.CMake` |
 | Git | Needed so CMake can fetch JUCE 8.0.15 |
 
@@ -39,8 +43,8 @@ cmake --build build --config Release --target K3CHMixAssist_Standalone
 Artefacts:
 
 ```
-build\K3CHMixAssist_artefacts\Release\VST3\K3CH Mix Assist.vst3
-build\K3CHMixAssist_artefacts\Release\Standalone\K3CH Mix Assist.exe
+build\K3CHMixAssist_artefacts\Release\VST3\K3CH Plugin.vst3
+build\K3CHMixAssist_artefacts\Release\Standalone\K3CH Plugin.exe
 ```
 
 Optional local JUCE instead of FetchContent:
@@ -53,7 +57,7 @@ Run the Standalone `.exe` first to confirm the editor opens and recipes appear.
 
 ## Install in FL Studio (Windows)
 
-1. Copy the whole bundle `K3CH Mix Assist.vst3` into:
+1. Copy the whole bundle `K3CH Plugin.vst3` into:
 
    `C:\Program Files\Common Files\VST3`
 
@@ -63,11 +67,11 @@ Run the Standalone `.exe` first to confirm the editor opens and recipes appear.
 
 3. In FL Studio: **Options → Manage plugins** → **Find plugins** (wait for the scan).
 
-4. Verify **K3CH Mix Assist** is in the list, vendor **Maison K3CH Production**, type VST3. Make sure it is **enabled**.
+4. Verify **K3CH Plugin** is in the list, vendor **Maison K3CH Production**, type VST3. Make sure it is **enabled**.
 
-5. Insert it like any effect: mixer insert slot → select **K3CH Mix Assist**. It will not change the sound (pass-through). Use the editor to copy recipes, then set EQ/comp/sends on your usual plugins.
+5. Insert it like any effect: mixer insert slot → select **K3CH Plugin**. It will not change the sound (pass-through). Use the editor to copy recipes, then set EQ/comp/sends on your usual plugins.
 
-If FL does not see it: confirm you built **x64 Release**, copied the **folder** `K3CH Mix Assist.vst3` (not a lone `.dll`), and that you are not mixing a 32-bit host with a 64-bit plug-in.
+If FL does not see it: confirm you built **x64 Release**, copied the **folder** `K3CH Plugin.vst3` (not a lone `.dll`), and that you are not mixing a 32-bit host with a 64-bit plug-in.
 
 ## macOS (brief)
 
@@ -84,7 +88,7 @@ Universal binary (Intel + Apple Silicon):
 cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 ```
 
-Copy `K3CH Mix Assist.vst3` to `~/Library/Audio/Plug-Ins/VST3/` (or `/Library/Audio/Plug-Ins/VST3/` for all users). Rescan plugins in Logic, Ableton, Reaper, etc.
+Copy `K3CH Plugin.vst3` to `~/Library/Audio/Plug-Ins/VST3/` (or `/Library/Audio/Plug-Ins/VST3/` for all users). Rescan plugins in Logic, Ableton, Reaper, etc.
 
 ## Linux (developers)
 
@@ -98,9 +102,9 @@ cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --target K3CHMixAssist_Standalone K3CHMixAssist_VST3
 ```
 
-Standalone smoke-test: `build/K3CHMixAssist_artefacts/Release/Standalone/K3CH\ Mix\ Assist`
+Standalone smoke-test: `build/K3CHMixAssist_artefacts/Release/Standalone/K3CH\ Plugin`
 
-VST3 bundle: `build/K3CHMixAssist_artefacts/Release/VST3/K3CH Mix Assist.vst3` — copy to `~/.vst3`.
+VST3 bundle: `build/K3CHMixAssist_artefacts/Release/VST3/K3CH Plugin.vst3` — copy to `~/.vst3`.
 
 ## Knowledge pack
 

@@ -174,7 +174,7 @@ void MixAssistEditor::showAbout()
 {
     juce::AlertWindow::showMessageBoxAsync (
         juce::MessageBoxIconType::InfoIcon,
-        "K3CH Mix Assist",
+        JucePlugin_Name,
         knowledge.aboutText());
 }
 
@@ -195,7 +195,7 @@ void MixAssistEditor::paint (juce::Graphics& g)
 
     g.setColour (pal.text);
     g.setFont (juce::Font (juce::FontOptions (22.0f).withStyle ("Bold")));
-    g.drawText ("MIX ASSIST", juce::Rectangle<int> (20, 30, 280, 26), juce::Justification::centredLeft);
+    g.drawText ("PLUGIN", juce::Rectangle<int> (20, 30, 280, 26), juce::Justification::centredLeft);
 
     g.setColour (pal.muted);
     g.setFont (juce::Font (juce::FontOptions (12.5f)));

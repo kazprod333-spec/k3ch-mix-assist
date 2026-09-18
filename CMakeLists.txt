@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(K3CHMixAssist
     VERSION 1.0.0
-    DESCRIPTION "K3CH Mix Assist — studio mix-recipe helper (VST3)"
+    DESCRIPTION "K3CH Plugin — studio mix-recipe helper (VST3)"
     LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -32,8 +32,8 @@ juce_add_plugin(K3CHMixAssist
     PLUGIN_MANUFACTURER_CODE K3ch
     PLUGIN_CODE Mxas
     FORMATS VST3 Standalone
-    PRODUCT_NAME "K3CH Mix Assist"
-    PLUGIN_NAME "K3CH Mix Assist"
+    PRODUCT_NAME "K3CH Plugin"
+    PLUGIN_NAME "K3CH Plugin"
     DESCRIPTION "Studio mix recipes, session checklist, and starting-point chains (Maison K3CH Production, Alger)"
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE

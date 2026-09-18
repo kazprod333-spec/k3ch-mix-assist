@@ -1,0 +1,40 @@
+name: Windows VST3
+
+on:
+  push:
+    branches:
+      - cursor/k3ch-mix-assist-vst3-aa90
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Git long paths
+        run: git config --global core.longpaths true
+
+      - name: Configure CMake (Visual Studio x64)
+        run: cmake -B build -A x64
+
+      - name: Build VST3 (Release)
+        run: cmake --build build --config Release --target K3CHMixAssist_VST3 --parallel
+
+      - name: Stage VST3 bundle
+        shell: pwsh
+        run: |
+          $src = "build\K3CHMixAssist_artefacts\Release\VST3\K3CH Plugin.vst3"
+          if (-not (Test-Path $src)) { throw "VST3 bundle not found: $src" }
+          New-Item -ItemType Directory -Force -Path staging | Out-Null
+          Copy-Item -Recurse -Force $src "staging\K3CH Plugin.vst3"
+          Get-ChildItem -Recurse staging | Select-Object -ExpandProperty FullName
+
+      - name: Upload VST3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: K3CH-Plugin-Windows-VST3
+          path: staging
+          if-no-files-found: error
