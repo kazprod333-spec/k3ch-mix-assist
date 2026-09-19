@@ -1,0 +1,9 @@
+FX Chain à enregistrer : K3CH Melo
+Canal typique : keys / pads / mélodies
+
+1. Pro-Q 3 — HPF 80–200 selon l’élément · coupe 200–400 si boue
+2. Comp léger — 2:1 · GR 1–3 dB (optionnel)
+3. Sat / chorus discret — mix bas
+4. Send space — hall/plate filtrée (FX Channel)
+
+Laisse le centre à la voix et à l’808.

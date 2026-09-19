@@ -1,0 +1,10 @@
+FX Chain à enregistrer : K3CH Backs
+Canal typique : Bus BGV / harmos → Bus_VOX
+
+1. Pro-Q 3 — HPF 130–160 · –3@280 · coupe 2.5–5k si ça corne
+2. RVox / CLA-76 — GR 5–8 dB att rapide (plus plat que lead)
+3. De-esser — 5–8 kHz
+4. Sat légère — optionnel
+5. Send plate courte — plus sombre que lead (FX Channel)
+
+Pas de limiteur ici.

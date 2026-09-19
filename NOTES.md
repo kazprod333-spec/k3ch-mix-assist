@@ -51,4 +51,6 @@ Generic walker: unit suffixes, ranges, `eq_bands`, `{ plugin, setting/gr_db }`, 
 
 **K3CH Plugin** (encyclopedia) stays a cheap pass-through insert. Recipes are copied and applied by hand in FL / Studio One.
 
-**K3CH Presets** (separate VST3, plugin code `K3pr`) is the DSP product: vocal insert chain + internal sends A/B, with APVTS sliders for every DSP field (HPF/EQ/comp/de-ess/sat + per-send reverb/delay/filters). Runtime map: `Resources/presets-runtime.json`. Selecting a vocal preset fills those parameters. The FL insert plan is a manual checklist — a VST3 cannot insert/control third-party plugins on the host mixer.
+**K3CH Presets** (separate VST3, plugin code `K3pr`) is the vocal DSP product: insert chain + internal sends A/B, with APVTS sliders for every DSP field (HPF/EQ/comp/de-ess/sat + per-send reverb/delay/filters). Runtime map: `Resources/presets-runtime.json`. Selecting a vocal preset fills those parameters. The insert plan is a manual checklist — a VST3 cannot insert/control third-party plugins on the host mixer.
+
+**K3CH Master** (VST3, plugin code `K3ms`) sits on the Studio Pro **Master** bus. Mode Master runs a stereo mastering chain (trim, shelves + optional mid, sat, M/S width with bass-mono, soft clip, lookahead limiter, makeup, true-peak-style ceiling). Mode Inserts / Mix is pass-through plus FX Chain *documentation* (`Resources/master-inserts.json`). Application of those chains on other Console channels is a Studio Pro FX Chain / Macro Organizer job — see `StudioOne/README.md`. No FL MIDI script, no invented Host API.

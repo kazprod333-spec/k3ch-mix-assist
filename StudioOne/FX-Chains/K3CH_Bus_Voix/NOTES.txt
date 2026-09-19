@@ -1,0 +1,7 @@
+FX Chain à enregistrer : K3CH Bus Voix
+Canal typique : Bus_VOX
+
+1. Pro-Q 3 — HPF ~70 si rumble · coupes conflit only (pas de smile EQ)
+2. SSL G / VCA — 1–2 dB GR · release au groove
+3. Sat très légère — optionnel
+4. PAS de limiteur — le plafond est K3CH Master (mode Master) sur le bus Master

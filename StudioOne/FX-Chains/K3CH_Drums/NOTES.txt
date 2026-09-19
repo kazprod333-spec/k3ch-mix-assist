@@ -1,0 +1,10 @@
+FX Chain à enregistrer : K3CH Drums
+Canal typique : bus drums SANS 808 sub
+
+1. Pro-Q 3 — HPF kick 20–30 · hats 200–400 · coupe carton 250–400
+2. SSL / CLA-76 bus — GR 2–4 dB · rel au groove
+3. Sat légère — Decap / Saturn
+4. Para drums — FX Channel HPF 80–100 + smash 6–10 dB · send –12/−18
+   (kick click, clap, hats — PAS 808)
+
+Pas de limiteur sur le bus drums.
