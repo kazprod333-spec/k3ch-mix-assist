@@ -1,0 +1,14 @@
+FX Chain à enregistrer : K3CH Voix Lead
+Canal typique : voix lead (Console)
+
+1. K3CH Presets — chaîne ModernRap (HPF/EQ/comp/DS/sat + sends internes)
+2. Gate / NS — si besoin
+3. Tune / Auto-Tune — 20–30 ms · Humanize 25–40 % · Formant ON
+4. Pro-Q 3 — HPF 85 · –3@280 Q1.2 · +2@3.5 Q1.4 · +1.8@11k
+5. CLA-76 — 4:1 · Att 3 · Rel 6–7 · GR 4–7
+6. De-esser — 6.3–6.5 kHz
+7. CLA-2A / RVox — GR 2–3.5
+8. Decap / sat — Drive 2–3 ou para 25–30 %
+9. Sends — Plate 0.7–1.1 s · Delay 1/8 (FX Channels, pas remote insert)
+
+Un VST3 ne pose pas cette pile pour toi.

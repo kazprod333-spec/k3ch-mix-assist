@@ -1,0 +1,8 @@
+FX Chain à enregistrer : K3CH 808
+Canal typique : 808
+
+1. Pro-Q 3 — HPF 20–25 · coupe 150–300 si collision kick · mono < 80–120 Hz
+2. Sidechain kick — 1–2 dB · att 1–5 ms
+3. CLA-2A Opto — GR 3–5 dB (jamais FET seul sur le sub)
+4. Sat avant bus basse — Decap 3–5 / Saturn / RBass 50–55 Hz
+5. Para 808 option — bande 80–200 · sat mix ~15 % (smash mid only)

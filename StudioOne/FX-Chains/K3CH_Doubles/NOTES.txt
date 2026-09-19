@@ -1,0 +1,9 @@
+FX Chain à enregistrer : K3CH Doubles
+Canal typique : doubles / adlibs · fader –6 à –12 dB sous la lead · vers Bus BGV
+
+1. K3CH Presets — optionnel, HPF 120–150, moins d’air
+2. Tune — même tonalité que lead
+3. Pro-Q 3 — HPF 120–150 · –3@280 · dip –2/−4 @2.5–5k Q≤2.5
+4. CLA-76 / RVox — GR 5–8 dB · attaque rapide
+5. De-esser — léger
+6. Pan L/R — pas de sub

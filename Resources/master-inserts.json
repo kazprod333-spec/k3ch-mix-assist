@@ -1,0 +1,117 @@
+{
+  "source": "Derived from Resources/mix-knowledge.json + presets-runtime.json — Studio One FX Chain plans",
+  "version": "2026-09-19-master-s1",
+  "studio": "Maison K3CH Production",
+  "city": "Alger",
+  "host": "Studio One 8 / Fender Studio Pro 8",
+  "notes": "Un VST3 ne peut pas poser ces plugins sur d'autres canaux Console. Recrée chaque chaîne une fois comme FX Chain Studio One, puis rappelle-la depuis le Navigateur ou une macro.",
+  "insert_presets": [
+    {
+      "id": "voix_lead",
+      "name": "Voix lead",
+      "category": "voix",
+      "fx_chain_name": "K3CH Voix Lead",
+      "target_hint": "Canal voix lead (Console)",
+      "notes": "Socle ModernRap. Pose K3CH Presets sur CE canal pour la chaîne live interne.",
+      "steps": [
+        { "n": 1, "plugin": "K3CH Presets", "setting": "Chaîne ModernRap — HPF/EQ/comp/DS/sat + sends internes", "notes": "sur ce canal seulement" },
+        { "n": 2, "plugin": "Gate / NS", "setting": "si besoin", "notes": "avant tune" },
+        { "n": 3, "plugin": "Tune / Auto-Tune", "setting": "20–30 ms · Humanize 25–40 % · Formant ON", "notes": "tonalité du beat" },
+        { "n": 4, "plugin": "Pro-Q 3", "setting": "HPF 85 · –3@280 Q1.2 · +2@3.5 Q1.4 · +1.8@11k", "notes": "soustractif puis additif" },
+        { "n": 5, "plugin": "CLA-76", "setting": "4:1 · Att 3 · Rel 6–7 · GR 4–7", "notes": "output compensé" },
+        { "n": 6, "plugin": "De-esser", "setting": "6.3–6.5 kHz · –3/−4 dB", "notes": "après 76" },
+        { "n": 7, "plugin": "CLA-2A / RVox", "setting": "GR 2–3.5", "notes": "leveler" },
+        { "n": 8, "plugin": "Decap / sat", "setting": "Drive 2–3 ou para 25–30 %", "notes": "" },
+        { "n": 9, "plugin": "Sends Mixtool / Mixengine", "setting": "Plate 0.7–1.1 s · Delay 1/8", "notes": "returns filtrés — pas un insert distant" }
+      ]
+    },
+    {
+      "id": "doubles",
+      "name": "Doubles",
+      "category": "voix",
+      "fx_chain_name": "K3CH Doubles",
+      "target_hint": "Canal doubles / adlibs",
+      "notes": "Plus plat que le lead. Fader –6 à –12 dB sous la lead. Vers Bus BGV.",
+      "steps": [
+        { "n": 1, "plugin": "K3CH Presets", "setting": "Chaîne plus serrée (HPF 120–150, less air)", "notes": "optionnel si tu restes 100 % S1" },
+        { "n": 2, "plugin": "Tune / piste", "setting": "même tonalité que lead", "notes": "" },
+        { "n": 3, "plugin": "Pro-Q 3", "setting": "HPF 120–150 · –3@280 · dip –2/−4 @2.5–5k Q≤2.5", "notes": "laisse la place au lead" },
+        { "n": 4, "plugin": "CLA-76 / RVox", "setting": "GR 5–8 dB · attaque rapide", "notes": "plus écrasé que lead" },
+        { "n": 5, "plugin": "De-esser", "setting": "léger", "notes": "" },
+        { "n": 6, "plugin": "Pan / width", "setting": "L/R hors centre", "notes": "pas de sub" }
+      ]
+    },
+    {
+      "id": "backs",
+      "name": "Backs / BGV",
+      "category": "voix",
+      "fx_chain_name": "K3CH Backs",
+      "target_hint": "Bus BGV ou pistes harmo",
+      "notes": "Bus_BGV → Bus_VOX. Tighter que lead. Pas de limiteur ici.",
+      "steps": [
+        { "n": 1, "plugin": "Pro-Q 3", "setting": "HPF 130–160 · –3@280 · coupe 2.5–5k si ça corne", "notes": "" },
+        { "n": 2, "plugin": "RVox / CLA-76", "setting": "GR 5–8 dB att rapide", "notes": "plus plat que lead" },
+        { "n": 3, "plugin": "De-esser", "setting": "5–8 kHz", "notes": "" },
+        { "n": 4, "plugin": "Sat légère", "setting": "mix bas", "notes": "optionnel" },
+        { "n": 5, "plugin": "Send plate courte", "setting": "plus sombre que lead", "notes": "FX Channel, pas insert distant" }
+      ]
+    },
+    {
+      "id": "bus_voix",
+      "name": "Bus voix",
+      "category": "bus",
+      "fx_chain_name": "K3CH Bus Voix",
+      "target_hint": "Bus_VOX (Console)",
+      "notes": "Glue SSL 1–2 dB. INTERDIT : limiteur sur Bus_VOX. Le limiteur est dans K3CH Master (mode Master).",
+      "steps": [
+        { "n": 1, "plugin": "Pro-Q 3", "setting": "HPF ~70 si rumble · coupes conflit only", "notes": "pas de smile EQ" },
+        { "n": 2, "plugin": "SSL G / VCA", "setting": "1–2 dB GR · release au groove", "notes": "glue" },
+        { "n": 3, "plugin": "Sat très légère", "setting": "optionnel", "notes": "" },
+        { "n": 4, "plugin": "— pas de limiteur —", "setting": "Le plafond est sur le Master (K3CH Master)", "notes": "règle studio" }
+      ]
+    },
+    {
+      "id": "drums",
+      "name": "Drums",
+      "category": "rythme",
+      "fx_chain_name": "K3CH Drums",
+      "target_hint": "Bus drums (sans 808 sub)",
+      "notes": "SSL 2–4 dB. PAS de 808 sub sur ce bus. PAS de limiteur bus drums.",
+      "steps": [
+        { "n": 1, "plugin": "Pro-Q 3", "setting": "HPF 20–30 kick · hats 200–400 · coupe carton 250–400", "notes": "par piste puis bus" },
+        { "n": 2, "plugin": "SSL / CLA-76 bus", "setting": "GR 2–4 dB · rel au groove", "notes": "bus drums" },
+        { "n": 3, "plugin": "Sat légère", "setting": "Decap / Saturn", "notes": "click + clap" },
+        { "n": 4, "plugin": "Para drums (FX Channel)", "setting": "HPF 80–100 + smash 6–10 dB · send –12/−18", "notes": "kick click, clap, hats — PAS 808" }
+      ]
+    },
+    {
+      "id": "808",
+      "name": "808",
+      "category": "basse",
+      "fx_chain_name": "K3CH 808",
+      "target_hint": "Canal 808",
+      "notes": "Mono sous 80–120 Hz. Opto, pas FET smash sub. Sidechain kick 1–5 ms.",
+      "steps": [
+        { "n": 1, "plugin": "Pro-Q 3", "setting": "HPF 20–25 · coupe 150–300 si collision kick · mono < 80–120", "notes": "" },
+        { "n": 2, "plugin": "Sidechain kick", "setting": "1–2 dB · att 1–5 ms", "notes": "Mixtool / Comp SC" },
+        { "n": 3, "plugin": "CLA-2A Opto", "setting": "GR 3–5 dB", "notes": "jamais FET seul sur le sub" },
+        { "n": 4, "plugin": "Sat (avant bus basse)", "setting": "Decap drive 3–5 / Saturn / RBass 50–55 Hz", "notes": "" },
+        { "n": 5, "plugin": "Para 808 (option)", "setting": "bande 80–200 · sat mix ~15 %", "notes": "smash mid only" }
+      ]
+    },
+    {
+      "id": "melo",
+      "name": "Mélo",
+      "category": "harmonie",
+      "fx_chain_name": "K3CH Melo",
+      "target_hint": "Pistes mélodiques / pads / keys",
+      "notes": "HPF sauf éléments graves voulus. Laisse le centre à la voix et à l'808.",
+      "steps": [
+        { "n": 1, "plugin": "Pro-Q 3", "setting": "HPF 80–200 selon l'élément · coupe 200–400 si boue", "notes": "" },
+        { "n": 2, "plugin": "Comp léger", "setting": "2:1 · GR 1–3 dB", "notes": "optionnel" },
+        { "n": 3, "plugin": "Sat / chorus discret", "setting": "mix bas", "notes": "pas d'empilement" },
+        { "n": 4, "plugin": "Send space", "setting": "hall/plate filtrée", "notes": "FX Channel" }
+      ]
+    }
+  ]
+}
