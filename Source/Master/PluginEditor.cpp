@@ -69,7 +69,7 @@ MasterEditor::MasterEditor (MasterProcessor& p)
     constraintNote.setText (
         juce::String::fromUTF8 (
             "Un VST3 ne peut pas charger de plugins sur d\xe2\x80\x99" "autres canaux Console. "
-            "Les cha\xc3\xae" "nes insert s\xe2\x80\x99" "appliquent via FX Chains / macros Studio One, "
+            "Les cha\xc3\xae" "nes insert s\xe2\x80\x99" "appliquent via FX Chains / macros Studio Pro, "
             "pas via ce plug-in."),
         juce::dontSendNotification);
     colourLabel (constraintNote, lnf.palette.gold);
@@ -178,7 +178,7 @@ MasterEditor::MasterEditor (MasterProcessor& p)
     };
 
     sectionTitle (eqLowTitle, juce::String::fromUTF8 ("Grave  \xc2\xb7  shelf"), lnf.palette.gold);
-    sectionTitle (eqMidTitle, juce::String::fromUTF8 ("M\xc3\xa9dium  \xc2\xb7  cloche"), lnf.palette.gold);
+    sectionTitle (eqMidTitle, juce::String::fromUTF8 ("M\xc3\xa9" "dium  \xc2\xb7  cloche"), lnf.palette.gold);
     sectionTitle (eqHighTitle, juce::String::fromUTF8 ("Aigu  \xc2\xb7  shelf"), lnf.palette.gold);
     inputDb.setup (processor.apvts, "input_db", juce::String::fromUTF8 ("Entr\xc3\xa9" "e"), " dB");
     outputDb.setup (processor.apvts, "output_db", "Sortie", " dB");
@@ -186,7 +186,7 @@ MasterEditor::MasterEditor (MasterProcessor& p)
     lowG.setup (processor.apvts, "eq_low_gain", "Gain", " dB");
     highHz.setup (processor.apvts, "eq_high_hz", juce::String::fromUTF8 ("Fr\xc3\xa9quence"), " Hz");
     highG.setup (processor.apvts, "eq_high_gain", "Gain", " dB");
-    midOn.setup (processor.apvts, "eq_mid_on", juce::String::fromUTF8 ("Bande m\xc3\xa9dium"));
+    midOn.setup (processor.apvts, "eq_mid_on", juce::String::fromUTF8 ("Bande m\xc3\xa9" "dium"));
     midHz.setup (processor.apvts, "eq_mid_hz", juce::String::fromUTF8 ("Fr\xc3\xa9quence"), " Hz");
     midG.setup (processor.apvts, "eq_mid_gain", "Gain", " dB");
     midQ.setup (processor.apvts, "eq_mid_q", "Facteur Q", {});
@@ -201,7 +201,8 @@ MasterEditor::MasterEditor (MasterProcessor& p)
     satMix.setupPercent (processor.apvts, "sat_mix", "Mix");
     width.setup (processor.apvts, "width", juce::String::fromUTF8 ("Largeur"), {});
     bassMono.setup (processor.apvts, "bass_mono_hz", "Basse mono", " Hz");
-    for (auto* c : { &satOn, &satDrv, &satMix, &width, &bassMono })
+    addTo (pageSat, satOn);
+    for (auto* c : { &satDrv, &satMix, &width, &bassMono })
         addTo (pageSat, *c);
 
     clipOn.setup (processor.apvts, "clip_on", "Soft clip");
@@ -218,7 +219,10 @@ MasterEditor::MasterEditor (MasterProcessor& p)
     limLook.setup (processor.apvts, "lim_lookahead", "Lookahead", " ms");
     tpCeil.setup (processor.apvts, "tp_ceiling", "Plafond TP", " dB");
     addTo (pageDyn, grMeter);
-    for (auto* c : { &clipOn, &limOn, &tpOn, &clipCeil, &limCeil, &limRel, &limLook, &tpCeil })
+    addTo (pageDyn, clipOn);
+    addTo (pageDyn, limOn);
+    addTo (pageDyn, tpOn);
+    for (auto* c : { &clipCeil, &limCeil, &limRel, &limLook, &tpCeil })
         addTo (pageDyn, *c);
 
     masterTabs.addTab ("EQ / Gains", lnf.palette.bgCard, &pageEq, false);
@@ -252,13 +256,13 @@ MasterEditor::MasterEditor (MasterProcessor& p)
     {
         if (ignoreCombo)
             return;
-        if (auto* p = dynamic_cast<juce::AudioParameterInt*> (processor.apvts.getParameter ("target_channel")))
-            p->setValueNotifyingHost (p->convertTo0to1 ((float) targetBox.getSelectedId()));
+        if (auto* param = dynamic_cast<juce::AudioParameterInt*> (processor.apvts.getParameter ("target_channel")))
+            param->setValueNotifyingHost (param->convertTo0to1 ((float) targetBox.getSelectedId()));
         updatePlanView();
     };
     pageInserts.addAndMakeVisible (targetBox);
 
-    targetNameLabel.setText (juce::String::fromUTF8 ("Nom du canal (m\xc3\xa9mo)"), juce::dontSendNotification);
+    targetNameLabel.setText (juce::String::fromUTF8 ("Nom du canal (m\xc3\xa9" "mo)"), juce::dontSendNotification);
     colourLabel (targetNameLabel, lnf.palette.gold);
     pageInserts.addAndMakeVisible (targetNameLabel);
 
@@ -309,7 +313,7 @@ MasterEditor::MasterEditor (MasterProcessor& p)
     statusLabel.setText (processor.lastStatus.isNotEmpty()
                              ? processor.lastStatus
                              : juce::String::fromUTF8 (
-                                   "Studio One 8 \xe2\x80\x94 Master DSP ou plans FX Chain. Pas de remote insert."),
+                                   "Studio Pro 8 \xe2\x80\x94 Master DSP ou plans FX Chain. Pas de remote insert."),
                          juce::dontSendNotification);
     startTimerHz (8);
 }
@@ -413,7 +417,7 @@ void MasterEditor::showAbout()
         "Mode Master : cha\xc3\xae" "ne DSP (gain, EQ, sat, largeur, clip, limiteur, true-peak) "
         "sur le bus o\xc3\xb9 ce plug-in est pos\xc3\xa9.\n\n"
         "Mode Inserts / Mix : biblioth\xc3\xa8que de plans. "
-        "Studio One charge les FX Chains via le Navigateur ou Macro Organizer. "
+        "Studio Pro charge les FX Chains via le Navigateur ou Macro Organizer. "
         "Ce VST3 ne peut pas ins\xc3\xa9rer de plugins sur d\xe2\x80\x99" "autres canaux.\n\n"
         "Voir StudioOne/README.md dans le d\xc3\xa9p\xc3\xb4t.\n");
     if (processor.insertLibrary.getVersion().isNotEmpty())
@@ -446,7 +450,7 @@ void MasterEditor::paint (juce::Graphics& g)
 
     g.setColour (pal.muted);
     g.setFont (juce::Font (juce::FontOptions (12.5f)));
-    g.drawText (processor.insertLibrary.getStudio() + juce::String::fromUTF8 ("  \xc2\xb7  Alger  \xc2\xb7  Studio One 8"),
+    g.drawText (processor.insertLibrary.getStudio() + juce::String::fromUTF8 ("  \xc2\xb7  Alger  \xc2\xb7  Studio Pro 8"),
                 juce::Rectangle<int> (20, 54, 520, 18), juce::Justification::centredLeft);
 
     auto footer = getLocalBounds().removeFromBottom (48);

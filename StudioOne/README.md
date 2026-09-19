@@ -1,9 +1,9 @@
-# Studio One 8 — pack compagnon K3CH Master
+# Studio Pro 8 — pack compagnon K3CH Master
 
 **Maison K3CH Production — Alger**
 
 Ce dossier n’est **pas** un plug-in et ne s’installe pas dans le Master VST3.
-Il documente le flux **Studio One 8 / Fender Studio Pro 8** pour rappeler des
+Il documente le flux **Studio Pro 8** (Fender) pour rappeler des
 chaînes d’inserts sur d’autres canaux Console.
 
 ## Limite honnête
@@ -14,7 +14,7 @@ Un VST3 (y compris **K3CH Master** et **K3CH Presets**) **ne peut pas** :
 - appliquer une FX Chain à distance via une API hôte publique vérifiée ;
 - piloter la Console comme un script mixer.
 
-L’application d’une chaîne sur un autre track / canal se fait **dans Studio One** :
+L’application d’une chaîne sur un autre track / canal se fait **dans Studio Pro** :
 FX Chains (Navigateur) ou **Macro Organizer**.
 
 Aucun script `.package` n’est fourni : les références communautaires exposent
@@ -40,20 +40,20 @@ On ne l’invente pas. Utilise les macros UI.
 4. Nomme-la **exactement** comme dans le plan, ex. `K3CH Voix Lead`.
 5. Dossier suggéré : sous-dossier **K3CH** dans tes FX Chains.
 
-### Dossiers User Data (vérifiés PreSonus / Fender)
+### Dossiers User Data (chemins disque)
 
 Les FX Chains vivent sous l’emplacement **User Data**
 (Options / Préférences → Locations), pas dans ce dépôt.
 
-- Studio One 4–7 (legacy) :
+- Versions PreSonus Studio One 4–7 (legacy) :
   `Documents/Studio One/Presets/PreSonus/FX Chains/`
-- Fender Studio Pro 8 / S1 8 (nouvelles chaînes) :
+- Studio Pro 8 (Fender) — nouvelles chaînes :
   `Documents/StudioPro_UserData/Presets/Fender/FX Chains/`
   (si tu as gardé l’ancien root User Data : `…/Presets/Fender/FX Chains/`)
 
 Les dossiers `StudioOne/FX-Chains/K3CH_*` de ce repo sont des **stubs**
-(noms + NOTES). Copie les NOTES, construis la chaîne dans S1, *Store*.
-Studio One n’importe pas ces dossiers vides comme presets.
+(noms + NOTES). Copie les NOTES, construis la chaîne dans Studio Pro, *Store*.
+L’hôte n’importe pas ces dossiers vides comme presets.
 
 ## Rappeler une FX Chain
 
@@ -62,11 +62,11 @@ Studio One n’importe pas ces dossiers vides comme presets.
 
 ## Macro Organizer (raccourci)
 
-1. **Studio One → Macro Organizer** (ou barre macros).
+1. **Studio Pro → Macro Organizer** (ou barre macros).
 2. **New**.
 3. Ajoute la commande qui **insère la FX Chain déjà stockée**
    (dans l’UI macros : choisis la FX Chain nommée, comme pour un Event FX /
-   insert chain — c’est le flux documenté par les utilisateurs S1).
+   insert chain — flux documenté côté utilisateurs).
 4. Assigne un raccourci (ex. Ctrl+Alt+1 = Voix Lead, Ctrl+Alt+2 = Doubles…).
 5. Sélectionne le canal cible dans la Console, déclenche la macro.
 
@@ -89,5 +89,5 @@ Détail des inserts : `FX-Chains/*/NOTES.txt` et l’onglet Inserts du plug-in.
 1. K3CH Master est déjà sur le **Master**.
 2. Passe **Inserts / Mix → Master**.
 3. Choisis un preset (Streaming -14 LUFS, Club / Loud, …) → **Appliquer**.
-4. Ajuste EQ / sat / largeur / limiteur. Mesure LUFS + true peak dans S1
+4. Ajuste EQ / sat / largeur / limiteur. Mesure LUFS + true peak dans Studio Pro
    (le plug-in vise un plafond, ce n’est pas un loudness meter intégré).

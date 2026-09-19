@@ -20,7 +20,7 @@ float num (const juce::var& v, float fallback)
 juce::String InsertPreset::planText (int targetChannel, const juce::String& targetName) const
 {
     juce::String t;
-    t += juce::String::fromUTF8 ("Plan FX Chain Studio One \xe2\x80\x94 ") + name + "\n";
+    t += juce::String::fromUTF8 ("Plan FX Chain Studio Pro \xe2\x80\x94 ") + name + "\n";
     t += juce::String::fromUTF8 ("Nom \xc3\xa0 enregistrer : ") + fxChainName + "\n";
     t += juce::String::fromUTF8 ("Canal cible (m\xc3\xa9mo) : #") + juce::String (targetChannel);
     if (targetName.trim().isNotEmpty())
@@ -31,7 +31,7 @@ juce::String InsertPreset::planText (int targetChannel, const juce::String& targ
     t += "\n";
     t += juce::String::fromUTF8 (
         "Un VST3 ne peut pas charger ces plugins sur un autre canal Console.\n"
-        "1) S\xc3\xa9lectionne le canal dans Studio One.\n"
+        "1) S\xc3\xa9lectionne le canal dans Studio Pro.\n"
         "2) Pose K3CH Presets sur CE canal pour la cha\xc3\xae" "ne live (si voix).\n"
         "3) Recr\xc3\xa9" "e les inserts ci-dessous \xc3\xa0 la main, puis Store FX Chain.\n"
         "4) Rappelle la cha\xc3\xae" "ne via le Navigateur ou une macro Macro Organizer.\n\n");

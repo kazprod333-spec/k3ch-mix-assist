@@ -99,11 +99,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout MasterProcessor::createLayou
     params.push_back (mkFloat (kHighG, juce::String::fromUTF8 ("Aigu"), -6.0f, 6.0f, 0.0f, 0.05f));
     params.push_back (std::make_unique<juce::AudioParameterBool> (
         juce::ParameterID { kMidOn, 1 },
-        juce::String::fromUTF8 ("Bande m\xc3\xa9dium"), false));
-    params.push_back (mkFloat (kMidHz, juce::String::fromUTF8 ("M\xc3\xa9dium Hz"),
+        juce::String::fromUTF8 ("Bande m\xc3\xa9" "dium"), false));
+    params.push_back (mkFloat (kMidHz, juce::String::fromUTF8 ("M\xc3\xa9" "dium Hz"),
                                200.0f, 8000.0f, 2500.0f, 1.0f));
-    params.push_back (mkFloat (kMidG, juce::String::fromUTF8 ("M\xc3\xa9dium"), -6.0f, 6.0f, 0.0f, 0.05f));
-    params.push_back (mkFloat (kMidQ, juce::String::fromUTF8 ("Q m\xc3\xa9dium"), 0.3f, 4.0f, 1.0f, 0.01f));
+    params.push_back (mkFloat (kMidG, juce::String::fromUTF8 ("M\xc3\xa9" "dium"), -6.0f, 6.0f, 0.0f, 0.05f));
+    params.push_back (mkFloat (kMidQ, juce::String::fromUTF8 ("Q m\xc3\xa9" "dium"), 0.3f, 4.0f, 1.0f, 0.01f));
 
     params.push_back (std::make_unique<juce::AudioParameterBool> (
         juce::ParameterID { kSatOn, 1 }, "Saturation", false));
@@ -205,7 +205,7 @@ void MasterProcessor::loadMasterPreset (int index, bool notifyHost)
     lastStatus = juce::String::fromUTF8 ("Preset master : ") + juce::String (p->name);
     if (! isMasterMode())
         lastStatus += juce::String::fromUTF8 (
-            " \xe2\x80\x94 passe en mode Master pour l\xe2\x80\x99entendre");
+            " \xe2\x80\x94 passe en mode Master pour l\xe2\x80\x99" "entendre");
 }
 
 void MasterProcessor::parameterChanged (const juce::String& parameterID, float)

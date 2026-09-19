@@ -179,7 +179,7 @@ else()
 endif()
 
 # ---------------------------------------------------------------------------
-# Product 3 — K3CH Master (Studio One 8 master bus + FX Chain plans)
+# Product 3 — K3CH Master (Studio Pro 8 master bus + FX Chain plans)
 # ---------------------------------------------------------------------------
 
 juce_add_plugin(K3CHMaster
@@ -190,7 +190,7 @@ juce_add_plugin(K3CHMaster
     FORMATS VST3 Standalone
     PRODUCT_NAME "K3CH Master"
     PLUGIN_NAME "K3CH Master"
-    DESCRIPTION "Mastering chain DSP + Studio One FX Chain plans (Maison K3CH Production, Alger)"
+    DESCRIPTION "Mastering chain DSP + Studio Pro FX Chain plans (Maison K3CH Production, Alger)"
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE

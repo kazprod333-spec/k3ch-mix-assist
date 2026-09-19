@@ -3,16 +3,16 @@
 Pas de script Host. Les commandes JS communautaires
 (`Host.GUI.Commands.interpretCommand`) n’ont **pas** de couple
 catégorie/action vérifié pour « appliquer FX Chain nommée au canal
-sélectionné ». On reste sur l’UI Studio One.
+sélectionné ». On reste sur l’UI Studio Pro.
 
 ## Procédure
 
 1. Enregistre d’abord les FX Chains (`../FX-Chains/*/NOTES.txt`).
-2. **Studio One → Macro Organizer → New**.
+2. **Studio Pro → Macro Organizer → New**.
 3. Ajoute l’action d’insertion de **la FX Chain déjà stockée**
    (liste des FX Chains utilisateur dans le constructeur de macro —
    même principe que « stored FX chain → raccourci » décrit sur le
-   forum Studio One pour les Event FX / inserts).
+   forum utilisateurs pour les Event FX / inserts).
 4. Nomme la macro comme la chaîne : `K3CH Voix Lead`, etc.
 5. Assigne un raccourci clavier.
 6. Dans la Console : sélectionne le canal cible → raccourci.

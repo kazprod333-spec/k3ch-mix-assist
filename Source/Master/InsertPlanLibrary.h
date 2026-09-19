@@ -48,7 +48,7 @@ private:
     juce::String error;
     juce::String version;
     juce::String studio { "Maison K3CH Production" };
-    juce::String host { "Studio One 8" };
+    juce::String host { "Studio Pro 8" };
     std::vector<InsertPreset> items;
 };
 

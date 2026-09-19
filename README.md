@@ -8,13 +8,13 @@ This repo ships **three** VST3 products (same CMake project, unique plugin codes
 |---------|----------------|--------------|
 | **K3CH Plugin** | `K3CHMixAssist` | Mix encyclopedia / recipe browser. True **pass-through** audio. Copy recipes and apply them by hand in the DAW. |
 | **K3CH Presets** | `K3CHPresets` | Vocal-chain **preset loader** + **internal multi-FX sends** A/B. Real DSP (HPF/EQ → compressor → de-esser → sat, plus reverb/delay/parallel recipes). |
-| **K3CH Master** | `K3CHMaster` | Place on the **Studio One Master** bus. **Mode Master** = real mastering DSP + one-click presets. **Mode Inserts / Mix** = FX Chain *plans* (checklist + copy). A VST3 cannot load plugins onto other Console channels. |
+| **K3CH Master** | `K3CHMaster` | Place on the **Studio Pro** Master bus. **Mode Master** = real mastering DSP + one-click presets. **Mode Inserts / Mix** = FX Chain *plans* (checklist + copy). A VST3 cannot load plugins onto other Console channels. |
 
-Host mixer control is not possible via VST3. **K3CH Master** is written for **Studio One 8 / Fender Studio Pro 8**: use native **FX Chains** and **Macro Organizer** to recall insert stacks on other channels. See [`StudioOne/README.md`](StudioOne/README.md).
+Host mixer control is not possible via VST3. **K3CH Master** is written for **Studio Pro 8** (Fender; formerly Studio One): use native **FX Chains** and **Macro Organizer** to recall insert stacks on other channels. See [`StudioOne/README.md`](StudioOne/README.md).
 
 Knowledge is **local/embedded** (`Resources/mix-knowledge.json`, `Resources/presets-runtime.json`, `Resources/master-inserts.json`). No network, no model API.
 
-## K3CH Master — v1 (Studio One 8)
+## K3CH Master — v1 (Studio Pro 8)
 
 Pose **K3CH Master** sur le canal **Master** (Console).
 
@@ -44,13 +44,13 @@ GitHub Actions builds Release x64 on the `cursor/k3ch-mix-assist-vst3-aa90` bran
 - `K3CH Presets.vst3`
 - `K3CH Master.vst3`
 
-In Studio One 8: **Studio One → Options → Locations** (confirm VST3 path) then rescan, or drag the `.vst3` bundle into the Browser.
+In Studio Pro 8: **Studio Pro → Options → Locations** (confirm VST3 path) then rescan, or drag the `.vst3` bundle into the Browser.
 
 ## Requirements
 
 | Tool | Notes |
 |------|--------|
-| Windows 10/11 x64 | **Studio One 8 / Fender Studio Pro 8** (VST3). Other VST3 hosts also load the plugs. |
+| Windows 10/11 x64 | **Studio Pro 8** (VST3). Other VST3 hosts also load the plugs. |
 | Visual Studio 2022 | Workload **Desktop development with C++** (local builds only) |
 | CMake 3.22+ | [cmake.org](https://cmake.org/download/) or `winget install Kitware.CMake` |
 | Git | Needed so CMake can fetch JUCE 8.0.15 |
@@ -87,7 +87,7 @@ cmake -B build -G "Visual Studio 17 2022" -A x64 -DJUCE_PATH=C:\src\JUCE
 
 Run each Standalone `.exe` first: encyclopedia should list recipes; Presets should load **ModernRap** by default and change the sound; Master defaults to **Inserts / Mix** (pass-through) — switch to **Master** and pick **Club / Loud** to hear the chain.
 
-## Install in Studio One 8 (Windows)
+## Install in Studio Pro 8 (Windows)
 
 1. Copy the whole bundles into `C:\Program Files\Common Files\VST3` (or your VST3 path in **Options → Locations**):
 
@@ -95,7 +95,7 @@ Run each Standalone `.exe` first: encyclopedia should list recipes; Presets shou
    - `K3CH Presets.vst3` (vocal + internal sends)
    - `K3CH Master.vst3` (master bus)
 
-2. In Studio One: rescan plug-ins / restart. Vendor **Maison K3CH Production**, type VST3.
+2. In Studio Pro: rescan plug-ins / restart. Vendor **Maison K3CH Production**, type VST3.
 
 3. Insert:
 
@@ -103,9 +103,9 @@ Run each Standalone `.exe` first: encyclopedia should list recipes; Presets shou
    - **K3CH Presets** on a vocal (or other) channel to **hear** a chain and assign Send A/B recipes *inside* the plug-in.
    - **K3CH Master** on the **Master** Console channel. Mix with **Inserts / Mix** (thru + plans). At the end, switch to **Master** and pick a preset.
 
-FX Chains for other tracks are built **once** in Studio One and recalled via Browser / Macro Organizer — not by this VST. See `StudioOne/README.md`.
+FX Chains for other tracks are built **once** in Studio Pro and recalled via Browser / Macro Organizer — not by this VST. See `StudioOne/README.md`.
 
-If Studio One does not see them: confirm you built **x64 Release**, copied the **folder** `*.vst3` (not a lone `.dll`), and that VST3 scanning is enabled.
+If Studio Pro does not see them: confirm you built **x64 Release**, copied the **folder** `*.vst3` (not a lone `.dll`), and that VST3 scanning is enabled.
 
 ## macOS (brief)
 
@@ -124,7 +124,7 @@ Universal binary (Intel + Apple Silicon):
 cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 ```
 
-Copy `.vst3` bundles to `~/Library/Audio/Plug-Ins/VST3/` (or `/Library/Audio/Plug-Ins/VST3/` for all users). Rescan in Studio One.
+Copy `.vst3` bundles to `~/Library/Audio/Plug-Ins/VST3/` (or `/Library/Audio/Plug-Ins/VST3/` for all users). Rescan in Studio Pro.
 
 ## Linux (developers)
 
