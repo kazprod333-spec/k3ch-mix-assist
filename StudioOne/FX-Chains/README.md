@@ -1,7 +1,7 @@
 # Stubs FX Chains K3CH
 
 Chaque sous-dossier porte le **nom logique** de la chaîne.
-Il ne contient pas de fichier `.multipreset` Studio Pro (format propriétaire,
+Il ne contient pas de fichier `.multipreset` Studio Pro 8 (format propriétaire,
 à créer dans l’hôte).
 
 1. Ouvre `NOTES.txt`.

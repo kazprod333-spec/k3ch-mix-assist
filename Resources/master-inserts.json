@@ -4,7 +4,7 @@
   "studio": "Maison K3CH Production",
   "city": "Alger",
   "host": "Studio Pro 8",
-  "notes": "Un VST3 ne peut pas poser ces plugins sur d'autres canaux Console. Recrée chaque chaîne une fois comme FX Chain Studio Pro, puis rappelle-la depuis le Navigateur ou une macro.",
+  "notes": "Un VST3 ne peut pas poser ces plugins sur d'autres canaux Console. Recrée chaque chaîne une fois comme FX Chain Studio Pro 8, puis rappelle-la depuis le Navigateur ou une macro.",
   "insert_presets": [
     {
       "id": "voix_lead",

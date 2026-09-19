@@ -69,7 +69,7 @@ MasterEditor::MasterEditor (MasterProcessor& p)
     constraintNote.setText (
         juce::String::fromUTF8 (
             "Un VST3 ne peut pas charger de plugins sur d\xe2\x80\x99" "autres canaux Console. "
-            "Les cha\xc3\xae" "nes insert s\xe2\x80\x99" "appliquent via FX Chains / macros Studio Pro, "
+            "Les cha\xc3\xae" "nes insert s\xe2\x80\x99" "appliquent via FX Chains / macros Studio Pro 8, "
             "pas via ce plug-in."),
         juce::dontSendNotification);
     colourLabel (constraintNote, lnf.palette.gold);
@@ -417,7 +417,7 @@ void MasterEditor::showAbout()
         "Mode Master : cha\xc3\xae" "ne DSP (gain, EQ, sat, largeur, clip, limiteur, true-peak) "
         "sur le bus o\xc3\xb9 ce plug-in est pos\xc3\xa9.\n\n"
         "Mode Inserts / Mix : biblioth\xc3\xa8que de plans. "
-        "Studio Pro charge les FX Chains via le Navigateur ou Macro Organizer. "
+        "Studio Pro 8 charge les FX Chains via le Navigateur ou Macro Organizer. "
         "Ce VST3 ne peut pas ins\xc3\xa9rer de plugins sur d\xe2\x80\x99" "autres canaux.\n\n"
         "Voir StudioOne/README.md dans le d\xc3\xa9p\xc3\xb4t.\n");
     if (processor.insertLibrary.getVersion().isNotEmpty())
